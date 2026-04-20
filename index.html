@@ -8,7 +8,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="কুরআন মাজীদ">
 <title>কুরআন মাজীদ</title>
-<link rel="manifest" href="manifest.json">
 <style>
 @font-face{font-family:'HindSiliguri';src:url('fonts/HindSiliguri-Regular.ttf');font-weight:400}
 @font-face{font-family:'HindSiliguri';src:url('fonts/HindSiliguri-Medium.ttf');font-weight:500}
@@ -33,18 +32,18 @@
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#f5f0e8;
-  --bg2:#ede6da;
-  --bg3:#e8e0d4;
-  --card:#fdfaf5;
-  --brown:#6b3a1f;
+  --bg:#f0ebe0;
+  --bg2:#e8e0d0;
+  --bg3:#ddd5c4;
+  --card:#faf6ef;
+  --brown:#7a4a20;
   --brown2:#8b4e2a;
   --brown-pale:#d4b896;
   --text:#1a1008;
   --text2:#5a3a20;
   --text3:#9a7a5a;
   --white:#fff;
-  --nav-h:68px;
+  --nav-h:72px;
   --ar-font:'KFGQ';
   --ar-size:26px;
   --tr-size:14px;
@@ -84,7 +83,6 @@ body{font-family:var(--bn-font),sans-serif;background:var(--bg);color:var(--text
   font-size:22px;font-weight:700;
   margin-top:20px;
   font-family:var(--bn-font),sans-serif;
-  letter-spacing:.5px;
 }
 .splash-tagline{
   color:rgba(255,255,255,.5);
@@ -110,159 +108,240 @@ body{font-family:var(--bn-font),sans-serif;background:var(--bg);color:var(--text
 }
 .screen.active{display:flex}
 
+/* ===== HOME ===== */
+.home-hdr{
+  padding:16px 20px 14px;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.home-hdr h1{
+  font-size:22px;font-weight:700;color:var(--text);
+  font-family:var(--bn-font),sans-serif;
+}
+.hdr-icon{
+  width:38px;height:38px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;border-radius:10px;color:var(--text);
+}
+.hdr-icon:active{background:var(--bg2)}
+
+/* Grid icon — 4 dots like screenshot */
+.menu-dots{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:4px;width:18px;height:18px;
+}
+.menu-dot{
+  width:7px;height:7px;
+  background:var(--text);border-radius:1.5px;
+  opacity:0.75;
+}
+
+/* Search icon */
+.search-icon svg{opacity:0.75}
+
+/* ===== AOD — no card, plain bg, big centered text ===== */
+.aod-section{
+  padding:18px 22px 22px;
+  background:var(--bg);
+  position:relative;
+  overflow:hidden;
+  flex-shrink:0;
+  text-align:center;
+}
+/* Decorative watermark */
+.aod-section::before{
+  content:'القرآن';
+  position:absolute;
+  font-family:'AmiriQ';font-size:160px;
+  color:rgba(107,58,31,.055);
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;white-space:nowrap;
+  direction:rtl;
+}
+.aod-bn{
+  font-size:17px;color:var(--text);
+  line-height:1.85;margin-bottom:16px;
+  font-family:var(--bn-font),sans-serif;
+  position:relative;z-index:1;
+  font-weight:400;
+}
+.aod-ref{
+  font-size:15px;color:var(--text2);
+  font-weight:500;
+  font-family:var(--bn-font),sans-serif;
+  position:relative;z-index:1;
+}
+
+/* ===== QUICK GRID — 4 col, 2 rows ===== */
+.quick-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  padding:8px 16px 8px;
+  flex-shrink:0;
+  background:var(--bg);
+}
+.qi{
+  display:flex;flex-direction:column;
+  align-items:center;gap:8px;cursor:pointer;
+}
+.qi-icon{
+  width:70px;height:70px;
+  background:var(--card);
+  border-radius:20px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 1px 6px rgba(107,58,31,.10);
+}
+.qi-icon:active{background:var(--bg2)}
+.qi-icon svg{width:30px;height:30px}
+.qi-label{
+  font-size:13px;color:var(--text);font-weight:500;
+  font-family:var(--bn-font),sans-serif;
+  text-align:center;
+}
+
+/* ===== QUICK ACCESS ===== */
+.qa-label{
+  display:flex;align-items:center;gap:8px;
+  padding:14px 18px 8px;
+  font-size:15px;font-weight:700;color:var(--text);
+  flex-shrink:0;font-family:var(--bn-font),sans-serif;
+  background:var(--bg);
+}
+.qa-plus{
+  width:26px;height:26px;
+  background:var(--bg2);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;cursor:pointer;color:var(--text3);
+  line-height:1;font-weight:300;
+}
+
+/* Quick chips */
+.qa-row{
+  display:flex;gap:10px;
+  padding:0 16px 14px;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;flex-shrink:0;
+  background:var(--bg);
+}
+.qa-row::-webkit-scrollbar{display:none}
+.qa-chip{
+  display:flex;align-items:center;gap:7px;
+  background:var(--card);
+  border-radius:30px;
+  padding:10px 18px;white-space:nowrap;
+  font-size:14px;font-weight:600;color:var(--text2);
+  cursor:pointer;
+  box-shadow:0 1px 5px rgba(107,58,31,.08);
+  border:1px solid var(--bg2);flex-shrink:0;
+  font-family:var(--bn-font),sans-serif;
+}
+.qa-chip:active{background:var(--bg2)}
+/* Flash / thunder icon */
+.qa-flash-icon{
+  width:20px;height:20px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ===== TABS ===== */
+.tabs{
+  display:flex;margin:4px 14px 8px;
+  background:var(--bg2);border-radius:30px;padding:4px;
+  flex-shrink:0;
+}
+.tab{
+  flex:1;padding:9px 4px;text-align:center;
+  border-radius:26px;font-size:14px;font-weight:600;
+  color:var(--text3);cursor:pointer;transition:all .2s;
+  font-family:var(--bn-font),sans-serif;
+}
+.tab.active{
+  background:var(--white);color:var(--text);
+  box-shadow:0 1px 6px rgba(0,0,0,.13);
+  font-weight:700;
+}
+
+/* ===== SURAH LIST ===== */
+.list-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);}
+.sec-header{
+  background:var(--bg2);padding:8px 16px;
+  font-size:13px;font-weight:700;color:var(--text2);
+  margin:4px 14px 0;border-radius:8px;
+  font-family:var(--bn-font),sans-serif;
+}
+.surah-row{
+  display:flex;align-items:center;
+  padding:14px 18px;
+  border-bottom:1px solid rgba(0,0,0,.06);
+  cursor:pointer;gap:16px;
+  background:transparent;
+}
+.surah-row:active{background:var(--bg2)}
+
+/* Circle number badge like screenshot — plain circle, number inside */
+.s-num{
+  width:46px;height:46px;
+  background:var(--bg2);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:600;color:var(--brown);
+  flex-shrink:0;
+  font-family:var(--bn-font),sans-serif;
+}
+.s-info{flex:1}
+.s-name{
+  font-size:17px;font-weight:700;color:var(--text);
+  font-family:var(--bn-font),sans-serif;
+}
+.s-meta{
+  font-size:13px;color:var(--text3);margin-top:3px;
+  font-family:var(--bn-font),sans-serif;
+}
+.s-ar{
+  font-family:'SuraNames';
+  font-size:34px;color:var(--brown);
+  direction:rtl;line-height:1;
+}
+
 /* ===== BOTTOM NAV ===== */
 .bnav{
   height:var(--nav-h);
   background:var(--card);
   border-top:1px solid var(--bg2);
-  display:flex;
-  flex-shrink:0;
-  box-shadow:0 -2px 16px rgba(0,0,0,.07);
+  display:flex;flex-shrink:0;
+  box-shadow:0 -2px 12px rgba(0,0,0,.07);
+  padding-bottom:env(safe-area-inset-bottom,0);
 }
 .ni{
   flex:1;display:flex;flex-direction:column;
   align-items:center;justify-content:center;
   cursor:pointer;gap:4px;color:var(--text3);
-  transition:color .2s;
+  transition:color .2s;padding-top:4px;
 }
 .ni.active{color:var(--brown)}
-.ni img{width:24px;height:24px;opacity:.6}
-.ni.active img{opacity:1;filter:invert(27%) sepia(20%) saturate(1200%) hue-rotate(10deg) brightness(60%)}
-.ni span{font-size:10px;font-weight:600;font-family:var(--bn-font),sans-serif}
-
-/* ===== HOME ===== */
-.home-hdr{
-  padding:14px 18px 10px;
-  background:var(--bg);
-  display:flex;align-items:center;justify-content:space-between;
-  flex-shrink:0;
-}
-.home-hdr h1{font-size:19px;font-weight:700;color:var(--text)}
-.hdr-icon{
-  width:38px;height:38px;
+.ni-icon{
+  width:28px;height:28px;
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;border-radius:50%;
 }
-.hdr-icon:active{background:var(--bg2)}
-.hdr-icon img{width:22px;height:22px;opacity:.7}
+.ni span{
+  font-size:11px;font-weight:600;
+  font-family:var(--bn-font),sans-serif;
+}
 
-/* Wave decoration */
-.home-wave{flex-shrink:0;height:32px;overflow:hidden;background:var(--bg)}
-.home-wave img{width:100%;height:100%;object-fit:cover;opacity:.6}
-
-/* Ayah of day */
-.aod-card{
-  margin:10px 14px;
-  background:var(--card);
-  border-radius:16px;
-  padding:20px 16px 16px;
-  text-align:center;
-  box-shadow:0 2px 12px rgba(107,58,31,.1);
-  position:relative;overflow:hidden;
-  flex-shrink:0;
-}
-.aod-card::before{
-  content:'';
-  position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--brown),var(--brown2),var(--brown));
-}
-.aod-ar{
-  font-family:'AmiriQ';font-size:20px;
-  direction:rtl;line-height:2;color:var(--text);
-  margin-bottom:8px;
-}
-.aod-bn{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:6px}
-.aod-ref{font-size:12px;color:var(--brown);font-weight:600}
-
-/* Quick menu grid */
-.quick-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  padding:4px 14px 12px;
-  flex-shrink:0;
-}
-.qi{
-  display:flex;flex-direction:column;
-  align-items:center;gap:6px;cursor:pointer;
-}
-.qi-icon{
-  width:60px;height:60px;
-  background:var(--card);
+/* Home active — rounded square brown bg */
+.ni.active#nav-home .ni-icon{
+  width:46px;height:46px;
+  background:var(--brown);
   border-radius:14px;
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 2px 8px rgba(107,58,31,.1);
 }
-.qi-icon:active{background:var(--bg2)}
-.qi-icon img{width:28px;height:28px}
-.qi-label{font-size:12px;color:var(--text2);font-weight:600}
-
-/* Quick access chips */
-.qa-row{
-  display:flex;gap:10px;
-  padding:0 14px 10px;
-  overflow-x:auto;-webkit-overflow-scrolling:touch;
-  scrollbar-width:none;flex-shrink:0;
+.ni.active#nav-home .ni-icon svg{
+  color:white;
 }
-.qa-row::-webkit-scrollbar{display:none}
-.qa-chip{
-  display:flex;align-items:center;gap:6px;
-  background:var(--card);border-radius:22px;
-  padding:8px 14px;white-space:nowrap;
-  font-size:13px;font-weight:600;color:var(--text2);
-  cursor:pointer;
-  box-shadow:0 1px 6px rgba(107,58,31,.1);
-  border:1px solid var(--bg2);flex-shrink:0;
-}
-.qa-chip:active{background:var(--bg2)}
-.qa-chip img{width:16px;height:16px}
-
-/* Tabs */
-.tabs{
-  display:flex;margin:0 14px 8px;
-  background:var(--bg2);border-radius:24px;padding:3px;
-  flex-shrink:0;
-}
-.tab{
-  flex:1;padding:8px 4px;text-align:center;
-  border-radius:21px;font-size:13px;font-weight:600;
-  color:var(--text3);cursor:pointer;transition:all .2s;
-}
-.tab.active{
-  background:var(--white);color:var(--text);
-  box-shadow:0 1px 6px rgba(0,0,0,.1);
-}
-
-/* Surah list */
-.list-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.sec-header{
-  background:var(--bg2);padding:8px 16px;
-  font-size:13px;font-weight:700;color:var(--text2);
-  margin:4px 14px 0;border-radius:8px;
-}
-.surah-row{
-  display:flex;align-items:center;
-  padding:12px 16px;
-  border-bottom:1px solid var(--bg2);
-  cursor:pointer;gap:12px;
-}
-.surah-row:active{background:var(--bg2)}
-.s-num{
-  width:44px;height:44px;
-  background:var(--card);
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:700;color:var(--brown);
-  border:1px solid var(--bg2);flex-shrink:0;
-  clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
-  border-radius:2px;
-}
-.s-info{flex:1}
-.s-name{font-size:16px;font-weight:700;color:var(--text)}
-.s-meta{font-size:12px;color:var(--text3);margin-top:2px}
-.s-ar{
-  font-family:'SuraNames';
-  font-size:30px;color:var(--brown);
-  direction:rtl;line-height:1;
+.ni#nav-home .ni-icon svg{
+  color:var(--text3);
 }
 
 /* ===== READER ===== */
@@ -277,7 +356,7 @@ body{font-family:var(--bn-font),sans-serif;background:var(--bg);color:var(--text
   width:36px;height:36px;
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;border-radius:50%;
-  font-size:24px;color:var(--text);line-height:1;
+  font-size:26px;color:var(--text);line-height:1;
 }
 .back-btn:active{background:var(--bg2)}
 .rdr-title{flex:1;cursor:pointer}
@@ -288,10 +367,10 @@ body{font-family:var(--bn-font),sans-serif;background:var(--bg);color:var(--text
 .rdr-act{
   width:36px;height:36px;
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;border-radius:50%;
+  cursor:pointer;border-radius:50%;color:var(--text3);
 }
 .rdr-act:active{background:var(--bg2)}
-.rdr-act img{width:22px;height:22px;opacity:.7}
+.rdr-act svg{width:22px;height:22px}
 
 /* Surah intro */
 .s-intro{
@@ -302,8 +381,7 @@ body{font-family:var(--bn-font),sans-serif;background:var(--bg);color:var(--text
 .s-intro-left h2{font-size:20px;font-weight:700;margin-bottom:2px}
 .s-intro-left .sub{font-size:13px;color:var(--text3)}
 .s-intro-left .mt{font-size:13px;color:var(--text3);margin-top:2px}
-.kaaba-img{width:96px;height:76px;border-radius:14px;overflow:hidden;flex-shrink:0}
-.kaaba-img img{width:100%;height:100%;object-fit:cover}
+.kaaba-img{width:96px;height:76px;border-radius:14px;overflow:hidden;flex-shrink:0;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:40px;}
 
 /* Info bar */
 .info-bar{
@@ -317,8 +395,8 @@ body{font-family:var(--bn-font),sans-serif;background:var(--bg);color:var(--text
 .bismillah-wrap{
   text-align:center;
   padding:14px 16px 6px;
+  font-family:'AmiriQ';font-size:24px;direction:rtl;color:var(--brown);
 }
-.bismillah-wrap img{max-width:90%;height:auto;opacity:.85}
 
 /* Ayah block */
 .ayah{
@@ -340,7 +418,7 @@ body{font-family:var(--bn-font),sans-serif;background:var(--bg);color:var(--text
   width:34px;height:34px;
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;border-radius:50%;
-  color:var(--text3);font-size:20px;letter-spacing:1px;
+  color:var(--text3);font-size:20px;letter-spacing:2px;
 }
 .ayah-dots:active{background:var(--bg2)}
 .ayah-arabic{
@@ -372,7 +450,7 @@ body{font-family:var(--bn-font),sans-serif;background:var(--bg);color:var(--text
   cursor:pointer;gap:3px;color:var(--brown);
 }
 .tb-btn:active{background:var(--bg2)}
-.tb-btn img{width:22px;height:22px}
+.tb-btn svg{width:22px;height:22px}
 .tb-label{font-size:9px;color:var(--text3);font-weight:600}
 
 /* Audio bar */
@@ -383,7 +461,6 @@ body{font-family:var(--bn-font),sans-serif;background:var(--bg);color:var(--text
   flex-shrink:0;
   transform:translateY(100%);
   transition:transform .3s;
-  position:relative;
 }
 .audio-bar.show{transform:translateY(0)}
 .audio-info{flex:1}
@@ -398,7 +475,7 @@ body{font-family:var(--bn-font),sans-serif;background:var(--bg);color:var(--text
 .ac:active{background:rgba(255,255,255,.2)}
 .ac.play{background:rgba(255,255,255,.2);font-size:19px}
 
-/* ===== AYAH BOTTOM SHEET ===== */
+/* ===== BOTTOM SHEET ===== */
 .sheet-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.45);
   z-index:500;display:none;
@@ -432,9 +509,8 @@ body{font-family:var(--bn-font),sans-serif;background:var(--bg);color:var(--text
 .sheet-icon{
   width:40px;height:40px;background:var(--bg2);
   border-radius:10px;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
+  flex-shrink:0;font-size:18px;
 }
-.sheet-icon img{width:22px;height:22px;opacity:.8}
 .sheet-text{font-size:15px;color:var(--text)}
 .sheet-cancel{
   text-align:center;padding:14px;
@@ -466,7 +542,6 @@ body{font-family:var(--bn-font),sans-serif;background:var(--bg);color:var(--text
 .qt-hdr-left{display:flex;align-items:center;gap:8px;cursor:pointer}
 .qt-hdr-left span{font-size:22px;color:var(--text3)}
 .qt-hdr h2{font-size:16px;font-weight:700;color:var(--brown)}
-.qt-cog img{width:22px;height:22px;opacity:.7;cursor:pointer}
 .qt-section-hdr{
   display:flex;align-items:center;
   justify-content:space-between;
@@ -477,7 +552,6 @@ body{font-family:var(--bn-font),sans-serif;background:var(--bg);color:var(--text
   display:flex;align-items:center;gap:10px;
   font-size:15px;font-weight:700;
 }
-.qt-section-left img{width:22px;height:22px;opacity:.7}
 .qt-body{padding:8px 16px 14px}
 .qt-row{
   display:flex;align-items:center;
@@ -624,7 +698,6 @@ input[type=range]::-webkit-slider-thumb{
   display:flex;align-items:center;
   gap:10px;font-size:15px;font-weight:700;
 }
-.set-hdr-l img{width:22px;height:22px;opacity:.7}
 .set-body{padding:0 15px 12px;border-top:1px solid var(--bg2)}
 .set-row{
   display:flex;align-items:center;
@@ -663,7 +736,7 @@ input[type=range]::-webkit-slider-thumb{
 <div id="splash">
   <div class="splash-icon-wrap">
     <div class="splash-bg-ar">القرآن</div>
-    <img src="images/svg/main_icon.svg" alt="" onerror="this.style.fontSize='90px';this.outerHTML='<span style=font-size:90px>📖</span>'">
+    <img src="images/svg/main_icon.svg" alt="📖" onerror="this.style.fontSize='80px';this.style.width='auto';this.style.height='auto';this.outerHTML='<span style=font-size:90px>📖</span>'">
   </div>
   <div class="splash-app-name">কুরআন মাজীদ</div>
   <div class="splash-tagline">পবিত্র কুরআনের সাথে থাকুন</div>
@@ -677,69 +750,126 @@ input[type=range]::-webkit-slider-thumb{
 
   <!-- ===== HOME ===== -->
   <div id="home" class="screen active">
+
+    <!-- Header -->
     <div class="home-hdr">
+      <!-- 4-dot grid icon -->
       <div class="hdr-icon">
-        <img src="images/svg/home_icons/menu.svg" alt="" onerror="this.outerHTML='<svg viewBox=&quot;0 0 18 18&quot; fill=&quot;currentColor&quot; width=&quot;18&quot;><rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;7&quot; height=&quot;7&quot; rx=&quot;1.5&quot;/><rect x=&quot;11&quot; y=&quot;0&quot; width=&quot;7&quot; height=&quot;7&quot; rx=&quot;1.5&quot;/><rect x=&quot;0&quot; y=&quot;11&quot; width=&quot;7&quot; height=&quot;7&quot; rx=&quot;1.5&quot;/><rect x=&quot;11&quot; y=&quot;11&quot; width=&quot;7&quot; height=&quot;7&quot; rx=&quot;1.5&quot;/></svg>'">
+        <div class="menu-dots">
+          <div class="menu-dot"></div>
+          <div class="menu-dot"></div>
+          <div class="menu-dot"></div>
+          <div class="menu-dot"></div>
+        </div>
       </div>
       <h1>কুরআন মাজীদ</h1>
-      <div class="hdr-icon" onclick="openSearch()">
-        <img src="images/svg/home_icons/search.svg" alt="" onerror="this.outerHTML='<svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; width=&quot;20&quot;><circle cx=&quot;11&quot; cy=&quot;11&quot; r=&quot;7&quot;/><path d=&quot;M21 21l-4.35-4.35&quot;/></svg>'">
+      <div class="hdr-icon search-icon" onclick="openSearch()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="22" height="22" style="opacity:.75;color:var(--brown)">
+          <circle cx="11" cy="11" r="7"/>
+          <path d="M21 21l-4.35-4.35" stroke-linecap="round"/>
+        </svg>
       </div>
     </div>
 
-    <div class="home-wave">
-      <img src="images/svg/imgTopTab.svg" alt="">
-    </div>
-
+    <!-- Scrollable content -->
     <div class="list-area" id="home-scroll">
-      <!-- Ayah of day -->
-      <div class="aod-card" id="aod">
-        <div class="aod-ar" id="aod-ar">ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ</div>
-        <div class="aod-bn" id="aod-bn">যাবতীয় প্রশংসা আল্লাহর, যিনি সৃষ্টিকুলের রব।</div>
-        <div class="aod-ref" id="aod-ref">[আল-ফাতিহা ১:২]</div>
+
+      <!-- AOD — plain, no card -->
+      <div class="aod-section">
+        <div class="aod-bn" id="aod-bn">আর যারা তাঁর পরিবর্তে অন্যদেরকে অভিভাবকরূপে গ্রহণ করে, আল্লাহ তাদের প্রতি সম্যক দৃষ্টিদাতা এবং তুমি তাদের কর্মবিধায়ক নও।</div>
+        <div class="aod-ref" id="aod-ref">[আশ-শূরা ৪২:৬]</div>
       </div>
 
-      <!-- Quick grid -->
+      <!-- Quick grid — 2 rows × 4 cols -->
       <div class="quick-grid">
+        <!-- Row 1 -->
         <div class="qi" onclick="goLastRead()">
-          <div class="qi-icon"><img src="images/svg/home_icons/ic_last_read.svg" alt="" onerror="this.outerHTML='🕐'"></div>
+          <div class="qi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--brown)" stroke-width="1.7" width="30" height="30">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M12 7v5l3 3" stroke-linecap="round"/>
+            </svg>
+          </div>
           <span class="qi-label">শেষ</span>
         </div>
         <div class="qi" onclick="alert('নূরানী বিভাগ শীঘ্রই আসছে')">
-          <div class="qi-icon"><img src="images/svg/ic_open_book_outline.svg" alt="" onerror="this.outerHTML='📖'"></div>
+          <div class="qi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--brown)" stroke-width="1.7" width="30" height="30">
+              <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+              <path d="M9 7h6M9 11h4" stroke-linecap="round"/>
+            </svg>
+          </div>
           <span class="qi-label">নূরানী</span>
         </div>
         <div class="qi" onclick="alert('হাফেজী বিভাগ শীঘ্রই আসছে')">
-          <div class="qi-icon"><img src="images/svg/ic_hafezi_quran.svg" alt="" onerror="this.outerHTML='📗'"></div>
+          <div class="qi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--brown)" stroke-width="1.7" width="30" height="30">
+              <rect x="3" y="3" width="18" height="18" rx="3"/>
+              <path d="M8 8h8M8 12h8M8 16h5" stroke-linecap="round"/>
+              <circle cx="18" cy="18" r="0" fill="var(--brown)"/>
+            </svg>
+          </div>
           <span class="qi-label">হাফেজী</span>
         </div>
         <div class="qi" onclick="alert('সাপোর্ট')">
-          <div class="qi-icon"><img src="images/svg/home_icons/love.svg" alt="" onerror="this.outerHTML='❤️'"></div>
+          <div class="qi-icon">
+            <svg viewBox="0 0 24 24" width="30" height="30">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="var(--brown)"/>
+            </svg>
+          </div>
           <span class="qi-label">সাপোর্ট</span>
         </div>
+        <!-- Row 2 -->
         <div class="qi" onclick="openSearch()">
-          <div class="qi-icon"><img src="images/svg/ic_jump_to.svg" alt="" onerror="this.outerHTML='🔍'"></div>
+          <div class="qi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--brown)" stroke-width="1.7" width="30" height="30">
+              <path d="M22 2L11 13M22 2L15 22 11 13 2 9l20-7z" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
           <span class="qi-label">জাম্প</span>
         </div>
         <div class="qi" onclick="alert('দোয়াসমূহ শীঘ্রই আসছে')">
-          <div class="qi-icon"><img src="images/svg/ic_dua.svg" alt="" onerror="this.outerHTML='🤲'"></div>
+          <div class="qi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--brown)" stroke-width="1.7" width="30" height="30">
+              <path d="M8 14s0-4 4-4 4 4 4 4" stroke-linecap="round"/>
+              <path d="M6 14V8a6 6 0 0112 0v6" stroke-linecap="round"/>
+              <path d="M4 14h16v2a8 8 0 01-16 0v-2z"/>
+            </svg>
+          </div>
           <span class="qi-label">দোয়াসমূহ</span>
         </div>
         <div class="qi" onclick="alert('নূযূল তথ্য শীঘ্রই আসছে')">
-          <div class="qi-icon"><img src="images/svg/home_icons/ic_nuzul.svg" alt="" onerror="this.outerHTML='📊'"></div>
+          <div class="qi-icon">
+            <svg viewBox="0 0 20 20" width="30" height="30">
+              <rect x="1" y="1" width="7.5" height="7.5" rx="1.5" fill="var(--brown)"/>
+              <rect x="11.5" y="1" width="7.5" height="7.5" rx="1.5" fill="var(--brown)"/>
+              <rect x="1" y="11.5" width="7.5" height="7.5" rx="1.5" fill="var(--brown)"/>
+              <rect x="11.5" y="11.5" width="7.5" height="7.5" rx="1.5" fill="var(--brown)" opacity=".5"/>
+              <rect x="13" y="13" width="4.5" height="4.5" rx="1" fill="var(--brown)"/>
+              <line x1="15.25" y1="11.5" x2="15.25" y2="9" stroke="var(--brown)" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
           <span class="qi-label">নূযূল</span>
         </div>
         <div class="qi" onclick="showScreen('settings')">
-          <div class="qi-icon"><img src="images/svg/home_icons/ic_info.svg" alt="" onerror="this.outerHTML='ℹ️'"></div>
+          <div class="qi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--brown)" stroke-width="1.7" width="30" height="30">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+            </svg>
+          </div>
           <span class="qi-label">তথ্য</span>
         </div>
       </div>
 
-      <!-- Quick access -->
-      <div style="padding:4px 14px 8px;font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px">
+      <!-- Quick access label -->
+      <div class="qa-label">
         কুইক অ্যাক্সেস
-        <div style="width:22px;height:22px;background:var(--bg2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;color:var(--brown)">+</div>
+        <div class="qa-plus">+</div>
       </div>
+
+      <!-- Quick access chips -->
       <div class="qa-row" id="qa-chips"></div>
 
       <!-- Tabs -->
@@ -752,6 +882,7 @@ input[type=range]::-webkit-slider-thumb{
 
       <!-- List -->
       <div id="main-list"></div>
+
     </div>
   </div>
 
@@ -764,11 +895,14 @@ input[type=range]::-webkit-slider-thumb{
         <p id="rdr-meta">মাক্কী • ৭ আয়াত</p>
       </div>
       <div class="rdr-actions">
-        <div class="rdr-act" onclick="playAll()" title="তিলাওয়াত">
-          <img src="images/svg/bottom_bar/ic_play_outline.svg" alt="▶" onerror="this.outerHTML='<svg viewBox=&quot;0 0 24 24&quot; fill=&quot;currentColor&quot; width=&quot;22&quot;><path d=&quot;M8 5v14l11-7z&quot;/></svg>'">
+        <div class="rdr-act" onclick="playAll()">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M8 5v14l11-7z"/></svg>
         </div>
         <div class="rdr-act" onclick="openQT()">
-          <img src="images/svg/ic_setting_fill.svg" alt="⚙" onerror="this.outerHTML='⚙️'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+          </svg>
         </div>
       </div>
     </div>
@@ -790,22 +924,30 @@ input[type=range]::-webkit-slider-thumb{
 
     <div class="rdr-toolbar">
       <div class="tb-btn" onclick="scrollRdr()">
-        <img src="images/svg/bottom_bar/ic_scroll_vertical.svg" alt="" onerror="this.outerHTML='⌄⌄'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+          <path d="M12 5v14M5 12l7 7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
       <div class="tb-btn" onclick="openQT()">
-        <img src="images/svg/bottom_bar/ic_message_translate.svg" alt="" onerror="this.outerHTML='🔤'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        </svg>
         <span class="tb-label">অনুবাদ</span>
       </div>
       <div class="tb-btn" onclick="playAll()">
-        <img src="images/svg/bottom_bar/ic_play_fill.svg" alt="" onerror="this.outerHTML='▶'">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M8 5v14l11-7z"/></svg>
         <span class="tb-label">তিলাওয়াত</span>
       </div>
       <div class="tb-btn" onclick="alert('তাফসীর শীঘ্রই আসছে')">
-        <img src="images/svg/ic_tafseer.svg" alt="" onerror="this.outerHTML='📚'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+          <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+        </svg>
         <span class="tb-label">তাফসীর</span>
       </div>
       <div class="tb-btn" onclick="copyCur()">
-        <img src="images/svg/bottom_bar/ic_copy.svg" alt="" onerror="this.outerHTML='📋'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+          <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+        </svg>
         <span class="tb-label">কপি</span>
       </div>
     </div>
@@ -837,9 +979,6 @@ input[type=range]::-webkit-slider-thumb{
       <div class="empty-ic">📚</div>
       <p>আপনার কোনো মেমোরাইজেশন প্ল্যান নেই</p>
     </div>
-    <div style="position:absolute;bottom:calc(68px + 16px);right:16px">
-      <div style="width:56px;height:56px;background:var(--brown);border-radius:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(107,58,31,.4);color:white;font-size:28px">+</div>
-    </div>
   </div>
 
   <!-- ===== SETTINGS ===== -->
@@ -850,13 +989,9 @@ input[type=range]::-webkit-slider-thumb{
       <div style="width:36px"></div>
     </div>
     <div class="set-list">
-      <!-- General -->
       <div class="set-sec">
         <div class="set-hdr" onclick="tSec('ss1')">
-          <div class="set-hdr-l">
-            <img src="images/svg/ic_setting_fill.svg" alt="" onerror="this.outerHTML='⚙️'">
-            সাধারণ সেটিংস
-          </div>
+          <div class="set-hdr-l">⚙️ সাধারণ সেটিংস</div>
           <span class="cr" id="ss1c">▾</span>
         </div>
         <div class="set-body hidden" id="ss1">
@@ -864,30 +999,17 @@ input[type=range]::-webkit-slider-thumb{
             <span>অনুবাদ নির্বাচন</span>
             <select class="fsel" style="max-width:170px" onchange="cfg.transKey=this.value;saveC()">
               <option value="bn.bengali">তাইসিরুল কুরআন</option>
-              <option value="bn.bengali">বায়ান ফাউন্ডেশন</option>
-              <option value="bn.bengali">মুহিউদ্দিন খান</option>
-              <option value="bn.bengali">ফজলুর রহমান</option>
-              <option value="bn.bengali">আবু বকর যাকারিয়া</option>
             </select>
           </div>
           <div class="set-row">
             <span>ডিফল্ট অডিও</span>
             <span class="set-val">Mishari al-Afasy ›</span>
           </div>
-          <div class="set-row">
-            <span>অ্যাপের ভাষা</span>
-            <span class="set-val">বাংলা ›</span>
-          </div>
         </div>
       </div>
-
-      <!-- View -->
       <div class="set-sec">
         <div class="set-hdr" onclick="tSec('ss2')">
-          <div class="set-hdr-l">
-            <img src="images/svg/ic_views.svg" alt="" onerror="this.outerHTML='👁️'">
-            ভিউ সেটিংস
-          </div>
+          <div class="set-hdr-l">👁️ ভিউ সেটিংস</div>
           <span class="cr" id="ss2c">▾</span>
         </div>
         <div class="set-body hidden" id="ss2">
@@ -899,20 +1021,11 @@ input[type=range]::-webkit-slider-thumb{
             <span>অনুবাদ দেখুন</span>
             <div class="tg on" id="t-tr" onclick="togS('showTrans',['t-tr','qt-tr'])"></div>
           </div>
-          <div class="set-row">
-            <span>তাজবীদ কালার</span>
-            <div class="tg" id="t-tj" onclick="togS('tajweed',['t-tj','qt-tj'])"></div>
-          </div>
         </div>
       </div>
-
-      <!-- Font -->
       <div class="set-sec">
         <div class="set-hdr" onclick="tSec('ss3')">
-          <div class="set-hdr-l">
-            <img src="images/svg/ic_appearance.svg" alt="" onerror="this.outerHTML='🔤'">
-            ফন্ট সেটিংস
-          </div>
+          <div class="set-hdr-l">🔤 ফন্ট সেটিংস</div>
           <span class="cr" id="ss3c">▾</span>
         </div>
         <div class="set-body hidden" id="ss3">
@@ -921,28 +1034,22 @@ input[type=range]::-webkit-slider-thumb{
             <div class="fp-bn">যাবতীয় প্রশংসা আল্লাহর — জগৎসমূহের রব।</div>
           </div>
           <div class="set-row">
-            <span style="font-size:13px;white-space:nowrap">আরবি ফন্ট</span>
+            <span style="font-size:13px">আরবি ফন্ট</span>
             <select class="fsel" style="max-width:160px" onchange="chFont(this.value)">
               <option value="KFGQ">KFGQ Hafs (ডিফল্ট)</option>
               <option value="Uthmanic">Uthmanic v22</option>
               <option value="AmiriQ">Amiri Quran</option>
-              <option value="AlMushaf">Al Mushaf</option>
-              <option value="MeQuran">Me Quran</option>
-              <option value="Noorehuda">Noorehuda</option>
-              <option value="IndoPak">Indo-Pak</option>
-              <option value="Lateef">Lateef</option>
-              <option value="Kitab">Kitab</option>
             </select>
           </div>
           <div class="set-row">
-            <span style="font-size:13px;white-space:nowrap">আরবি সাইজ</span>
+            <span style="font-size:13px">আরবি সাইজ</span>
             <div class="qt-slr">
               <input type="range" min="18" max="44" value="26" oninput="upFont('ar',this.value)">
               <span class="slv" id="v-ar">২৬</span>
             </div>
           </div>
           <div class="set-row">
-            <span style="font-size:13px;white-space:nowrap">অনুবাদ সাইজ</span>
+            <span style="font-size:13px">অনুবাদ সাইজ</span>
             <div class="qt-slr">
               <input type="range" min="11" max="22" value="14" oninput="upFont('tr',this.value)">
               <span class="slv" id="v-tr">১৪</span>
@@ -950,48 +1057,11 @@ input[type=range]::-webkit-slider-thumb{
           </div>
         </div>
       </div>
-
-      <!-- Theme -->
-      <div class="set-sec">
-        <div class="set-hdr" onclick="tSec('ss4')">
-          <div class="set-hdr-l">
-            <img src="images/svg/ic_shapes.svg" alt="" onerror="this.outerHTML='🎨'">
-            থিম সেটিংস
-          </div>
-          <span class="cr" id="ss4c">▾</span>
-        </div>
-        <div class="set-body hidden" id="ss4">
-          <div class="set-row">
-            <span>ইন্টারফেস থিম</span>
-            <span class="set-val">সিস্টেম ›</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Notification -->
-      <div class="set-sec">
-        <div class="set-hdr" onclick="tSec('ss5')">
-          <div class="set-hdr-l">
-            <img src="images/svg/ic_notification_outline.svg" alt="" onerror="this.outerHTML='🔔'">
-            নোটিফিকেশন সেটিংস
-          </div>
-          <span class="cr" id="ss5c">▾</span>
-        </div>
-        <div class="set-body hidden" id="ss5">
-          <div class="set-row">
-            <span>দৈনিক নোটিফিকেশন</span>
-            <div class="tg on" id="t-notif"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- About -->
       <div class="set-sec" style="margin-bottom:8px">
         <div style="padding:20px;text-align:center;color:var(--text3);font-size:13px">
-          <img src="images/svg/main_icon.svg" alt="" style="width:56px;height:56px;margin-bottom:10px" onerror="this.outerHTML='<div style=font-size:48px>📖</div>'">
+          <div style="font-size:48px;margin-bottom:10px">📖</div>
           <div><strong style="color:var(--brown);font-size:16px">কুরআন মাজীদ</strong></div>
           <div style="margin-top:4px">সংস্করণ ৫.০</div>
-          <div style="font-size:12px;margin-top:4px">আরবি: KFGQ Hafs Uthmani<br>অনুবাদ: তাইসিরুল কুরআন</div>
         </div>
       </div>
     </div>
@@ -999,24 +1069,57 @@ input[type=range]::-webkit-slider-thumb{
 
   <!-- ===== BOTTOM NAV ===== -->
   <nav class="bnav">
+    <!-- হোম — house icon, active = brown rounded square bg -->
     <div class="ni active" id="nav-home" onclick="showScreen('home')">
-      <img src="images/svg/bottom_bar/home_active.svg" alt="" onerror="this.outerHTML='🏠'">
+      <div class="ni-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+      </div>
       <span>হোম</span>
     </div>
+
+    <!-- বিষয় -->
     <div class="ni" id="nav-topic" onclick="alert('বিষয়ভিত্তিক শীঘ্রই আসছে')">
-      <img src="images/svg/bottom_bar/subjectwise_deactive.svg" alt="" onerror="this.outerHTML='📋'">
+      <div class="ni-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="24" height="24">
+          <rect x="3" y="5" width="18" height="14" rx="2"/>
+          <path d="M7 9h10M7 13h10M7 17h5" stroke-linecap="round"/>
+        </svg>
+      </div>
       <span>বিষয়</span>
     </div>
+
+    <!-- কালেকশন -->
     <div class="ni" id="nav-bm" onclick="showScreen('bookmarks')">
-      <img src="images/svg/bottom_bar/collection_deactive.svg" alt="" onerror="this.outerHTML='🔖'">
+      <div class="ni-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="24" height="24">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
       <span>কালেকশন</span>
     </div>
+
+    <!-- মুখস্থ করুন -->
     <div class="ni" id="nav-mem" onclick="showScreen('memorize')">
-      <img src="images/svg/bottom_bar/memorize_deactive.svg" alt="" onerror="this.outerHTML='⏰'">
+      <div class="ni-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="24" height="24">
+          <path d="M9 18h6M10 22h4"/>
+          <path d="M12 2a7 7 0 00-4 12.74V16a1 1 0 001 1h6a1 1 0 001-1v-1.26A7 7 0 0012 2z" stroke-linecap="round"/>
+          <path d="M12 6v3M10.5 7.5l3 3" stroke-linecap="round" opacity=".5"/>
+        </svg>
+      </div>
       <span>মুখস্থ করুন</span>
     </div>
+
+    <!-- সেটিংস -->
     <div class="ni" id="nav-set" onclick="showScreen('settings')">
-      <img src="images/svg/ic_settings_deactive.svg" alt="" onerror="this.outerHTML='⚙️'">
+      <div class="ni-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="24" height="24">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+        </svg>
+      </div>
       <span>সেটিংস</span>
     </div>
   </nav>
@@ -1030,43 +1133,19 @@ input[type=range]::-webkit-slider-thumb{
       <span>›</span>
       <h2>কুইক টুলস</h2>
     </div>
-    <div class="qt-cog" onclick="closeQT();showScreen('settings')">
-      <img src="images/svg/ic_setting_fill.svg" alt="⚙">
-    </div>
+    <div onclick="closeQT();showScreen('settings')" style="cursor:pointer;font-size:20px">⚙️</div>
   </div>
-
-  <!-- View settings -->
   <div class="qt-section-hdr" onclick="tQT('qt1')">
-    <div class="qt-section-left">
-      <img src="images/svg/ic_views.svg" alt="👁" onerror="this.outerHTML='👁️'">
-      ভিউ সেটিংস
-    </div>
+    <div class="qt-section-left">👁️ ভিউ সেটিংস</div>
     <span class="cr open" id="qt1c">▾</span>
   </div>
   <div class="qt-body" id="qt1">
     <div class="qt-row"><span class="qt-label">আরবি দেখুন</span><div class="tg on" id="qt-ar" onclick="togS('showArabic',['t-ar','qt-ar'])"></div></div>
     <div class="qt-row"><span class="qt-label">অনুবাদ দেখুন</span><div class="tg on" id="qt-tr" onclick="togS('showTrans',['t-tr','qt-tr'])"></div></div>
-    <div class="qt-row"><span class="qt-label">তাজবীদ কালার</span><div class="tg" id="qt-tj" onclick="togS('tajweed',['t-tj','qt-tj'])"></div></div>
+    <div class="qt-row"><span class="qt-label">তাজবীদ কালার</span><div class="tg" id="qt-tj"></div></div>
   </div>
-
-  <!-- Word by word -->
-  <div class="qt-section-hdr" onclick="tQT('qt2')" style="border-top:1px solid var(--bg2)">
-    <div class="qt-section-left">
-      <img src="images/svg/ic_wbw_translation.svg" alt="🔊" onerror="this.outerHTML='🔊'">
-      শব্দে শব্দে
-    </div>
-    <span class="cr" id="qt2c">▾</span>
-  </div>
-  <div class="qt-body hidden" id="qt2">
-    <div class="qt-row"><span class="qt-label">শব্দে শব্দে</span><div class="tg" id="qt-wbw"></div></div>
-  </div>
-
-  <!-- Font -->
   <div class="qt-section-hdr" onclick="tQT('qt3')" style="border-top:1px solid var(--bg2)">
-    <div class="qt-section-left">
-      <img src="images/svg/ic_appearance.svg" alt="🔤" onerror="this.outerHTML='🔤'">
-      ফন্ট সেটিংস
-    </div>
+    <div class="qt-section-left">🔤 ফন্ট সেটিংস</div>
     <span class="cr" id="qt3c">▾</span>
   </div>
   <div class="qt-body hidden" id="qt3">
@@ -1074,24 +1153,11 @@ input[type=range]::-webkit-slider-thumb{
       <div class="fp-ar" id="qt-fp" style="font-family:'KFGQ';font-size:20px">ٱلْحَمْدُ لِلَّهِ</div>
     </div>
     <div class="qt-row">
-      <span class="qt-label" style="font-size:13px;white-space:nowrap">ফন্ট</span>
-      <select class="fsel" style="max-width:150px" onchange="chFont(this.value)">
-        <option value="KFGQ">KFGQ Hafs</option>
-        <option value="Uthmanic">Uthmanic v22</option>
-        <option value="AmiriQ">Amiri Quran</option>
-        <option value="AlMushaf">Al Mushaf</option>
-        <option value="MeQuran">Me Quran</option>
-        <option value="Noorehuda">Noorehuda</option>
-        <option value="IndoPak">Indo-Pak</option>
-        <option value="Lateef">Lateef</option>
-      </select>
-    </div>
-    <div class="qt-row">
-      <span class="qt-label" style="font-size:13px;white-space:nowrap">আরবি</span>
+      <span class="qt-label" style="font-size:13px">আরবি</span>
       <div class="qt-slr"><input type="range" min="18" max="44" value="26" oninput="upFont('ar',this.value)"><span class="slv" id="qv-ar">২৬</span></div>
     </div>
     <div class="qt-row">
-      <span class="qt-label" style="font-size:13px;white-space:nowrap">অনুবাদ</span>
+      <span class="qt-label" style="font-size:13px">অনুবাদ</span>
       <div class="qt-slr"><input type="range" min="11" max="22" value="14" oninput="upFont('tr',this.value)"><span class="slv" id="qv-tr">১৪</span></div>
     </div>
   </div>
@@ -1103,19 +1169,19 @@ input[type=range]::-webkit-slider-thumb{
   <div class="sheet-handle"></div>
   <div class="sheet-title" id="sheet-title">আয়াত অপশন</div>
   <div class="sheet-item" onclick="shPlay()">
-    <div class="sheet-icon"><img src="images/svg/ic_audio_play.svg" alt="▶" onerror="this.outerHTML='▶'"></div>
+    <div class="sheet-icon">▶️</div>
     <span class="sheet-text">তিলাওয়াত শুনুন</span>
   </div>
   <div class="sheet-item" onclick="shBM()">
-    <div class="sheet-icon"><img src="images/svg/ic_bookmark_outline.svg" alt="🔖" onerror="this.outerHTML='🔖'"></div>
+    <div class="sheet-icon">🔖</div>
     <span class="sheet-text">বুকমার্ক করুন</span>
   </div>
   <div class="sheet-item" onclick="shCopy()">
-    <div class="sheet-icon"><img src="images/svg/ic_copy_fill.svg" alt="📋" onerror="this.outerHTML='📋'"></div>
+    <div class="sheet-icon">📋</div>
     <span class="sheet-text">আয়াত কপি করুন</span>
   </div>
   <div class="sheet-item" onclick="shShare()">
-    <div class="sheet-icon"><img src="images/svg/ic_share2.svg" alt="📤" onerror="this.outerHTML='📤'"></div>
+    <div class="sheet-icon">📤</div>
     <span class="sheet-text">শেয়ার করুন</span>
   </div>
   <div class="sheet-cancel" onclick="closeSheet()">বাতিল করুন</div>
@@ -1147,11 +1213,13 @@ input[type=range]::-webkit-slider-thumb{
 // ===== BANGLA DIGITS =====
 const D=['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
 const bn=n=>String(n).split('').map(c=>D[c]||c).join('');
+// Bangla 2-digit with leading zero for surah number display
+const bnPad=n=>{const s=String(n).padStart(2,'0');return s.split('').map(c=>D[c]||c).join('');};
 
 // ===== JUZ DATA =====
 const JUZ=[{"id":1,"juz":1,"vmap":{"1":"1-7","2":"1-141"},"count":148},{"id":2,"juz":2,"vmap":{"2":"142-252"},"count":111},{"id":3,"juz":3,"vmap":{"2":"253-286","3":"1-92"},"count":126},{"id":4,"juz":4,"vmap":{"3":"93-200","4":"1-23"},"count":131},{"id":5,"juz":5,"vmap":{"4":"24-147"},"count":124},{"id":6,"juz":6,"vmap":{"4":"148-176","5":"1-81"},"count":110},{"id":7,"juz":7,"vmap":{"5":"82-120","6":"1-110"},"count":149},{"id":8,"juz":8,"vmap":{"6":"111-165","7":"1-87"},"count":142},{"id":9,"juz":9,"vmap":{"7":"88-206","8":"1-40"},"count":159},{"id":10,"juz":10,"vmap":{"8":"41-75","9":"1-92"},"count":127},{"id":11,"juz":11,"vmap":{"9":"93-129","10":"1-109","11":"1-5"},"count":151},{"id":12,"juz":12,"vmap":{"11":"6-123","12":"1-52"},"count":170},{"id":13,"juz":13,"vmap":{"12":"53-111","13":"1-43","14":"1-52"},"count":154},{"id":14,"juz":14,"vmap":{"15":"1-99","16":"1-128"},"count":227},{"id":15,"juz":15,"vmap":{"17":"1-111","18":"1-74"},"count":185},{"id":16,"juz":16,"vmap":{"18":"75-110","19":"1-98","20":"1-135"},"count":269},{"id":17,"juz":17,"vmap":{"21":"1-112","22":"1-78"},"count":190},{"id":18,"juz":18,"vmap":{"23":"1-118","24":"1-64","25":"1-20"},"count":202},{"id":19,"juz":19,"vmap":{"25":"21-77","26":"1-227","27":"1-55"},"count":339},{"id":20,"juz":20,"vmap":{"27":"56-93","28":"1-88","29":"1-45"},"count":171},{"id":21,"juz":21,"vmap":{"29":"46-69","30":"1-60","31":"1-34","32":"1-30","33":"1-30"},"count":178},{"id":22,"juz":22,"vmap":{"33":"31-73","34":"1-54","35":"1-45","36":"1-27"},"count":169},{"id":23,"juz":23,"vmap":{"36":"28-83","37":"1-182","38":"1-88","39":"1-31"},"count":357},{"id":24,"juz":24,"vmap":{"39":"32-75","40":"1-85","41":"1-46"},"count":175},{"id":25,"juz":25,"vmap":{"41":"47-54","42":"1-53","43":"1-89","44":"1-59","45":"1-37"},"count":246},{"id":26,"juz":26,"vmap":{"46":"1-35","47":"1-38","48":"1-29","49":"1-18","50":"1-45","51":"1-30"},"count":195},{"id":27,"juz":27,"vmap":{"51":"31-60","52":"1-49","53":"1-62","54":"1-55","55":"1-78","56":"1-96","57":"1-29"},"count":399},{"id":28,"juz":28,"vmap":{"58":"1-22","59":"1-24","60":"1-13","61":"1-14","62":"1-11","63":"1-11","64":"1-18","65":"1-12","66":"1-12"},"count":137},{"id":29,"juz":29,"vmap":{"67":"1-30","68":"1-52","69":"1-52","70":"1-44","71":"1-28","72":"1-28","73":"1-20","74":"1-56","75":"1-40","76":"1-31","77":"1-50"},"count":431},{"id":30,"juz":30,"vmap":{"78":"1-40","79":"1-46","80":"1-42","81":"1-29","82":"1-19","83":"1-36","84":"1-25","85":"1-22","86":"1-17","87":"1-19","88":"1-26","89":"1-30","90":"1-20","91":"1-15","92":"1-21","93":"1-11","94":"1-8","95":"1-8","96":"1-19","97":"1-5","98":"1-8","99":"1-8","100":"1-11","101":"1-11","102":"1-8","103":"1-3","104":"1-9","105":"1-5","106":"1-4","107":"1-7","108":"1-3","109":"1-6","110":"1-3","111":"1-5","112":"1-4","113":"1-5","114":"1-6"},"count":564}];
 
-// ===== SURAH DATA (all 114) =====
+// ===== SURAH DATA =====
 const SURAHS=[
   {n:1,bn:"আল-ফাতিহা",t:"মাক্কী",v:7,pg:1,pa:1},{n:2,bn:"আল-বাকারাহ",t:"মাদানী",v:286,pg:2,pa:1},
   {n:3,bn:"আলে-ইমরান",t:"মাদানী",v:200,pg:50,pa:3},{n:4,bn:"আন-নিসা",t:"মাদানী",v:176,pg:77,pa:4},
@@ -1212,37 +1280,35 @@ const SURAHS=[
   {n:113,bn:"আল-ফালাক",t:"মাক্কী",v:5,pg:604,pa:30},{n:114,bn:"আন-নাস",t:"মাক্কী",v:6,pg:604,pa:30},
 ];
 
-// Quick access surahs
+// Quick access — matching screenshot order: ইখলাস, মুলক, ওয়াকিআ, রাহমান, ইয়া-সীন, সাজদাহ
 const QUICK=[
-  {n:56,bn:"আল-ওয়াক্বিআ"},{n:32,bn:"আস-সাজদাহ"},
-  {n:67,bn:"আল-মুলক"},{n:112,bn:"আল-ইখলাস"},
-  {n:55,bn:"আর-রাহমান"},{n:36,bn:"ইয়া-সীন"},
+  {n:112,bn:"আল-ইখলাস"},{n:67,bn:"আল-মুলক"},
+  {n:56,bn:"আল-ওয়াক্বিআ"},{n:55,bn:"আর-রাহমান"},
+  {n:36,bn:"ইয়া-সীন"},{n:32,bn:"আস-সাজদাহ"},
 ];
 
-// Ayah of day
+// AOD
 const AOD=[
-  {ar:"وَمَا خَلَقْتُ ٱلْجِنَّ وَٱلْإِنسَ إِلَّا لِيَعْبُدُونِ",bn:"আমি জিন ও মানুষকে শুধু এ জন্যই সৃষ্টি করেছি যে, তারা আমার ইবাদত করবে।",ref:"[আয-যারিয়াত ৫১:৫৬]"},
-  {ar:"إِنَّ مَعَ ٱلْعُسْرِ يُسْرًۭا",bn:"নিশ্চয়ই কষ্টের সাথে স্বস্তি আছে।",ref:"[আশ-শারহ ৯৪:৬]"},
-  {ar:"وَٱذْكُر رَّبَّكَ إِذَا نَسِيتَ",bn:"আর যখন ভুলে যাও, তখন তোমার রবকে স্মরণ করো।",ref:"[আল-কাহফ ১৮:২৪]"},
-  {ar:"وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ",bn:"তোমরা যেখানেই থাকো না কেন, তিনি তোমাদের সাথে আছেন।",ref:"[আল-হাদীদ ৫৭:৪]"},
-  {ar:"ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ",bn:"যাবতীয় প্রশংসা আল্লাহর, যিনি সৃষ্টিকুলের রব।",ref:"[আল-ফাতিহা ১:২]"},
-  {ar:"فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا",bn:"তাহলে নিশ্চয়ই কষ্টের সাথে স্বস্তি আছে।",ref:"[আশ-শারহ ৯৪:৫]"},
-  {ar:"وَٱللَّهُ يُحِبُّ ٱلصَّـٰبِرِينَ",bn:"আল্লাহ ধৈর্যশীলদের ভালোবাসেন।",ref:"[আলে-ইমরান ৩:১৪৬]"},
+  {bn:"আর যারা তাঁর পরিবর্তে অন্যদেরকে অভিভাবকরূপে গ্রহণ করে, আল্লাহ তাদের প্রতি সম্যক দৃষ্টিদাতা এবং তুমি তাদের কর্মবিধায়ক নও।",ref:"[আশ-শূরা ৪২:৬]"},
+  {bn:"নিশ্চয়ই কষ্টের সাথে স্বস্তি আছে।",ref:"[আশ-শারহ ৯৪:৬]"},
+  {bn:"আর যখন ভুলে যাও, তখন তোমার রবকে স্মরণ করো।",ref:"[আল-কাহফ ১৮:২৪]"},
+  {bn:"তোমরা যেখানেই থাকো না কেন, তিনি তোমাদের সাথে আছেন।",ref:"[আল-হাদীদ ৫৭:৪]"},
+  {bn:"যাবতীয় প্রশংসা আল্লাহর, যিনি সৃষ্টিকুলের রব।",ref:"[আল-ফাতিহা ১:২]"},
+  {bn:"তাহলে নিশ্চয়ই কষ্টের সাথে স্বস্তি আছে।",ref:"[আশ-শারহ ৯৪:৫]"},
+  {bn:"আল্লাহ ধৈর্যশীলদের ভালোবাসেন।",ref:"[আলে-ইমরান ৩:১৪৬]"},
 ];
 
-// Global ayah starts
 const AS=[0,1,8,294,494,670,790,955,1163,1238,1367,1476,1599,1642,1694,1793,1921,2049,2159,2257,2350,2484,2596,2674,2752,2821,2928,3060,3202,3360,3494,3606,3660,3711,3789,3970,4138,4180,4274,4320,4414,4473,4510,4623,4675,4736,4846,4901,4979,5075,5104,5126,5204,5241,5271,5323,5375,5419,5447,5480,5537,5566,5590,5622,5641,5673,5702,5719,5733,5765,5775,5804,5813,5831,5843,5855,5866,5878,5894,5932,5947,5964,5984,5994,6009,6024,6041,6056,6063,6073,6078,6090,6099,6107,6124,6131,6144,6156,6168,6176,6187,6199,6205,6211,6216,6225,6231,6237,6242,6247,6250,6254,6259,6264,6271,6274,6277,6281];
 
-// ===== STATE =====
+// STATE
 let AYAHS={}, curS=null, curA=1, playing=false, menuA=0;
 let bms=JSON.parse(localStorage.getItem('qm5_bm')||'[]');
 let cfg=JSON.parse(localStorage.getItem('qm5_cfg')||'{"showArabic":true,"showTrans":true,"arabicSize":26,"transSize":14,"arFont":"KFGQ","transKey":"bn.bengali"}');
 let lastRead=JSON.parse(localStorage.getItem('qm5_lr')||'null');
 const aud=document.getElementById('aud');
 
-// ===== INIT =====
+// INIT
 window.addEventListener('load',()=>{
-  // Splash → App
   setTimeout(()=>{
     document.getElementById('splash').classList.add('fade');
     setTimeout(()=>{
@@ -1253,16 +1319,21 @@ window.addEventListener('load',()=>{
 
   // AOD
   const aod=AOD[new Date().getDay()%AOD.length];
-  document.getElementById('aod-ar').textContent=aod.ar;
   document.getElementById('aod-bn').textContent=aod.bn;
   document.getElementById('aod-ref').textContent=aod.ref;
 
-  // Quick chips
+  // Quick chips — thunder icon like screenshot
   const qc=document.getElementById('qa-chips');
   QUICK.forEach(s=>{
     const el=document.createElement('div');
     el.className='qa-chip';
-    el.innerHTML=`<img src="images/svg/ic_flash.svg" alt="⚡" onerror="this.outerHTML='⚡'" style="width:16px;height:16px"> ${s.bn}`;
+    el.innerHTML=`
+      <div class="qa-flash-icon">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="var(--brown)">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
+      </div>
+      ${s.bn}`;
     el.onclick=()=>openRdr(s.n);
     qc.appendChild(el);
   });
@@ -1274,7 +1345,7 @@ window.addEventListener('load',()=>{
   if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 });
 
-// ===== TAB =====
+// TABS
 function swTab(tab,el){
   if(el){
     document.querySelectorAll('#home-tabs .tab').forEach(b=>b.classList.remove('active'));
@@ -1287,7 +1358,7 @@ function swTab(tab,el){
   if(tab==='surah'){
     ml.innerHTML=SURAHS.map(s=>`
       <div class="surah-row" onclick="openRdr(${s.n})">
-        <div class="s-num">${bn(s.n)}</div>
+        <div class="s-num">${bnPad(s.n)}</div>
         <div class="s-info">
           <div class="s-name">${s.bn}</div>
           <div class="s-meta">${s.t} • ${bn(s.v)} আয়াত</div>
@@ -1302,7 +1373,7 @@ function swTab(tab,el){
         const s=SURAHS.find(x=>x.n===parseInt(sn));
         if(!s) return;
         h+=`<div class="surah-row" onclick="openRdr(${s.n})">
-          <div class="s-num">${bn(s.n)}</div>
+          <div class="s-num">${bnPad(s.n)}</div>
           <div class="s-info"><div class="s-name">${s.bn}</div><div class="s-meta">${s.t} • আয়াত ${range}</div></div>
           <div class="s-ar">&#x${(0xE900+s.n-1).toString(16)}</div>
         </div>`;
@@ -1318,7 +1389,7 @@ function swTab(tab,el){
         lp=s.pa;
       }
       h+=`<div class="surah-row" onclick="openRdr(${s.n})">
-        <div class="s-num">${bn(s.n)}</div>
+        <div class="s-num">${bnPad(s.n)}</div>
         <div class="s-info"><div class="s-name">${s.bn}</div><div class="s-meta">${s.t} • ${bn(s.v)} আয়াত</div></div>
         <div class="s-ar">&#x${(0xE900+s.n-1).toString(16)}</div>
       </div>`;
@@ -1336,7 +1407,7 @@ function swTab(tab,el){
   }
 }
 
-// ===== SCREEN NAV =====
+// SCREEN NAV
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -1347,10 +1418,10 @@ function showScreen(id){
 function goBack(){closeAudio();showScreen('home');}
 function goLastRead(){if(lastRead) openRdr(lastRead.sn); else alert('এখনো কোনো সূরা পড়া হয়নি');}
 
-// ===== READER =====
+// READER
 function openRdr(sn){
   const s=SURAHS.find(x=>x.n===sn);if(!s) return;
-  curS=s; curA=1;
+  curS=s;curA=1;
   lastRead={sn};localStorage.setItem('qm5_lr',JSON.stringify(lastRead));
   document.getElementById('rdr-name').innerHTML=`${s.bn} <span>▾</span>`;
   document.getElementById('rdr-meta').textContent=`${s.t} • ${bn(s.v)} আয়াত`;
@@ -1361,9 +1432,7 @@ function openRdr(sn){
 }
 
 function getJuzInfo(sn){
-  for(const j of JUZ){
-    if(Object.keys(j.vmap).includes(String(sn))) return j;
-  }
+  for(const j of JUZ){if(Object.keys(j.vmap).includes(String(sn))) return j;}
   return {juz:1};
 }
 
@@ -1371,7 +1440,6 @@ function renderRdr(sn){
   const c=document.getElementById('rdr-content');
   const s=SURAHS.find(x=>x.n===sn);if(!s) return;
   const juz=getJuzInfo(sn);
-
   let h=`
     <div class="s-intro">
       <div class="s-intro-left">
@@ -1381,7 +1449,7 @@ function renderRdr(sn){
       </div>
       <div class="kaaba-img">
         <img src="images/non_svg/img_kaaba.png" alt="🕋"
-          onerror="this.style.display='none';this.parentElement.innerHTML='<img src=&quot;images/svg/kaba_image.svg&quot; alt=&quot;🕋&quot; style=&quot;width:100%;height:100%&quot;>'">
+          onerror="this.parentElement.innerHTML='🕋'" style="width:100%;height:100%;object-fit:cover">
       </div>
     </div>
     <div class="info-bar">পৃষ্ঠা : ${bn(s.pg)} • পারা : ${bn(juz.juz)} • হিযব : ${bn(juz.juz*2-1)}</div>`;
@@ -1394,10 +1462,7 @@ function renderRdr(sn){
   }
 
   if(sn!==9){
-    h+=`<div class="bismillah-wrap">
-      <img src="images/svg/img_bismillah.svg" alt="بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
-        onerror="this.outerHTML='<div style=text-align:center;font-family:var(--ar-font);font-size:26px;direction:rtl;color:var(--brown);padding:16px>بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>'">
-    </div>`;
+    h+=`<div class="bismillah-wrap">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>`;
   }
 
   AYAHS[sn].forEach(a=>{
@@ -1407,11 +1472,10 @@ function renderRdr(sn){
         <div class="ayah-num">${bn(a.n)}</div>
         <div class="ayah-dots" onclick="openSheet(${a.n})">···</div>
       </div>
-      ${cfg.showArabic?`<div class="ayah-arabic" style="font-family:'${cfg.arFont}'">${a.ar}</div>`:''}
+      ${cfg.showArabic?`<div class="ayah-arabic" style="font-family:'${cfg.arFont||'KFGQ'}';">${a.ar}</div>`:''}
       ${cfg.showTrans?`<div class="ayah-trans">${a.bn}</div>`:''}
     </div>`;
   });
-
   c.innerHTML=h;
 }
 
@@ -1433,22 +1497,19 @@ async function fetchA(sn){
       if(data){AYAHS[sn]=data;renderRdr(sn);}
       else{
         document.getElementById('rdr-content').innerHTML+=`
-          <div class="empty">
-            <div class="empty-ic">📶</div>
-            <p>ইন্টারনেট সংযোগ প্রয়োজন।<br>প্রথমবার লোড করতে ইন্টারনেট চালু করুন।</p>
-          </div>`;
+          <div class="empty"><div class="empty-ic">📶</div><p>ইন্টারনেট সংযোগ প্রয়োজন।</p></div>`;
       }
     });
   }finally{dlb.classList.remove('show');}
 }
 
-// ===== INDEXEDDB =====
+// IndexedDB
 function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open('QuranMajeed5',1);r.onupgradeneeded=e=>e.target.result.createObjectStore('ayahs',{keyPath:'sn'});r.onsuccess=e=>res(e.target.result);r.onerror=rej;});}
 async function saveToCache(sn,data){try{const db=await openDB();db.transaction('ayahs','readwrite').objectStore('ayahs').put({sn,data});}catch(e){}}
 async function loadFromCache(sn){try{const db=await openDB();return new Promise(res=>{const r=db.transaction('ayahs').objectStore('ayahs').get(sn);r.onsuccess=e=>res(e.target.result?.data||null);r.onerror=()=>res(null);});}catch(e){return null;}}
 async function preloadCache(){try{const db=await openDB();const r=db.transaction('ayahs').objectStore('ayahs').getAll();r.onsuccess=e=>e.target.result.forEach(x=>{if(!AYAHS[x.sn])AYAHS[x.sn]=x.data;});}catch(e){}}
 
-// ===== SHEET =====
+// SHEET
 function openSheet(n){
   menuA=n;
   document.getElementById('sheet-title').textContent=`${curS?.bn||''} : আয়াত ${bn(n)}`;
@@ -1488,7 +1549,7 @@ function shareA(n){
 }
 function copyCur(){if(curS&&AYAHS[curS.n]) copyA(curA);}
 
-// ===== AUDIO =====
+// AUDIO
 function playA(n){
   if(!curS) return; curA=n;
   aud.src=`https://cdn.islamic.network/quran/audio/128/ar.alafasy/${(AS[curS.n]||0)+n}.mp3`;
@@ -1517,7 +1578,7 @@ function closeAudio(){
 }
 function scrollRdr(){document.getElementById('rdr-content').scrollBy({top:window.innerHeight*.7,behavior:'smooth'});}
 
-// ===== SEARCH =====
+// SEARCH
 function openSearch(){
   document.getElementById('sh-modal').classList.add('show');
   setTimeout(()=>document.getElementById('sh-inp').focus(),100);
@@ -1550,7 +1611,7 @@ function doSh(q){
   },600);
 }
 
-// ===== BOOKMARKS =====
+// BOOKMARKS
 function renderBM(){
   const el=document.getElementById('bm-list');
   if(!bms.length){
@@ -1565,12 +1626,11 @@ function renderBM(){
     </div>`).join('')+'</div>';
 }
 
-// ===== SETTINGS =====
+// SETTINGS
 function tSec(id){
   const b=document.getElementById(id),c=document.getElementById(id+'c');
   b.classList.toggle('hidden');c.classList.toggle('open');
 }
-
 function togS(key,ids){
   const first=document.getElementById(ids[0]);
   const nv=!first.classList.contains('on');
@@ -1578,7 +1638,6 @@ function togS(key,ids){
   cfg[key]=nv;saveC();
   if(curS&&AYAHS[curS.n]) renderRdr(curS.n);
 }
-
 function chFont(val){
   cfg.arFont=val;
   document.documentElement.style.setProperty('--ar-font',`'${val}'`);
@@ -1586,7 +1645,6 @@ function chFont(val){
   if(curS&&AYAHS[curS.n]) renderRdr(curS.n);
   saveC();
 }
-
 function upFont(type,val){
   if(type==='ar'){
     cfg.arabicSize=parseInt(val);
@@ -1600,7 +1658,6 @@ function upFont(type,val){
   }
   saveC();
 }
-
 function saveC(){localStorage.setItem('qm5_cfg',JSON.stringify(cfg));}
 function applyC(){
   document.documentElement.style.setProperty('--ar-size',cfg.arabicSize+'px');
@@ -1610,7 +1667,7 @@ function applyC(){
   if(!cfg.showTrans){['t-tr','qt-tr'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('on');});}
 }
 
-// ===== QUICK TOOLS =====
+// QUICK TOOLS
 function openQT(){
   document.getElementById('qt-ov').classList.add('show');
   document.getElementById('qt-panel').classList.add('show');
