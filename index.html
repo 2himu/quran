@@ -309,6 +309,7 @@ mark { background: var(--gold-l); color: var(--gold); border-radius: 3px; paddin
     <div class="stabs">
       <button class="stab active" onclick="switchTab('surah',this)">সূরা</button>
       <button class="stab" onclick="switchTab('juz',this)">পারা</button>
+	  <button class="stab" onclick="switchTab('nazil',this)">নাযিল</button>
     </div>
     <div class="side-search">
       <input type="text" id="sideFilter" placeholder="সূরা খুঁজুন…" oninput="filterSide(this.value)">
@@ -403,6 +404,7 @@ function renderSideList(list) {
 
 function filterSide(q) {
   if(currentTab==='juz'){renderJuzSide(q);return;}
+  if (currentTab === 'nazil') { renderNazilSide(q); return; }
   renderSideList(Object.values(SURAHS).filter(s=>
     s.name_simple.toLowerCase().includes(q.toLowerCase())||
     s.name_arabic.includes(q)||String(s.id).includes(q)
@@ -413,12 +415,15 @@ function switchTab(tab,el) {
   document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
   el.classList.add('active'); currentTab=tab;
   document.getElementById('sideFilter').value='';
-  if(tab==='surah'){
+  if(tab ==='surah'){
     document.getElementById('sideFilter').placeholder='সূরা খুঁজুন…';
     renderSideList(Object.values(SURAHS));
-  } else {
+  } else if (tab === 'juz') {
     document.getElementById('sideFilter').placeholder='পারা খুঁজুন…';
     renderJuzSide('');
+  } else if (tab === 'nazil') {
+    document.getElementById('sideFilter').placeholder = 'নাযিল ক্রম খুঁজুন…';
+    renderNazilSide('');
   }
 }
 
@@ -431,6 +436,22 @@ function renderJuzSide(q) {
         <div class="s-name">পারা ${toBn(j.juz_number)}</div>
         <div class="s-meta">${toBn(j.verses_count)} আয়াত · ${toBn(j.first_verse_key)}–${toBn(j.last_verse_key)}</div>
       </div>
+    </div>`).join('');
+}
+
+function renderNazilSide(q) {
+  const sorted = Object.values(SURAHS)
+    .filter(s => !q || SURAH_BN[s.id]?.includes(q) || String(s.revelation_order).includes(q))
+    .sort((a, b) => a.revelation_order - b.revelation_order);
+
+  document.getElementById('sideList').innerHTML = sorted.map(s => `
+    <div class="s-item ${currentSurah == s.id ? 'active' : ''}" onclick="loadSurah(${s.id})">
+      <div class="s-num">${toBn(s.revelation_order)}</div>
+      <div class="s-info">
+        <div class="s-name">${SURAH_BN[s.id] || s.name_simple}</div>
+        <div class="s-meta">${s.revelation_place === 'makkah' ? 'মক্কী' : 'মাদানী'} · ${toBn(s.verses_count)} আয়াত</div>
+      </div>
+      <div class="s-ar">${s.name_arabic}</div>
     </div>`).join('');
 }
 
