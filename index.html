@@ -595,14 +595,14 @@ loadAll();
   const _lim = {ar:[22,52], bn:[11,22], ui:[11,20]};
 
   function toggleSettings(){
-    const p=document.getElementById('settingsPanel');
-    const o=document.getElementById('settingsOverlay');
-    const b=document.getElementById('settingsBtn');
-    const show = p.style.display==='none';
-    p.style.display = show?'block':'none';
-    o.style.display = show?'block':'none';
-    b.classList.toggle('on', show);
-  }
+  const p=document.getElementById('settingsPanel');
+  const o=document.getElementById('settingsOverlay');
+  const b=document.getElementById('settingsBtn');
+  const show = p.style.display==='none' || p.style.display==='';
+  p.style.display = show?'flex':'none';
+  o.style.display = show?'block':'none';
+  b.classList.toggle('on', show);
+}
 
   function adjSize(lang, d){
     const [mn,mx]=_lim[lang];
