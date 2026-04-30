@@ -367,6 +367,8 @@ const TRANSLATIONS = {
   'fathul-majid':     { label: 'ফাতহুল মাজীদ',                  file: './fathul-majid-bn-simple.json' },
 };
 let currentTranslation = 'taisirul-quran';
+let compareMode = false;
+let activeTranslations = new Set(['taisirul-quran']);
 let ayahBySurah={};
 let currentSurah=null, currentTab='surah', viewMode='read', readingMode=false;
 
@@ -383,6 +385,7 @@ async function loadAll() {
       fetch(TRANSLATIONS[currentTranslation].file).then(r=>r.json()),
     ]);
     SURAHS=s; AYAHS=a; JUZ=j; BN=b;
+window._bnCache = {'taisirul-quran': b};
     Object.values(AYAHS).forEach(a=>{
       if(!ayahBySurah[a.surah_number]) ayahBySurah[a.surah_number]=[];
       ayahBySurah[a.surah_number].push(a);
@@ -496,14 +499,28 @@ function loadSurah(id) {
   document.getElementById('mainEl').scrollTop=0;
 }
 
-function ayahHtml(a,mode,i=0) {
-  const bn=BN[a.verse_key]?BN[a.verse_key].t:'';
-  const delay=Math.min(i*18,240);
-  const f=window._appliedFonts||{};
-  const arS=f.arF?`font-family:'${f.arF}',serif;font-size:${f.arSz}px`:'';
-  const bnS=f.bnF?`font-family:'${f.bnF}',sans-serif;font-size:${f.bnSz}px`:'';
-  const ar=mode!=='bangla'?`<div class="a-arabic" style="${arS}">${a.text}</div>`:'';
-  const bn2=mode!=='arabic'?`<div class="a-bangla" style="${bnS}">${bn}</div>`:'';
+function ayahHtml(a, mode, i=0) {
+  const delay = Math.min(i*18, 240);
+  const f = window._appliedFonts || {};
+  const arS = f.arF ? `font-family:'${f.arF}',serif;font-size:${f.arSz}px` : '';
+  const bnS = f.bnF ? `font-family:'${f.bnF}',sans-serif;font-size:${f.bnSz}px` : '';
+  const ar = mode!=='bangla' ? `<div class="a-arabic" style="${arS}">${a.text}</div>` : '';
+  let bn2 = '';
+  if(mode !== 'arabic') {
+    if(compareMode && activeTranslations.size > 1) {
+      // একাধিক অনুবাদ
+      bn2 = [...activeTranslations].map(key=>{
+        const t = window._bnCache[key] ? window._bnCache[key][a.verse_key]?.t : '';
+        return `<div style="margin-bottom:6px;">
+          <div style="font-size:10px;font-weight:600;color:var(--gold);margin-bottom:3px;letter-spacing:0.4px;">${TRANSLATIONS[key].label}</div>
+          <div class="a-bangla" style="${bnS}">${t||''}</div>
+        </div>`;
+      }).join('');
+    } else {
+      const t = BN[a.verse_key] ? BN[a.verse_key].t : '';
+      bn2 = `<div class="a-bangla" style="${bnS}">${t}</div>`;
+    }
+  }
   return `<div class="ayah-card" style="animation-delay:${delay}ms">
     <div class="a-num-wrap"><div class="a-num">${toBn(a.ayah_number)}</div><div class="a-dot"></div></div>
     <div class="a-body">${ar}${bn2}<div class="a-key">আয়াত ${toBn(a.verse_key)}</div></div>
@@ -620,15 +637,59 @@ function toggleSection(id){
   if(arrow) arrow.style.transform=open?'rotate(180deg)':'rotate(0deg)';
 }
 
+function toggleCompare() {
+  compareMode = !compareMode;
+  const toggle = document.getElementById('compareToggle');
+  const thumb = document.getElementById('compareThumb');
+  toggle.style.background = compareMode ? 'var(--gold)' : 'var(--border2)';
+  thumb.style.left = compareMode ? '18px' : '2px';
+  if(!compareMode) {
+    // single mode এ ফিরলে শুধু currentTranslation রাখুন
+    activeTranslations = new Set([currentTranslation]);
+    updateRadioUI();
+    if(currentSurah) loadSurah(currentSurah);
+  }
+}
+
+function selectTranslation(key) {
+  switchTranslation(key).catch(e => console.error(e));
+}
+
 async function switchTranslation(key) {
-  if(key === currentTranslation) return;
-  currentTranslation = key;
+  if(compareMode) {
+    // compare mode — একাধিক select/deselect
+    if(activeTranslations.has(key)) {
+      if(activeTranslations.size===1) return; // অন্তত একটা থাকবে
+      activeTranslations.delete(key);
+    } else {
+	// cache না থাকলে লোড করুন
+      if(!window._bnCache[key]) {
+        window._bnCache[key] = await fetch(TRANSLATIONS[key].file).then(r=>r.json());
+      }
+      activeTranslations.add(key);
+    }
+    updateRadioUI();
+    if(currentSurah) loadSurah(currentSurah);
+  } else {
+    // single mode
+    if(key === currentTranslation) return;
+    currentTranslation = key;
+    activeTranslations = new Set([key]);
+	if(!window._bnCache[key]) {
+      window._bnCache[key] = await fetch(TRANSLATIONS[key].file).then(r=>r.json());
+    }
+    BN = window._bnCache[key];
+    updateRadioUI();
+    if(currentSurah) loadSurah(currentSurah);
+  }
+}
+
+function updateRadioUI() {
   document.querySelectorAll('.tr-radio').forEach(r=>{
-    r.style.background = r.dataset.key===key ? 'var(--gold)' : 'var(--warm1)';
-    r.style.borderColor = r.dataset.key===key ? 'var(--gold)' : 'var(--border2)';
+    const active = activeTranslations.has(r.dataset.key);
+    r.style.background = active ? 'var(--gold)' : 'var(--warm1)';
+    r.style.borderColor = active ? 'var(--gold)' : 'var(--border2)';
   });
-  BN = await fetch(TRANSLATIONS[key].file).then(r=>r.json());
-  if(currentSurah) loadSurah(currentSurah);
 }
 
   function adjSize(lang, d){
@@ -714,9 +775,14 @@ async function switchTranslation(key) {
       <span id="transSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
     </div>
     <div id="transSection" style="display:none;border-bottom:1px solid var(--border);">
-      <div style="padding:8px 18px 12px;display:flex;flex-direction:column;gap:2px;">
-
-        <div onclick="switchTranslation('taisirul-quran')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+<div style="padding:10px 18px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);">
+  <span style="font-size:11.5px;color:var(--ink3);">তুলনামূলক মোড</span>
+  <div onclick="toggleCompare()" id="compareToggle" style="width:36px;height:20px;border-radius:10px;background:var(--border2);cursor:pointer;position:relative;transition:background 0.2s;">
+    <div id="compareThumb" style="width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left 0.2s;"></div>
+  </div>
+</div>
+        <div style="padding:8px 18px 12px;display:flex;flex-direction:column;gap:2px;">
+        <div onclick="selectTranslation('taisirul-quran')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
           <div class="tr-radio" data-key="taisirul-quran" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--gold);background:var(--gold);flex-shrink:0;"></div>
           <div>
             <div style="font-size:12.5px;font-weight:600;color:var(--ink);">তাইসীরুল কুরআন</div>
@@ -724,22 +790,22 @@ async function switchTranslation(key) {
           </div>
         </div>
 
-        <div onclick="switchTranslation('rawai-al-bayan')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+        <div onclick="selectTranslation('rawai-al-bayan')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
           <div class="tr-radio" data-key="rawai-al-bayan" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
           <div style="font-size:12.5px;font-weight:600;color:var(--ink);">রাওয়াইউল বায়ান</div>
         </div>
 
-        <div onclick="switchTranslation('sheikh-mujibur')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+        <div onclick="selectTranslation('sheikh-mujibur')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
           <div class="tr-radio" data-key="sheikh-mujibur" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
           <div style="font-size:12.5px;font-weight:600;color:var(--ink);">শেখ মুজিবুর রহমান</div>
         </div>
 
-        <div onclick="switchTranslation('abu-bakr-zakaria')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+        <div onclick="selectTranslation('abu-bakr-zakaria')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
           <div class="tr-radio" data-key="abu-bakr-zakaria" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
           <div style="font-size:12.5px;font-weight:600;color:var(--ink);">ড. আবু বকর মুহাম্মদ যাকারিয়া</div>
         </div>
 
-        <div onclick="switchTranslation('fathul-majid')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+        <div onclick="selectTranslation('fathul-majid')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
           <div class="tr-radio" data-key="fathul-majid" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
           <div style="font-size:12.5px;font-weight:600;color:var(--ink);">ফাতহুল মাজীদ</div>
         </div>
