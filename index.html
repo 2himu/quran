@@ -604,6 +604,14 @@ loadAll();
   b.classList.toggle('on', show);
 }
 
+function toggleSection(id){
+  const el=document.getElementById(id);
+  const arrow=document.getElementById(id+'Arrow');
+  const open=el.style.display==='none';
+  el.style.display=open?'block':'none';
+  if(arrow) arrow.style.transform=open?'rotate(180deg)':'rotate(0deg)';
+}
+
   function adjSize(lang, d){
     const [mn,mx]=_lim[lang];
     _sz[lang]=Math.min(mx,Math.max(mn,_sz[lang]+d));
@@ -670,13 +678,17 @@ loadAll();
 <div id="settingsOverlay" onclick="toggleSettings()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.28);z-index:998;"></div>
 
 <!-- Settings Panel -->
-<div id="settingsPanel" style="display:none;position:fixed;top:68px;right:20px;width:340px;max-height:calc(100vh - 88px);background:var(--warm1);border:1px solid var(--border);border-radius:14px;z-index:999;overflow:hidden;display:flex;flex-direction:column;">
+<div id="settingsPanel" style="display:none;position:fixed;top:68px;right:20px;width:340px;max-height:calc(100vh - 88px);background:var(--warm1);border:1px solid var(--border);border-radius:14px;z-index:999;overflow:hidden;flex-direction:column;">
   <div style="padding:13px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
     <span style="font-size:13px;font-weight:600;color:var(--ink);">⚙ সেটিংস</span>
     <button onclick="toggleSettings()" style="border:none;background:none;cursor:pointer;font-size:18px;color:var(--ink3);line-height:1;">✕</button>
   </div>
   <div style="overflow-y:auto;flex:1;">
-  <div style="padding:10px 18px 2px;font-size:10px;font-weight:600;letter-spacing:0.9px;text-transform:uppercase;color:var(--ink4);">ফন্ট সেটিংস</div>
+  <div onclick="toggleSection('fontSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;">
+  <span>🔤 ফন্ট সেটিংস</span>
+  <span id="fontSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
+</div>
+<div id="fontSection" style="display:none;">
 
   <!-- আরবি -->
   <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
@@ -728,7 +740,9 @@ loadAll();
     </div>
     <div id="uiPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'KoHo',sans-serif;font-size:14px;">সূরা আল-বাকারা · আয়াত ২:১৫৩ · মক্কী</div>
   </div>
+ </div><!-- fontSection বন্ধ -->
  </div><!-- scrollable div বন্ধ -->
+
   <div style="padding:12px 18px;display:flex;justify-content:flex-end;gap:8px;">
     <button onclick="resetFonts()" style="padding:5px 14px;font-size:12px;border:1px solid var(--border2);border-radius:16px;background:var(--warm1);color:var(--ink3);cursor:pointer;font-family:'KoHo',sans-serif;">ডিফল্ট</button>
     <button onclick="applyFonts()" style="padding:5px 16px;font-size:12px;border:none;border-radius:16px;background:var(--gold);color:#fff;cursor:pointer;font-weight:500;font-family:'KoHo',sans-serif;">প্রয়োগ করুন ✓</button>
