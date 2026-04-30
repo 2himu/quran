@@ -4,13 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>আল-কোরআন</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
-@font-face {
-  font-family: 'Uthmanic';
-  src: url('./UthmanicHafs_V22.ttf') format('truetype');
-}
+@font-face { font-family: 'Uthmanic'; src: url('./UthmanicHafs_V22.ttf') format('truetype'); }
+@font-face { font-family: 'KoHo'; src: url('./KoHo-Regular.ttf') format('truetype'); }
+@font-face { font-family: 'KFGQ'; src: url('./KFGQ_hafs.ttf') format('truetype'); }
+@font-face { font-family: 'IndoPak'; src: url('./IndoPak_nastaleeq.ttf') format('truetype'); }
+@font-face { font-family: 'NoorHira'; src: url('./noorehira.ttf') format('truetype'); }
+@font-face { font-family: 'NoorHuda'; src: url('./noorehuda.ttf') format('truetype'); }
+@font-face { font-family: 'QuranCommon'; src: url('./quran-common.ttf') format('truetype'); }
+@font-face { font-family: 'AlQalam'; src: url('./Al_Qalam_Kolkatta.ttf') format('truetype'); }
+@font-face { font-family: 'Kalpurush'; src: url('./font_kalpurush.ttf') format('truetype'); }
+@font-face { font-family: 'HindSiliguri'; src: url('./HindSiliguri-Regular.ttf') format('truetype'); }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
   --cream:   #faf8f4;
@@ -27,8 +33,8 @@
   --gold-l:  #f7edd8;
   --gold-ll: #fdf8f0;
   --r:       12px;
-  --disp:    'Cormorant Garamond', Georgia, serif;
-  --sans:    'Jost', 'Segoe UI', sans-serif;
+  --disp:    'KoHo', Georgia, serif;
+  --sans:    'KoHo', 'Segoe UI', sans-serif;
 }
 html, body { height: 100%; }
 body {
@@ -300,6 +306,7 @@ mark { background: var(--gold-l); color: var(--gold); border-radius: 3px; paddin
   </div>
   <div class="header-right">
     <button class="btn-sm" id="readBtn" onclick="toggleReading()">📖 রিডিং মোড</button>
+	<button class="btn-sm" id="settingsBtn" onclick="toggleSettings()">⚙ সেটিংস</button>
     <div class="stats" id="statsEl">লোড হচ্ছে…</div>
   </div>
 </div>
@@ -484,8 +491,11 @@ function loadSurah(id) {
 function ayahHtml(a,mode,i=0) {
   const bn=BN[a.verse_key]?BN[a.verse_key].t:'';
   const delay=Math.min(i*18,240);
-  const ar=mode!=='bangla'?`<div class="a-arabic">${a.text}</div>`:'';
-  const bn2=mode!=='arabic'?`<div class="a-bangla">${bn}</div>`:'';
+  const f=window._appliedFonts||{};
+  const arS=f.arF?`font-family:'${f.arF}',serif;font-size:${f.arSz}px`:'';
+  const bnS=f.bnF?`font-family:'${f.bnF}',sans-serif;font-size:${f.bnSz}px`:'';
+  const ar=mode!=='bangla'?`<div class="a-arabic" style="${arS}">${a.text}</div>`:'';
+  const bn2=mode!=='arabic'?`<div class="a-bangla" style="${bnS}">${bn}</div>`:'';
   return `<div class="ayah-card" style="animation-delay:${delay}ms">
     <div class="a-num-wrap"><div class="a-num">${toBn(a.ayah_number)}</div><div class="a-dot"></div></div>
     <div class="a-body">${ar}${bn2}<div class="a-key">আয়াত ${toBn(a.verse_key)}</div></div>
@@ -579,6 +589,160 @@ function doSearch(q) {
 }
 
 loadAll();
+
+  // ── Settings ──
+  const _sz = {ar:31, bn:14, ui:14};
+  const _lim = {ar:[22,52], bn:[11,22], ui:[11,20]};
+
+  function toggleSettings(){
+    const p=document.getElementById('settingsPanel');
+    const o=document.getElementById('settingsOverlay');
+    const b=document.getElementById('settingsBtn');
+    const show = p.style.display==='none';
+    p.style.display = show?'block':'none';
+    o.style.display = show?'block':'none';
+    b.classList.toggle('on', show);
+  }
+
+  function adjSize(lang, d){
+    const [mn,mx]=_lim[lang];
+    _sz[lang]=Math.min(mx,Math.max(mn,_sz[lang]+d));
+    document.getElementById('cfg_'+lang+'Sz').textContent=_sz[lang];
+    livePreview(lang);
+  }
+
+  function livePreview(lang){
+    if(lang==='ar'){
+      const f=document.getElementById('cfg_arFont').value;
+      const el=document.getElementById('arPrev');
+      el.style.fontFamily="'"+f+"',serif";
+      el.style.fontSize=_sz.ar+'px';
+    } else if(lang==='bn'){
+      const f=document.getElementById('cfg_bnFont').value;
+      const el=document.getElementById('bnPrev');
+      el.style.fontFamily="'"+f+"',sans-serif";
+      el.style.fontSize=_sz.bn+'px';
+    } else {
+      const f=document.getElementById('cfg_uiFont').value;
+      const el=document.getElementById('uiPrev');
+      el.style.fontFamily="'"+f+"',sans-serif";
+      el.style.fontSize=_sz.ui+'px';
+    }
+  }
+
+  function applyFonts(){
+    const arF=document.getElementById('cfg_arFont').value;
+    const bnF=document.getElementById('cfg_bnFont').value;
+    const uiF=document.getElementById('cfg_uiFont').value;
+    window._appliedFonts={arF,bnF,uiF,arSz:_sz.ar,bnSz:_sz.bn,uiSz:_sz.ui};
+    document.querySelectorAll('.a-arabic').forEach(el=>{
+      el.style.fontFamily="'"+arF+"',serif";
+      el.style.fontSize=_sz.ar+'px';
+    });
+    document.querySelectorAll('.a-bangla').forEach(el=>{
+      el.style.fontFamily="'"+bnF+"',sans-serif";
+      el.style.fontSize=_sz.bn+'px';
+    });
+    document.body.style.fontFamily="'"+uiF+"',sans-serif";
+    toggleSettings();
+  }
+
+  function resetFonts(){
+    _sz.ar=31; _sz.bn=14; _sz.ui=14;
+    document.getElementById('cfg_arSz').textContent=31;
+    document.getElementById('cfg_bnSz').textContent=14;
+    document.getElementById('cfg_uiSz').textContent=14;
+    document.getElementById('cfg_arFont').selectedIndex=0;
+    document.getElementById('cfg_bnFont').selectedIndex=0;
+    document.getElementById('cfg_uiFont').selectedIndex=0;
+    document.getElementById('arPrev').style.cssText="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'Uthmanic',serif;font-size:31px;direction:rtl;text-align:right;line-height:2.2;";
+    document.getElementById('bnPrev').style.cssText="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;";
+    document.getElementById('uiPrev').style.cssText="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'KoHo',sans-serif;font-size:14px;";
+    window._appliedFonts=null;
+    document.querySelectorAll('.a-arabic').forEach(el=>{el.style.fontFamily='';el.style.fontSize='';});
+    document.querySelectorAll('.a-bangla').forEach(el=>{el.style.fontFamily='';el.style.fontSize='';});
+    document.body.style.fontFamily='';
+  }
+
 </script>
+
+<!-- Settings Overlay -->
+<div id="settingsOverlay" onclick="toggleSettings()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.28);z-index:998;"></div>
+
+<!-- Settings Panel -->
+<div id="settingsPanel" style="display:none;position:fixed;top:68px;right:20px;width:340px;background:var(--warm1);border:1px solid var(--border);border-radius:14px;z-index:999;overflow:hidden;">
+  <div style="padding:13px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-size:13px;font-weight:600;color:var(--ink);">⚙ সেটিংস</span>
+    <button onclick="toggleSettings()" style="border:none;background:none;cursor:pointer;font-size:18px;color:var(--ink3);line-height:1;">✕</button>
+  </div>
+  <div style="padding:10px 18px 2px;font-size:10px;font-weight:600;letter-spacing:0.9px;text-transform:uppercase;color:var(--ink4);">ফন্ট সেটিংস</div>
+
+  <!-- আরবি -->
+  <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
+    <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">আরবি</div>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+      <select id="cfg_arFont" onchange="livePreview('ar')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
+        <option value="Uthmanic">Uthmanic Hafs (ডিফল্ট)</option>
+        <option value="KFGQ">KFGQ Hafs</option>
+        <option value="IndoPak">IndoPak Nastaleeq</option>
+        <option value="NoorHira">Noor e Hira</option>
+        <option value="NoorHuda">Noor e Huda</option>
+        <option value="QuranCommon">Quran Common</option>
+      </select>
+      <button onclick="adjSize('ar',-1)" class="sz-btn">−</button>
+      <span id="cfg_arSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">31</span>
+      <button onclick="adjSize('ar',1)" class="sz-btn">+</button>
+    </div>
+    <div id="arPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'Uthmanic',serif;font-size:31px;direction:rtl;text-align:right;line-height:2.2;">إِنَّ ٱللَّهَ مَعَ ٱلصَّـٰبِرِينَ</div>
+  </div>
+
+  <!-- বাংলা -->
+  <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
+    <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">বাংলা</div>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+      <select id="cfg_bnFont" onchange="livePreview('bn')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
+        <option value="HindSiliguri">Hind Siliguri (ডিফল্ট)</option>
+        <option value="Kalpurush">Kalpurush</option>
+        <option value="AlQalam">Al Qalam Kolkata</option>
+      </select>
+      <button onclick="adjSize('bn',-1)" class="sz-btn">−</button>
+      <span id="cfg_bnSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">14</span>
+      <button onclick="adjSize('bn',1)" class="sz-btn">+</button>
+    </div>
+    <div id="bnPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;">নিশ্চয়ই আল্লাহ ধৈর্যশীলদের সাথে আছেন।</div>
+  </div>
+
+  <!-- UI -->
+  <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
+    <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">UI / ইন্টারফেস</div>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+      <select id="cfg_uiFont" onchange="livePreview('ui')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
+        <option value="KoHo">KoHo (ডিফল্ট)</option>
+        <option value="HindSiliguri">Hind Siliguri</option>
+        <option value="Kalpurush">Kalpurush</option>
+      </select>
+      <button onclick="adjSize('ui',-1)" class="sz-btn">−</button>
+      <span id="cfg_uiSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">14</span>
+      <button onclick="adjSize('ui',1)" class="sz-btn">+</button>
+    </div>
+    <div id="uiPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'KoHo',sans-serif;font-size:14px;">সূরা আল-বাকারা · আয়াত ২:১৫৩ · মক্কী</div>
+  </div>
+
+  <div style="padding:12px 18px;display:flex;justify-content:flex-end;gap:8px;">
+    <button onclick="resetFonts()" style="padding:5px 14px;font-size:12px;border:1px solid var(--border2);border-radius:16px;background:var(--warm1);color:var(--ink3);cursor:pointer;font-family:'KoHo',sans-serif;">ডিফল্ট</button>
+    <button onclick="applyFonts()" style="padding:5px 16px;font-size:12px;border:none;border-radius:16px;background:var(--gold);color:#fff;cursor:pointer;font-weight:500;font-family:'KoHo',sans-serif;">প্রয়োগ করুন ✓</button>
+  </div>
+</div>
+
+<style>
+.sz-btn {
+  width:26px;height:26px;border:1px solid var(--border);border-radius:6px;
+  background:var(--warm1);color:var(--ink2);font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:all 0.14s;line-height:1;
+}
+.sz-btn:hover { border-color:var(--gold);color:var(--gold); }
+</style>
+
 </body>
 </html>
