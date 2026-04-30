@@ -369,6 +369,18 @@ const TRANSLATIONS = {
 let currentTranslation = 'taisirul-quran';
 let compareMode = false;
 let activeTranslations = new Set(['taisirul-quran']);
+
+// ── edit ১: TAFSIRS object এবং related variables ──
+const TAFSIRS = {
+  'mokhtasar':    { label: 'মুখতাসার তাফসীর',        file: './bengali-mokhtasar.json' },
+  'ibn-kaseer':   { label: 'তাফসীর ইবনে কাসীর',      file: './bn-tafseer-ibn-e-kaseer.json' },
+  'abu-bakr':     { label: 'তাফসীর আবু বকর যাকারিয়া', file: './bn-tafsir-abu-bakr-zakaria.json' },
+  'ahsanul':      { label: 'আহসানুল বায়ান',           file: './bn-tafsir-ahsanul-bayaan.json' },
+  'fathul-majid': { label: 'ফাতহুল মাজীদ',            file: './tafisr-fathul-majid-bn.json' },
+};
+let currentTafsir = 'ibn-kaseer';
+window._tafsirCache = {};
+
 let ayahBySurah={};
 let currentSurah=null, currentTab='surah', viewMode='read', readingMode=false;
 
@@ -499,6 +511,7 @@ function loadSurah(id) {
   document.getElementById('mainEl').scrollTop=0;
 }
 
+// ── edit ৩: ayahHtml() — ayah-card এ ondblclick যোগ ──
 function ayahHtml(a, mode, i=0) {
   const delay = Math.min(i*18, 240);
   const f = window._appliedFonts || {};
@@ -521,7 +534,7 @@ function ayahHtml(a, mode, i=0) {
       bn2 = `<div class="a-bangla" style="${bnS}">${t}</div>`;
     }
   }
-  return `<div class="ayah-card" style="animation-delay:${delay}ms">
+  return `<div class="ayah-card" style="animation-delay:${delay}ms" ondblclick="showTafsir('${a.verse_key}')">
     <div class="a-num-wrap"><div class="a-num">${toBn(a.ayah_number)}</div><div class="a-dot"></div></div>
     <div class="a-body">${ar}${bn2}<div class="a-key">আয়াত ${toBn(a.verse_key)}</div></div>
   </div>`;
@@ -692,6 +705,41 @@ function updateRadioUI() {
   });
 }
 
+// ── edit ২: toggleCompare() এর পরে tafsir functions ──
+function selectTafsir(key) {
+  switchTafsir(key).catch(e => console.error(e));
+}
+
+async function switchTafsir(key) {
+  if(key === currentTafsir) return;
+  currentTafsir = key;
+  document.querySelectorAll('.tf-radio').forEach(r=>{
+    const active = r.dataset.key === key;
+    r.style.background = active ? 'var(--gold)' : 'var(--warm1)';
+    r.style.borderColor = active ? 'var(--gold)' : 'var(--border2)';
+  });
+}
+
+async function showTafsir(verseKey) {
+  if(!window._tafsirCache[currentTafsir]) {
+    window._tafsirCache[currentTafsir] = await fetch(TAFSIRS[currentTafsir].file).then(r=>r.json());
+  }
+  const data = window._tafsirCache[currentTafsir];
+  const text = data[verseKey]?.text || 'এই আয়াতের তাফসীর পাওয়া যায়নি।';
+  const label = TAFSIRS[currentTafsir].label;
+
+  document.getElementById('tafsirOverlay').style.display = 'block';
+  document.getElementById('tafsirPanel').style.display = 'flex';
+  document.getElementById('tafsirLabel').textContent = label;
+  document.getElementById('tafsirVerse').textContent = 'আয়াত ' + toBn(verseKey);
+  document.getElementById('tafsirBody').innerHTML = text;
+}
+
+function closeTafsir() {
+  document.getElementById('tafsirOverlay').style.display = 'none';
+  document.getElementById('tafsirPanel').style.display = 'none';
+}
+
   function adjSize(lang, d){
     const [mn,mx]=_lim[lang];
     _sz[lang]=Math.min(mx,Math.max(mn,_sz[lang]+d));
@@ -813,6 +861,42 @@ function updateRadioUI() {
       </div>
     </div><!-- transSection বন্ধ -->
 
+    <!-- edit ৪: তাফসীর section — transSection এর পরে ──-->
+    <div onclick="toggleSection('tafsirSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;">
+      <span>📚 তাফসীর</span>
+      <span id="tafsirSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
+    </div>
+    <div id="tafsirSection" style="display:none;border-bottom:1px solid var(--border);">
+      <div style="padding:8px 18px 12px;display:flex;flex-direction:column;gap:2px;">
+
+        <div onclick="selectTafsir('mokhtasar')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+          <div class="tf-radio" data-key="mokhtasar" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
+          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">মুখতাসার তাফসীর</div>
+        </div>
+
+        <div onclick="selectTafsir('ibn-kaseer')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+          <div class="tf-radio" data-key="ibn-kaseer" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--gold);background:var(--gold);flex-shrink:0;"></div>
+          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">তাফসীর ইবনে কাসীর</div>
+        </div>
+
+        <div onclick="selectTafsir('abu-bakr')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+          <div class="tf-radio" data-key="abu-bakr" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
+          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">তাফসীর আবু বকর যাকারিয়া</div>
+        </div>
+
+        <div onclick="selectTafsir('ahsanul')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+          <div class="tf-radio" data-key="ahsanul" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
+          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">আহসানুল বায়ান</div>
+        </div>
+
+        <div onclick="selectTafsir('fathul-majid')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+          <div class="tf-radio" data-key="fathul-majid" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
+          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">ফাতহুল মাজীদ</div>
+        </div>
+
+      </div>
+    </div><!-- tafsirSection বন্ধ -->
+
     <!-- ফন্ট button -->
     <div onclick="toggleSection('fontSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;">
       <span>🔤 ফন্ট সেটিংস</span>
@@ -882,6 +966,22 @@ function updateRadioUI() {
   </div>
 
 </div><!-- settingsPanel বন্ধ -->
+
+<!-- edit ৫: Tafsir Overlay এবং Tafsir Panel ──-->
+<!-- Tafsir Overlay -->
+<div id="tafsirOverlay" onclick="closeTafsir()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1000;"></div>
+
+<!-- Tafsir Panel -->
+<div id="tafsirPanel" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(680px,92vw);max-height:80vh;background:var(--warm1);border:1px solid var(--border);border-radius:16px;z-index:1001;flex-direction:column;overflow:hidden;">
+  <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+    <div>
+      <div style="font-size:13px;font-weight:600;color:var(--gold);" id="tafsirLabel"></div>
+      <div style="font-size:11px;color:var(--ink3);margin-top:2px;" id="tafsirVerse"></div>
+    </div>
+    <button onclick="closeTafsir()" style="border:none;background:none;cursor:pointer;font-size:20px;color:var(--ink3);line-height:1;">✕</button>
+  </div>
+  <div id="tafsirBody" style="overflow-y:auto;padding:20px 24px;font-size:14px;line-height:2;color:var(--ink2);"></div>
+</div>
 
 <style>
 .sz-btn {
