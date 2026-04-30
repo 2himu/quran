@@ -359,6 +359,14 @@ const SURAH_BN = {
 };
 
 let SURAHS={}, AYAHS={}, JUZ={}, BN={};
+const TRANSLATIONS = {
+  'taisirul-quran':    { label: 'তাইসীরুল কুরআন',               file: './bn-taisirul-quran-simple.json' },
+  'rawai-al-bayan':   { label: 'রাওয়াইউল বায়ান',               file: './bn-rawai-al-bayan-simple.json' },
+  'sheikh-mujibur':   { label: 'শেখ মুজিবুর রহমান',             file: './bn-sheikh-mujibur-rahman-simple.json' },
+  'abu-bakr-zakaria': { label: 'ড. আবু বকর মুহাম্মদ যাকারিয়া', file: './dr-abu-bakr-muhammad-zakaria-simple.json' },
+  'fathul-majid':     { label: 'ফাতহুল মাজীদ',                  file: './fathul-majid-bn-simple.json' },
+};
+let currentTranslation = 'taisirul-quran';
 let ayahBySurah={};
 let currentSurah=null, currentTab='surah', viewMode='read', readingMode=false;
 
@@ -372,7 +380,7 @@ async function loadAll() {
       fetch('./quran-metadata-surah-name.json').then(r=>r.json()),
       fetch('./quran-metadata-ayah.json').then(r=>r.json()),
       fetch('./quran-metadata-juz.json').then(r=>r.json()),
-      fetch('./bn-taisirul-quran-simple.json').then(r=>r.json()),
+      fetch(TRANSLATIONS[currentTranslation].file).then(r=>r.json()),
     ]);
     SURAHS=s; AYAHS=a; JUZ=j; BN=b;
     Object.values(AYAHS).forEach(a=>{
@@ -612,6 +620,17 @@ function toggleSection(id){
   if(arrow) arrow.style.transform=open?'rotate(180deg)':'rotate(0deg)';
 }
 
+async function switchTranslation(key) {
+  if(key === currentTranslation) return;
+  currentTranslation = key;
+  document.querySelectorAll('.tr-radio').forEach(r=>{
+    r.style.background = r.dataset.key===key ? 'var(--gold)' : 'var(--warm1)';
+    r.style.borderColor = r.dataset.key===key ? 'var(--gold)' : 'var(--border2)';
+  });
+  BN = await fetch(TRANSLATIONS[key].file).then(r=>r.json());
+  if(currentSurah) loadSurah(currentSurah);
+}
+
   function adjSize(lang, d){
     const [mn,mx]=_lim[lang];
     _sz[lang]=Math.min(mx,Math.max(mn,_sz[lang]+d));
@@ -679,75 +698,124 @@ function toggleSection(id){
 
 <!-- Settings Panel -->
 <div id="settingsPanel" style="display:none;position:fixed;top:68px;right:20px;width:340px;max-height:calc(100vh - 88px);background:var(--warm1);border:1px solid var(--border);border-radius:14px;z-index:999;overflow:hidden;flex-direction:column;">
-  <div style="padding:13px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+
+  <!-- Header -->
+  <div style="padding:13px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
     <span style="font-size:13px;font-weight:600;color:var(--ink);">⚙ সেটিংস</span>
     <button onclick="toggleSettings()" style="border:none;background:none;cursor:pointer;font-size:18px;color:var(--ink3);line-height:1;">✕</button>
   </div>
+
+  <!-- Scrollable content -->
   <div style="overflow-y:auto;flex:1;">
-  <div onclick="toggleSection('fontSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;">
-  <span>🔤 ফন্ট সেটিংস</span>
-  <span id="fontSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
-</div>
-<div id="fontSection" style="display:none;">
 
-  <!-- আরবি -->
-  <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
-    <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">আরবি</div>
-    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-      <select id="cfg_arFont" onchange="livePreview('ar')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
-        <option value="Uthmanic">Uthmanic Hafs (ডিফল্ট)</option>
-        <option value="KFGQ">KFGQ Hafs</option>
-        <option value="IndoPak">IndoPak Nastaleeq</option>
-        <option value="NoorHira">Noor e Hira</option>
-        <option value="NoorHuda">Noor e Huda</option>
-        <option value="QuranCommon">Quran Common</option>
-      </select>
-      <button onclick="adjSize('ar',-1)" class="sz-btn">−</button>
-      <span id="cfg_arSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">31</span>
-      <button onclick="adjSize('ar',1)" class="sz-btn">+</button>
+    <!-- অনুবাদ button -->
+    <div onclick="toggleSection('transSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;">
+      <span>📖 বাংলা অনুবাদ</span>
+      <span id="transSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
     </div>
-    <div id="arPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'Uthmanic',serif;font-size:31px;direction:rtl;text-align:right;line-height:2.2;">إِنَّ ٱللَّهَ مَعَ ٱلصَّـٰبِرِينَ</div>
-  </div>
+    <div id="transSection" style="display:none;border-bottom:1px solid var(--border);">
+      <div style="padding:8px 18px 12px;display:flex;flex-direction:column;gap:2px;">
 
-  <!-- বাংলা -->
-  <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
-    <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">বাংলা</div>
-    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-      <select id="cfg_bnFont" onchange="livePreview('bn')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
-        <option value="HindSiliguri">Hind Siliguri (ডিফল্ট)</option>
-        <option value="Kalpurush">Kalpurush</option>
-        <option value="AlQalam">Al Qalam Kolkata</option>
-      </select>
-      <button onclick="adjSize('bn',-1)" class="sz-btn">−</button>
-      <span id="cfg_bnSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">14</span>
-      <button onclick="adjSize('bn',1)" class="sz-btn">+</button>
+        <div onclick="switchTranslation('taisirul-quran')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+          <div class="tr-radio" data-key="taisirul-quran" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--gold);background:var(--gold);flex-shrink:0;"></div>
+          <div>
+            <div style="font-size:12.5px;font-weight:600;color:var(--ink);">তাইসীরুল কুরআন</div>
+            <div style="font-size:11px;color:var(--ink3);">ডিফল্ট</div>
+          </div>
+        </div>
+
+        <div onclick="switchTranslation('rawai-al-bayan')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+          <div class="tr-radio" data-key="rawai-al-bayan" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
+          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">রাওয়াইউল বায়ান</div>
+        </div>
+
+        <div onclick="switchTranslation('sheikh-mujibur')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+          <div class="tr-radio" data-key="sheikh-mujibur" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
+          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">শেখ মুজিবুর রহমান</div>
+        </div>
+
+        <div onclick="switchTranslation('abu-bakr-zakaria')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+          <div class="tr-radio" data-key="abu-bakr-zakaria" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
+          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">ড. আবু বকর মুহাম্মদ যাকারিয়া</div>
+        </div>
+
+        <div onclick="switchTranslation('fathul-majid')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+          <div class="tr-radio" data-key="fathul-majid" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
+          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">ফাতহুল মাজীদ</div>
+        </div>
+
+      </div>
+    </div><!-- transSection বন্ধ -->
+
+    <!-- ফন্ট button -->
+    <div onclick="toggleSection('fontSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;">
+      <span>🔤 ফন্ট সেটিংস</span>
+      <span id="fontSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
     </div>
-    <div id="bnPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;">নিশ্চয়ই আল্লাহ ধৈর্যশীলদের সাথে আছেন।</div>
-  </div>
+    <div id="fontSection" style="display:none;border-bottom:1px solid var(--border);">
 
-  <!-- UI -->
-  <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
-    <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">UI / ইন্টারফেস</div>
-    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-      <select id="cfg_uiFont" onchange="livePreview('ui')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
-        <option value="KoHo">KoHo (ডিফল্ট)</option>
-        <option value="HindSiliguri">Hind Siliguri</option>
-        <option value="Kalpurush">Kalpurush</option>
-      </select>
-      <button onclick="adjSize('ui',-1)" class="sz-btn">−</button>
-      <span id="cfg_uiSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">14</span>
-      <button onclick="adjSize('ui',1)" class="sz-btn">+</button>
-    </div>
-    <div id="uiPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'KoHo',sans-serif;font-size:14px;">সূরা আল-বাকারা · আয়াত ২:১৫৩ · মক্কী</div>
-  </div>
- </div><!-- fontSection বন্ধ -->
- </div><!-- scrollable div বন্ধ -->
+      <!-- আরবি -->
+      <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
+        <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">আরবি</div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+          <select id="cfg_arFont" onchange="livePreview('ar')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
+            <option value="Uthmanic">Uthmanic Hafs (ডিফল্ট)</option>
+            <option value="KFGQ">KFGQ Hafs</option>
+            <option value="IndoPak">IndoPak Nastaleeq</option>
+            <option value="NoorHira">Noor e Hira</option>
+            <option value="NoorHuda">Noor e Huda</option>
+            <option value="QuranCommon">Quran Common</option>
+          </select>
+          <button onclick="adjSize('ar',-1)" class="sz-btn">−</button>
+          <span id="cfg_arSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">31</span>
+          <button onclick="adjSize('ar',1)" class="sz-btn">+</button>
+        </div>
+        <div id="arPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'Uthmanic',serif;font-size:31px;direction:rtl;text-align:right;line-height:2.2;">إِنَّ ٱللَّهَ مَعَ ٱلصَّـٰبِرِينَ</div>
+      </div>
 
-  <div style="padding:12px 18px;display:flex;justify-content:flex-end;gap:8px;">
+      <!-- বাংলা -->
+      <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
+        <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">বাংলা</div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+          <select id="cfg_bnFont" onchange="livePreview('bn')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
+            <option value="HindSiliguri">Hind Siliguri (ডিফল্ট)</option>
+            <option value="Kalpurush">Kalpurush</option>
+            <option value="AlQalam">Al Qalam Kolkata</option>
+          </select>
+          <button onclick="adjSize('bn',-1)" class="sz-btn">−</button>
+          <span id="cfg_bnSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">14</span>
+          <button onclick="adjSize('bn',1)" class="sz-btn">+</button>
+        </div>
+        <div id="bnPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;">নিশ্চয়ই আল্লাহ ধৈর্যশীলদের সাথে আছেন।</div>
+      </div>
+
+      <!-- UI -->
+      <div style="padding:12px 18px;">
+        <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">UI / ইন্টারফেস</div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+          <select id="cfg_uiFont" onchange="livePreview('ui')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
+            <option value="KoHo">KoHo (ডিফল্ট)</option>
+            <option value="HindSiliguri">Hind Siliguri</option>
+            <option value="Kalpurush">Kalpurush</option>
+          </select>
+          <button onclick="adjSize('ui',-1)" class="sz-btn">−</button>
+          <span id="cfg_uiSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">14</span>
+          <button onclick="adjSize('ui',1)" class="sz-btn">+</button>
+        </div>
+        <div id="uiPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'KoHo',sans-serif;font-size:14px;">সূরা আল-বাকারা · আয়াত ২:১৫৩ · মক্কী</div>
+      </div>
+
+    </div><!-- fontSection বন্ধ -->
+
+  </div><!-- scrollable div বন্ধ -->
+
+  <!-- Footer -->
+  <div style="padding:12px 18px;display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--border);flex-shrink:0;">
     <button onclick="resetFonts()" style="padding:5px 14px;font-size:12px;border:1px solid var(--border2);border-radius:16px;background:var(--warm1);color:var(--ink3);cursor:pointer;font-family:'KoHo',sans-serif;">ডিফল্ট</button>
     <button onclick="applyFonts()" style="padding:5px 16px;font-size:12px;border:none;border-radius:16px;background:var(--gold);color:#fff;cursor:pointer;font-weight:500;font-family:'KoHo',sans-serif;">প্রয়োগ করুন ✓</button>
   </div>
-</div>
+
+</div><!-- settingsPanel বন্ধ -->
 
 <style>
 .sz-btn {
