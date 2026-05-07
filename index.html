@@ -146,6 +146,8 @@ body {
 .s-info { flex: 1; min-width: 0; }
 .s-name { font-size: 13px; font-weight: 600; color: var(--ink); }
 .s-meta { font-size: 11px; color: var(--ink3); margin-top: 1px; }
+/* বাংলা অর্থ — সাইডবারে */
+.s-meaning { font-size: 10.5px; color: var(--gold); margin-top: 2px; font-style: italic; }
 .s-item.active .s-name { color: var(--gold); }
 .s-ar { font-family: 'Uthmanic'; font-size: 17px; color: var(--ink4); direction: rtl; }
 .s-item.active .s-ar { color: var(--gold); }
@@ -175,7 +177,13 @@ body {
 }
 .surah-hdr-name {
   font-family: var(--disp); font-size: 26px; font-weight: 600;
-  color: var(--ink); letter-spacing: -0.3px; margin-bottom: 16px;
+  color: var(--ink); letter-spacing: -0.3px; margin-bottom: 4px;
+}
+/* বাংলা অর্থ — হেডারে */
+.surah-hdr-meaning {
+  font-family: var(--disp); font-size: 15px;
+  color: var(--gold); font-style: italic;
+  margin-bottom: 16px; opacity: 0.85;
 }
 .surah-hdr-meta { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
 .badge {
@@ -358,6 +366,33 @@ const SURAH_BN = {
   111:'আল-মাসাদ',112:'আল-ইখলাস',113:'আল-ফালাক',114:'আন-নাস'
 };
 
+// ✅ নতুন: সূরার বাংলা অর্থ
+const SURAH_MEANING = {
+  1:'সূচনা / উদ্বোধন',2:'গাভী',3:'ইমরানের পরিবার',4:'নারী',5:'খাবার দস্তরখান',
+  6:'গবাদিপশু',7:'উচ্চভূমি',8:'যুদ্ধলব্ধ সম্পদ',9:'তওবা / অনুশোচনা',10:'ইউনুস (আ.)',
+  11:'হুদ (আ.)',12:'ইউসুফ (আ.)',13:'বজ্রপাত',14:'ইবরাহীম (আ.)',15:'পাথুরে ভূমি',
+  16:'মৌমাছি',17:'রাতের ভ্রমণ',18:'গুহা',19:'মারইয়াম (আ.)',20:'ত্বহা',
+  21:'নবীগণ',22:'হজ',23:'মুমিনগণ',24:'আলো',25:'মানদণ্ড / পার্থক্যকারী',
+  26:'কবিগণ',27:'পিঁপড়া',28:'কাহিনী',29:'মাকড়সা',30:'রোমান সাম্রাজ্য',
+  31:'লুকমান (আ.)',32:'সাজদা',33:'মিত্রবাহিনী',34:'সাবা জাতি',35:'সৃষ্টিকর্তা',
+  36:'ইয়া-সীন',37:'সারিবদ্ধ দল',38:'সোয়াদ',39:'দলসমূহ',40:'ক্ষমাকারী',
+  41:'বিস্তারিত বর্ণনা',42:'পরামর্শ',43:'সোনার অলংকার',44:'ধোঁয়া',45:'হাঁটু গেড়ে বসা',
+  46:'বালুর টিলা',47:'মুহাম্মাদ (স.)',48:'বিজয়',49:'হুজরাসমূহ',50:'কাফ',
+  51:'ঘূর্ণিবায়ু',52:'তূর পর্বত',53:'তারা',54:'চাঁদ',55:'পরম দয়ালু',
+  56:'মহা ঘটনা',57:'লোহা',58:'বিতর্ককারিণী',59:'মদীনা থেকে বিতাড়ন',60:'পরীক্ষিতা',
+  61:'সারিবদ্ধ কাতার',62:'জুমার নামাজ',63:'মুনাফিকগণ',64:'মিথ্যা আরোপ',65:'তালাক',
+  66:'নিষিদ্ধকরণ',67:'রাজত্ব',68:'কলম',69:'অবশ্যম্ভাবী',70:'উন্নতির সিঁড়ি',
+  71:'নূহ (আ.)',72:'জিন',73:'চাদর আবৃত',74:'বস্ত্রাবৃত',75:'কিয়ামত',
+  76:'মানুষ',77:'প্রেরিতগণ',78:'মহাসংবাদ',79:'আত্মাহরণকারীগণ',80:'ভ্রুকুটি',
+  81:'অন্ধকারাচ্ছন্ন',82:'বিদীর্ণ',83:'মাপে কম দেওয়া লোক',84:'বিভক্ত',85:'নক্ষত্রপুঞ্জ',
+  86:'রাতের আগন্তুক',87:'সর্বোচ্চ',88:'অভিভূতকারী ঘটনা',89:'ভোর',90:'শহর',
+  91:'সূর্য',92:'রাত',93:'পূর্বাহ্ন',94:'উন্মুক্তকরণ',95:'ডুমুর',
+  96:'জমাট রক্ত',97:'মহিমান্বিত রাত',98:'সুস্পষ্ট প্রমাণ',99:'ভূমিকম্প',100:'ধাবমান অশ্ব',
+  101:'মহাবিপদ',102:'প্রাচুর্যের প্রতিযোগিতা',103:'যুগ / সময়',104:'পরনিন্দাকারী',105:'হাতি',
+  106:'কুরাইশ বংশ',107:'সামান্য দান',108:'প্রাচুর্য',109:'অবিশ্বাসীগণ',110:'সাহায্য',
+  111:'খেজুরের আঁশ',112:'একত্ব / নিষ্কলুষতা',113:'ভোর',114:'মানুষ'
+};
+
 let SURAHS={}, AYAHS={}, JUZ={}, BN={};
 const TRANSLATIONS = {
   'taisirul-quran':    { label: 'তাইসীরুল কুরআন',               file: './bn-taisirul-quran-simple.json' },
@@ -382,6 +417,7 @@ window._tafsirCache = {};
 
 let ayahBySurah={};
 let currentSurah=null, currentTab='surah', viewMode='read', readingMode=false;
+let currentJuz=null;
 
 function bn(n) {
   return String(n).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]);
@@ -424,11 +460,14 @@ function renderSideList(list) {
     <div class="s-item ${currentSurah==s.id?'active':''}" onclick="loadSurah(${s.id})">
       <div class="s-num">${toBn(s.id)}</div>
       <div class="s-info">
-        <div class="s-name">${SURAH_BN[s.id]||s.name_simple}</div>
-        <div class="s-meta">${s.revelation_place==='makkah'?'মক্কী':'মাদানী'} · ${toBn(s.verses_count)} আয়াত</div>
-      </div>
-      <div class="s-ar">${s.name_arabic}</div>
-    </div>`).join('');
+  <div class="s-name">${SURAH_BN[s.id]||s.name_simple}</div>
+  <div class="s-meaning">${SURAH_MEANING[s.id]||''}</div>
+</div>
+<div style="display:flex;flex-direction:column;align-items:flex-end;">
+  <div class="s-ar">${s.name_arabic}</div>
+  <div style="font-size:9px;color:var(--ink3);direction:ltr;text-align:right;margin-top:2px;opacity:0.8;font-style:italic;">${s.revelation_place==='makkah'?'মক্কী':'মাদানী'} · ${toBn(s.verses_count)} আয়াত</div>
+</div>
+	</div>`).join('');
 }
 
 function filterSide(q) {
@@ -436,7 +475,8 @@ function filterSide(q) {
   if (currentTab === 'nazil') { renderNazilSide(q); return; }
   renderSideList(Object.values(SURAHS).filter(s=>
     s.name_simple.toLowerCase().includes(q.toLowerCase())||
-    s.name_arabic.includes(q)||String(s.id).includes(q)
+    s.name_arabic.includes(q)||String(s.id).includes(q)||
+    (SURAH_MEANING[s.id]||'').includes(q)
   ));
 }
 
@@ -445,7 +485,7 @@ function switchTab(tab,el) {
   el.classList.add('active'); currentTab=tab;
   document.getElementById('sideFilter').value='';
   if(tab ==='surah'){
-    document.getElementById('sideFilter').placeholder='সূরা খুঁজুন…';
+    document.getElementById('sideFilter').placeholder='সূরা বা অর্থ দিয়ে খুঁজুন…';
     renderSideList(Object.values(SURAHS));
   } else if (tab === 'juz') {
     document.getElementById('sideFilter').placeholder='পারা খুঁজুন…';
@@ -459,7 +499,7 @@ function switchTab(tab,el) {
 function renderJuzSide(q) {
   document.getElementById('sideList').innerHTML=Object.values(JUZ)
     .filter(j=>!q||String(j.juz_number).includes(q))
-    .map(j=>`<div class="s-item" onclick="loadJuz(${j.juz_number})">
+    .map(j=>`<div class="s-item ${currentJuz==j.juz_number?'active':''}" onclick="loadJuz(${j.juz_number})">
       <div class="s-num">${toBn(j.juz_number)}</div>
       <div class="s-info">
         <div class="s-name">পারা ${toBn(j.juz_number)}</div>
@@ -470,30 +510,36 @@ function renderJuzSide(q) {
 
 function renderNazilSide(q) {
   const sorted = Object.values(SURAHS)
-    .filter(s => !q || SURAH_BN[s.id]?.includes(q) || String(s.revelation_order).includes(q))
+    .filter(s => !q || SURAH_BN[s.id]?.includes(q) || String(s.revelation_order).includes(q) || (SURAH_MEANING[s.id]||'').includes(q))
     .sort((a, b) => a.revelation_order - b.revelation_order);
   document.getElementById('sideList').innerHTML = sorted.map(s => `
     <div class="s-item ${currentSurah == s.id ? 'active' : ''}" onclick="loadSurah(${s.id})">
       <div class="s-num">${toBn(s.revelation_order)}</div>
       <div class="s-info">
-        <div class="s-name">${SURAH_BN[s.id] || s.name_simple}</div>
-        <div class="s-meta">${s.revelation_place === 'makkah' ? 'মক্কী' : 'মাদানী'} · ${toBn(s.verses_count)} আয়াত</div>
-      </div>
-      <div class="s-ar">${s.name_arabic}</div>
-    </div>`).join('');
+  <div class="s-name">${SURAH_BN[s.id]||s.name_simple}</div>
+  <div class="s-meaning">${SURAH_MEANING[s.id]||''}</div>
+</div>
+<div style="display:flex;flex-direction:column;align-items:flex-end;">
+  <div class="s-ar">${s.name_arabic}</div>
+  <div style="font-size:9px;color:var(--ink3);direction:ltr;text-align:right;margin-top:2px;opacity:0.8;font-style:italic;">${s.revelation_place==='makkah'?'মক্কী':'মাদানী'} · ${toBn(s.verses_count)} আয়াত</div>
+</div>
+	</div>`).join('');
 }
 
 function loadSurah(id) {
   currentSurah=id;
   const s=SURAHS[id], ayahs=ayahBySurah[id]||[];
-  renderSideList(Object.values(SURAHS));
+  if(currentTab === 'nazil') renderNazilSide('');
+else renderSideList(Object.values(SURAHS));
   const bismillah=(id!==1&&id!==9&&s.bismillah_pre)
     ?`<div class="bismillah">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ</div>`:'';
+  const meaning = SURAH_MEANING[id] ? `<div class="surah-hdr-meaning">অর্থ: ${SURAH_MEANING[id]}</div>` : '';
   document.getElementById('mainEl').innerHTML=`
     <div class="surah-hdr">
       <div class="surah-ornament">✦ ✦ ✦</div>
       <div class="surah-hdr-ar">${s.name_arabic}</div>
       <div class="surah-hdr-name">${SURAH_BN[id]||s.name_simple}</div>
+      ${meaning}
       <div class="surah-hdr-meta">
         <span class="badge gold">${s.revelation_place==='makkah'?'মক্কী':'মাদানী'}</span>
         <span class="badge">${toBn(s.verses_count)} আয়াত</span>
@@ -532,7 +578,7 @@ function ayahHtml(a, mode, i=0) {
   }
   return `<div class="ayah-card" style="animation-delay:${delay}ms" ondblclick="showTafsir('${a.verse_key}')">
     <div class="a-num-wrap"><div class="a-num">${toBn(a.ayah_number)}</div><div class="a-dot"></div></div>
-    <div class="a-body">${ar}${bn2}<div class="a-key">আয়াত ${toBn(a.verse_key)}</div></div>
+    <div class="a-body">${ar}${bn2}<div class="a-key">আয়াত ${toBn(a.verse_key)}${!compareMode ? ' · ' + TRANSLATIONS[currentTranslation].label : ''}</div></div>
   </div>`;
 }
 
@@ -545,6 +591,8 @@ function setView(mode,btn) {
 }
 
 function loadJuz(num) {
+currentJuz = num;
+renderJuzSide('');
   const j=JUZ[num]; let ayahs=[];
   for(const [sid,range] of Object.entries(j.verse_mapping)){
     const [s,e]=range.split('-').map(Number);
@@ -612,8 +660,9 @@ function doSearch(q) {
       ${results.map(a=>{
         const s=SURAHS[a.surah_number];
         const bn=BN[a.verse_key]?BN[a.verse_key].t:'';
+        const meaning=SURAH_MEANING[a.surah_number]?` (${SURAH_MEANING[a.surah_number]})`:'';
         return `<div class="search-hit" onclick="loadSurah(${a.surah_number})">
-          <div class="hit-surah">${SURAH_BN[a.surah_number]||s.name_simple} (${s.name_arabic}) — আয়াত ${toBn(a.verse_key)}</div>
+          <div class="hit-surah">${SURAH_BN[a.surah_number]||s.name_simple}${meaning} — আয়াত ${toBn(a.verse_key)}</div>
           <div class="a-arabic" style="font-size:23px;margin-bottom:12px">${a.text}</div>
           <div class="a-bangla">${hi(bn)}</div>
         </div>`;
@@ -625,7 +674,6 @@ function doSearch(q) {
 loadAll();
 
 // ── Settings ──
-// tafsir সহ সব ফন্ট সাইজ ম্যানেজ
 const _sz = {ar:31, bn:14, ui:14, tafsir:14};
 const _lim = {ar:[22,52], bn:[11,22], ui:[11,20], tafsir:[11,22]};
 
@@ -724,10 +772,10 @@ async function showTafsir(verseKey) {
   document.getElementById('tafsirOverlay').style.display = 'block';
   document.getElementById('tafsirPanel').style.display = 'flex';
   document.getElementById('tafsirLabel').textContent = label;
-  document.getElementById('tafsirVerse').textContent = 'আয়াত ' + toBn(verseKey);
+  const [sid, aid] = verseKey.split(':');
+document.getElementById('tafsirVerse').textContent = (SURAH_BN[parseInt(sid)] || '') + ' · আয়াত ' + toBn(verseKey);
   tafsirBodyEl.innerHTML = text;
 
-  // applied font থাকলে তাফসীর body-তে প্রয়োগ করুন
   const f = window._appliedFonts || {};
   if(f.tafsirF) {
     tafsirBodyEl.style.fontFamily = `'${f.tafsirF}', sans-serif`;
@@ -789,7 +837,6 @@ function applyFonts(){
     el.style.fontSize=_sz.bn+'px';
   });
   document.body.style.fontFamily="'"+uiF+"',sans-serif";
-  // তাফসীর প্যানেল খোলা থাকলে সেখানেও প্রয়োগ
   const tafsirBodyEl=document.getElementById('tafsirBody');
   if(tafsirBodyEl && document.getElementById('tafsirPanel').style.display==='flex'){
     tafsirBodyEl.style.fontFamily="'"+tafsirF+"',sans-serif";
@@ -826,17 +873,11 @@ function resetFonts(){
 
 <!-- Settings Panel -->
 <div id="settingsPanel" style="display:none;position:fixed;top:68px;right:20px;width:340px;max-height:calc(100vh - 88px);background:var(--warm1);border:1px solid var(--border);border-radius:14px;z-index:999;overflow:hidden;flex-direction:column;">
-
-  <!-- Header -->
   <div style="padding:13px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
     <span style="font-size:13px;font-weight:600;color:var(--ink);">⚙ সেটিংস</span>
     <button onclick="toggleSettings()" style="border:none;background:none;cursor:pointer;font-size:18px;color:var(--ink3);line-height:1;">✕</button>
   </div>
-
-  <!-- Scrollable content -->
   <div style="overflow-y:auto;flex:1;">
-
-    <!-- অনুবাদ -->
     <div onclick="toggleSection('transSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;">
       <span>📖 বাংলা অনুবাদ</span>
       <span id="transSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
@@ -851,10 +892,7 @@ function resetFonts(){
       <div style="padding:8px 18px 12px;display:flex;flex-direction:column;gap:2px;">
         <div onclick="selectTranslation('taisirul-quran')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
           <div class="tr-radio" data-key="taisirul-quran" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--gold);background:var(--gold);flex-shrink:0;"></div>
-          <div>
-            <div style="font-size:12.5px;font-weight:600;color:var(--ink);">তাইসীরুল কুরআন</div>
-            <div style="font-size:11px;color:var(--ink3);">ডিফল্ট</div>
-          </div>
+          <div><div style="font-size:12.5px;font-weight:600;color:var(--ink);">তাইসীরুল কুরআন</div><div style="font-size:11px;color:var(--ink3);">ডিফল্ট</div></div>
         </div>
         <div onclick="selectTranslation('rawai-al-bayan')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
           <div class="tr-radio" data-key="rawai-al-bayan" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
@@ -874,8 +912,6 @@ function resetFonts(){
         </div>
       </div>
     </div>
-
-    <!-- তাফসীর -->
     <div onclick="toggleSection('tafsirSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;">
       <span>📚 তাফসীর</span>
       <span id="tafsirSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
@@ -904,15 +940,11 @@ function resetFonts(){
         </div>
       </div>
     </div>
-
-    <!-- ফন্ট সেটিংস -->
     <div onclick="toggleSection('fontSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;">
       <span>🔤 ফন্ট সেটিংস</span>
       <span id="fontSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
     </div>
     <div id="fontSection" style="display:none;border-bottom:1px solid var(--border);">
-
-      <!-- আরবি -->
       <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
         <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">আরবি</div>
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
@@ -930,8 +962,6 @@ function resetFonts(){
         </div>
         <div id="arPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'Uthmanic',serif;font-size:31px;direction:rtl;text-align:right;line-height:2.2;">إِنَّ ٱللَّهَ مَعَ ٱلصَّـٰبِرِينَ</div>
       </div>
-
-      <!-- বাংলা অনুবাদ -->
       <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
         <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">বাংলা অনুবাদ</div>
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
@@ -946,8 +976,6 @@ function resetFonts(){
         </div>
         <div id="bnPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;">নিশ্চয়ই আল্লাহ ধৈর্যশীলদের সাথে আছেন।</div>
       </div>
-
-      <!-- তাফসীর ফন্ট ← নতুন সেকশন -->
       <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
         <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">তাফসীর</div>
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
@@ -963,8 +991,6 @@ function resetFonts(){
         </div>
         <div id="tafsirPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;">আল্লাহ তাআলা বলেন, নিশ্চয়ই ধৈর্য ও নামাজের মাধ্যমে সাহায্য প্রার্থনা করো।</div>
       </div>
-
-      <!-- UI -->
       <div style="padding:12px 18px;">
         <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">UI / ইন্টারফেস</div>
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
@@ -979,24 +1005,19 @@ function resetFonts(){
         </div>
         <div id="uiPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'KoHo',sans-serif;font-size:14px;">সূরা আল-বাকারা · আয়াত ২:১৫৩ · মক্কী</div>
       </div>
-
-    </div><!-- fontSection বন্ধ -->
-
-  </div><!-- scrollable div বন্ধ -->
-
-  <!-- Footer -->
+    </div>
+  </div>
   <div style="padding:12px 18px;display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--border);flex-shrink:0;">
     <button onclick="resetFonts()" style="padding:5px 14px;font-size:12px;border:1px solid var(--border2);border-radius:16px;background:var(--warm1);color:var(--ink3);cursor:pointer;font-family:'KoHo',sans-serif;">ডিফল্ট</button>
     <button onclick="applyFonts()" style="padding:5px 16px;font-size:12px;border:none;border-radius:16px;background:var(--gold);color:#fff;cursor:pointer;font-weight:500;font-family:'KoHo',sans-serif;">প্রয়োগ করুন ✓</button>
   </div>
-
-</div><!-- settingsPanel বন্ধ -->
+</div>
 
 <!-- Tafsir Overlay -->
 <div id="tafsirOverlay" onclick="closeTafsir()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1000;"></div>
 
 <!-- Tafsir Panel -->
-<div id="tafsirPanel" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(680px,92vw);max-height:80vh;background:var(--warm1);border:1px solid var(--border);border-radius:16px;z-index:1001;flex-direction:column;overflow:hidden;">
+<div id="tafsirPanel" style="display:none;position:fixed;top:0;left:0;transform:none;width:100vw;height:100vh;max-height:100vh;background:var(--warm1);border:none;border-radius:0;z-index:1001;flex-direction:column;overflow:hidden;">
   <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
     <div>
       <div style="font-size:13px;font-weight:600;color:var(--gold);" id="tafsirLabel"></div>
