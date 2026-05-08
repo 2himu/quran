@@ -296,11 +296,16 @@ mark { background: var(--gold-l); color: var(--gold); border-radius: 3px; paddin
   .ayah-list, .search-section { padding-left: 20px; padding-right: 20px; }
   .surah-hdr, .bismillah, .ctabs { padding-left: 20px; padding-right: 20px; }
 }
+@media (orientation: landscape) {
+  .sidebar { width: 0; overflow: hidden; }
+  .header { display: none; }
+  .main { height: 100vh; }
+}
 </style>
 </head>
 <body>
 
-<div class="header">
+<div class="header" id="headerEl">
   <div>
    <button class="btn-sm" id="readBtn" onclick="toggleReading()" style="font-size:18px;padding:6px 12px;">📖</button>
   </div>
@@ -448,6 +453,19 @@ async function loadAll() {
     document.getElementById('mainEl').innerHTML=`<div class="empty"><div class="empty-ar">القرآن</div><div class="empty-title">ফাইল লোড হয়নি</div><div class="empty-sub">সব JSON ফাইল একই ফোল্ডারে আছে কিনা দেখুন<br>Python server চালু আছে কিনা নিশ্চিত করুন</div></div>`;
   }
 }
+
+let clickCount = 0;
+let clickTimer = null;
+
+document.getElementById('mainEl').addEventListener('click', function() {
+  clickCount++;
+  clearTimeout(clickTimer);
+  clickTimer = setTimeout(() => clickCount = 0, 400);
+  if(clickCount >= 3) {
+    clickCount = 0;
+    showHeaderTemporarily();
+  }
+});
 
 function showEmpty() {
   document.getElementById('mainEl').innerHTML=`
@@ -634,6 +652,20 @@ function setJuzView(mode,btn,num) {
     (ayahBySurah[parseInt(sid)]||[]).filter(a=>a.ayah_number>=s&&a.ayah_number<=e).forEach(a=>ayahs.push(a));
   }
   document.getElementById('ayahList').innerHTML=ayahs.map((a,i)=>ayahHtml(a,mode,i)).join('');
+}
+
+let headerTimer = null;
+
+function showHeaderTemporarily() {
+  const h = document.getElementById('headerEl');
+  if(!h) return;
+  h.style.display = 'flex';
+  clearTimeout(headerTimer);
+  headerTimer = setTimeout(() => {
+    if(window.matchMedia('(orientation: landscape)').matches) {
+      h.style.display = 'none';
+    }
+  }, 10000);
 }
 
 let lockMode = false;
