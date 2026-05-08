@@ -16,6 +16,9 @@
 @font-face { font-family: 'AlQalam'; src: url('./Al_Qalam_Kolkatta.ttf') format('truetype'); }
 @font-face { font-family: 'Kalpurush'; src: url('./font_kalpurush.ttf') format('truetype'); }
 @font-face { font-family: 'HindSiliguri'; src: url('./HindSiliguri-Regular.ttf') format('truetype'); }
+@font-face { font-family: 'ScheherazadeNew'; src: url('./ScheherazadeNew-Regular.ttf') format('truetype'); }
+@font-face { font-family: 'AmiriQuran'; src: url('./AmiriQuran-Regular.ttf') format('truetype'); }
+@font-face { font-family: 'NotoSansBengali'; src: url('./NotoSansBengali-Regular.ttf') format('truetype'); }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -1062,6 +1065,8 @@ function resetFonts(){
             <option value="NoorHira">Noor e Hira</option>
             <option value="NoorHuda">Noor e Huda</option>
             <option value="QuranCommon">Quran Common</option>
+			<option value="ScheherazadeNew">Scheherazade New</option>
+            <option value="AmiriQuran">Amiri Quran</option>
           </select>
           <button onclick="adjSize('ar',-1)" class="sz-btn">−</button>
           <span id="cfg_arSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">31</span>
@@ -1076,6 +1081,7 @@ function resetFonts(){
             <option value="HindSiliguri">Hind Siliguri (ডিফল্ট)</option>
             <option value="Kalpurush">Kalpurush</option>
             <option value="AlQalam">Al Qalam Kolkata</option>
+			<option value="NotoSansBengali">Noto Sans Bengali</option>
           </select>
           <button onclick="adjSize('bn',-1)" class="sz-btn">−</button>
           <span id="cfg_bnSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">14</span>
@@ -1091,6 +1097,7 @@ function resetFonts(){
             <option value="Kalpurush">Kalpurush</option>
             <option value="KoHo">KoHo</option>
             <option value="AlQalam">Al Qalam Kolkata</option>
+			<option value="NotoSansBengali">Noto Sans Bengali</option>
           </select>
           <button onclick="adjSize('tafsir',-1)" class="sz-btn">−</button>
           <span id="cfg_tafsirSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">14</span>
@@ -1105,6 +1112,7 @@ function resetFonts(){
             <option value="KoHo">KoHo (ডিফল্ট)</option>
             <option value="HindSiliguri">Hind Siliguri</option>
             <option value="Kalpurush">Kalpurush</option>
+			<option value="NotoSansBengali">Noto Sans Bengali</option>
           </select>
           <button onclick="adjSize('ui',-1)" class="sz-btn">−</button>
           <span id="cfg_uiSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">14</span>
