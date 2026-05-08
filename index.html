@@ -173,11 +173,6 @@ body {
   position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
   width: 48px; height: 2px; background: var(--gold); border-radius: 2px;
 }
-.surah-ornament { font-size: 11px; color: var(--gold); letter-spacing: 8px; margin-bottom: 14px; opacity: 0.6; }
-.surah-hdr-ar {
-  font-family: 'Uthmanic'; font-size: 40px;
-  color: var(--ink); direction: rtl; margin-bottom: 10px; line-height: 1.5;
-}
 .surah-hdr-name {
   font-family: var(--disp); font-size: 26px; font-weight: 600;
   color: var(--ink); letter-spacing: -0.3px; margin-bottom: 4px;
@@ -219,9 +214,9 @@ body {
 .ctab:hover:not(.active) { background: var(--cream); color: var(--ink2); border-color: var(--border); }
 
 /* AYAH LIST */
-.ayah-list { padding: 0 52px 80px; max-width: 880px; margin: 0 auto; width: 100%; }
+.ayah-list { padding: 0 52px 80px; max-width: 100%; margin: 0 auto; width: 100%; }
 .ayah-card {
-  padding: 30px 0; border-bottom: 1px solid var(--border);
+  padding: 5px 0; border-bottom: 1px solid var(--border);
   display: flex; gap: 22px;
   animation: ayahIn 0.35s cubic-bezier(.4,0,.2,1) both;
 }
@@ -544,14 +539,14 @@ else renderSideList(Object.values(SURAHS));
   const meaning = SURAH_MEANING[id] ? `<div class="surah-hdr-meaning">অর্থ: ${SURAH_MEANING[id]}</div>` : '';
   document.getElementById('mainEl').innerHTML=`
     <div class="surah-hdr">
-      <div class="surah-ornament">✦ ✦ ✦</div>
-      <div class="surah-hdr-ar">${s.name_arabic}</div>
+      
       <div class="surah-hdr-name">${SURAH_BN[id]||s.name_simple}</div>
       ${meaning}
       <div class="surah-hdr-meta">
-        <span class="badge gold">${s.revelation_place==='makkah'?'মক্কী':'মাদানী'}</span>
-        <span class="badge">${toBn(s.verses_count)} আয়াত</span>
-        <span class="badge">সূরা ${toBn(id)}</span>
+        <span class="badge">সূরা ক্রম: ${toBn(id)}</span>
+		<span class="badge">আয়াত: ${toBn(s.verses_count)}</span>
+		<span class="badge">নাযিল ক্রম: ${toBn(s.revelation_order)}</span>
+		<span class="badge gold">${s.revelation_place==='makkah'?'🕋 মক্কায় অবতীর্ণ':'🕌মদীনায় অবতীর্ণ'}</span>
       </div>
     </div>${bismillah}
     <div class="ctabs">
@@ -591,7 +586,7 @@ function ayahHtml(a, mode, i=0) {
   <div onclick="showCopyPopup('${a.verse_key}')" style="cursor:pointer;color:var(--ink4);font-size:14px;margin-top:4px;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink4)'">📋</div>
   <div onclick="showTafsir('${a.verse_key}')" style="cursor:pointer;color:var(--ink4);font-size:14px;margin-top:4px;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink4)'">📖</div>
 </div>
-    <div class="a-body">${ar}${bn2}<div class="a-key">${SURAH_BN[a.surah_number]} ${toBn(a.verse_key)}${!compareMode ? ' · ' + TRANSLATIONS[currentTranslation].label : ''}</div></div>
+    <div class="a-body">${ar}${bn2}<div class="a-key">${SURAH_BN[a.surah_number]} ${toBn(a.verse_key)}${mode !== 'arabic' && !compareMode ? ' · ' + TRANSLATIONS[currentTranslation].label : ''}</div></div>
   </div>`;
 }
 
@@ -613,7 +608,6 @@ renderJuzSide('');
   }
   document.getElementById('mainEl').innerHTML=`
     <div class="surah-hdr">
-      <div class="surah-ornament">✦ ✦ ✦</div>
       <div class="surah-hdr-name" style="font-size:28px">পারা ${toBn(num)}</div>
       <div class="surah-hdr-meta">
         <span class="badge">${toBn(j.verses_count)} আয়াত</span>
@@ -1152,6 +1146,7 @@ function resetFonts(){
   <div id="tafsirAyah" style="padding:0 20px 16px;text-align:center;"></div>
 </div>
 <div id="tafsirBody" style="padding:20px 24px;font-size:14px;line-height:2;color:var(--ink2);flex:1;"></div>
+</div>
 
 <!-- Copy Overlay -->
 <div id="copyOverlay" onclick="closeCopyPopup()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1002;"></div>
