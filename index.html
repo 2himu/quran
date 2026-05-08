@@ -580,7 +580,7 @@ function ayahHtml(a, mode, i=0) {
       bn2 = `<div class="a-bangla" style="${bnS}">${t}</div>`;
     }
   }
-  return `<div class="ayah-card" style="animation-delay:${delay}ms" ondblclick="showTafsir('${a.verse_key}')" onmousedown="startPress('${a.verse_key}')" onmouseup="cancelPress()" onmouseleave="cancelPress()" ontouchstart="startPress('${a.verse_key}')" ontouchend="cancelPress()">
+  return `<div class="ayah-card" style="animation-delay:${delay}ms" ondblclick="showTafsir('${a.verse_key}')" >
     <div class="a-num-wrap"><div class="a-num">${toBn(a.ayah_number)}</div><div class="a-dot"></div></div>
     <div class="a-body">${ar}${bn2}<div class="a-key">আয়াত ${toBn(a.verse_key)}${!compareMode ? ' · ' + TRANSLATIONS[currentTranslation].label : ''}</div></div>
   </div>`;
@@ -651,7 +651,7 @@ function doSearch(q) {
   const results=Object.values(AYAHS).filter(a=>{
     const bn=BN[a.verse_key]?BN[a.verse_key].t:'';
     return bn.toLowerCase().includes(ql)||a.text.includes(q)||a.verse_key.includes(q);
-  }).slice(0,150);
+  }).slice(0,500);
   const esc=q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
   const re=new RegExp(esc,'gi');
   const hi=t=>t.replace(re,m=>`<mark>${m}</mark>`);
@@ -673,16 +673,6 @@ function doSearch(q) {
       }).join('')}
     </div>`;
   document.getElementById('mainEl').scrollTop=0;
-}
-
-let _pressTimer = null;
-
-function startPress(verseKey) {
-  _pressTimer = setTimeout(() => showCopyPopup(verseKey), 600);
-}
-
-function cancelPress() {
-  clearTimeout(_pressTimer);
 }
 
 function showCopyPopup(verseKey) {
