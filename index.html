@@ -309,8 +309,8 @@ mark { background: var(--gold-l); color: var(--gold); border-radius: 3px; paddin
     <input class="search-input" id="gSearch" type="text" placeholder="বাংলায় খুঁজুন… রহমত, নামাজ, জান্নাত, সবর">
   </div>
   <div class="header-right">
-    <button class="btn-sm" id="settingsBtn" onclick="toggleSettings()" style="font-size:18px;padding:6px 12px;">🔧</button>
-    
+    <button class="btn-sm" id="lockBtn" onclick="toggleLock()" style="font-size:18px;padding:6px 12px;display:none;">🔓</button>
+	<button class="btn-sm" id="settingsBtn" onclick="toggleSettings()" style="font-size:18px;padding:6px 12px;">🔧</button>
   </div>
 </div>
 
@@ -581,7 +581,12 @@ function ayahHtml(a, mode, i=0) {
     }
   }
   return `<div class="ayah-card" style="animation-delay:${delay}ms" ondblclick="showTafsir('${a.verse_key}')" >
-    <div class="a-num-wrap"><div class="a-num">${toBn(a.ayah_number)}</div><div class="a-dot"></div></div>
+    <div class="a-num-wrap">
+  <div class="a-num">${toBn(a.ayah_number)}</div>
+  <div class="a-dot"></div>
+  <div onclick="showCopyPopup('${a.verse_key}')" style="cursor:pointer;color:var(--ink4);font-size:14px;margin-top:4px;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink4)'">📋</div>
+  <div onclick="showTafsir('${a.verse_key}')" style="cursor:pointer;color:var(--ink4);font-size:14px;margin-top:4px;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink4)'">📖</div>
+</div>
     <div class="a-body">${ar}${bn2}<div class="a-key">আয়াত ${toBn(a.verse_key)}${!compareMode ? ' · ' + TRANSLATIONS[currentTranslation].label : ''}</div></div>
   </div>`;
 }
@@ -631,11 +636,23 @@ function setJuzView(mode,btn,num) {
   document.getElementById('ayahList').innerHTML=ayahs.map((a,i)=>ayahHtml(a,mode,i)).join('');
 }
 
+let lockMode = false;
+
+function toggleLock() {
+  lockMode = !lockMode;
+  document.getElementById('lockBtn').textContent = lockMode ? '🔒' : '🔓';
+  document.getElementById('lockBtn').classList.toggle('on', lockMode);
+  document.getElementById('mainEl').style.pointerEvents = lockMode ? 'none' : '';
+  document.getElementById('mainEl').style.overflowY = lockMode ? 'scroll' : '';
+}
+
 function toggleReading() {
   readingMode=!readingMode;
   document.getElementById('layout').classList.toggle('reading-mode',readingMode);
   document.getElementById('readBtn').classList.toggle('on',readingMode);
   document.getElementById('readBtn').textContent=readingMode?'☰':'📖';
+  document.getElementById('lockBtn').style.display = readingMode ? 'inline-flex' : 'none';
+  if(!readingMode && lockMode) toggleLock();
 }
 
 let searchTimer;
@@ -1112,7 +1129,7 @@ function resetFonts(){
       <div style="font-size:13px;font-weight:600;color:var(--gold);" id="tafsirLabel"></div>
       <div style="font-size:11px;color:var(--ink3);margin-top:2px;" id="tafsirVerse"></div>
     </div>
-    <button onclick="closeTafsir()" style="border:none;background:none;cursor:pointer;font-size:20px;color:var(--ink3);line-height:1;">✕</button>
+    <button onclick="closeTafsir()" style="border:none;background:none;cursor:pointer;font-size:24px;color:var(--ink3);line-height:1;">✕</button>
   </div>
   <div id="tafsirBody" style="overflow-y:auto;padding:20px 24px;font-size:14px;line-height:2;color:var(--ink2);"></div>
 </div>
