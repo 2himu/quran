@@ -301,21 +301,16 @@ mark { background: var(--gold-l); color: var(--gold); border-radius: 3px; paddin
 <body>
 
 <div class="header">
-  <div class="logo">
-    <div class="logo-emblem">ق</div>
-    <div class="logo-text-wrap">
-      <div class="logo-ar">Al-Qur'an</div>
-      <div class="logo-bn">কোরআন মাজীদ</div>
-    </div>
+  <div>
+   <button class="btn-sm" id="readBtn" onclick="toggleReading()" style="font-size:18px;padding:6px 12px;">📖</button>
   </div>
   <div class="search-wrap">
     <span class="s-icon">🔍</span>
     <input class="search-input" id="gSearch" type="text" placeholder="বাংলায় খুঁজুন… রহমত, নামাজ, জান্নাত, সবর">
   </div>
   <div class="header-right">
-    <button class="btn-sm" id="readBtn" onclick="toggleReading()">📖 রিডিং মোড</button>
-    <button class="btn-sm" id="settingsBtn" onclick="toggleSettings()">⚙ সেটিংস</button>
-    <div class="stats" id="statsEl">লোড হচ্ছে…</div>
+    <button class="btn-sm" id="settingsBtn" onclick="toggleSettings()" style="font-size:18px;padding:6px 12px;">🔧</button>
+    
   </div>
 </div>
 
@@ -423,6 +418,15 @@ function bn(n) {
   return String(n).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]);
 }
 
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:8px 20px;border-radius:20px;font-size:13px;z-index:9999;opacity:0;transition:opacity 0.2s;';
+  document.body.appendChild(t);
+  setTimeout(() => t.style.opacity = '1', 10);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2000);
+}
+
 async function loadAll() {
   try {
     const [s,a,j,b] = await Promise.all([
@@ -437,7 +441,7 @@ async function loadAll() {
       if(!ayahBySurah[a.surah_number]) ayahBySurah[a.surah_number]=[];
       ayahBySurah[a.surah_number].push(a);
     });
-    document.getElementById('statsEl').innerHTML='৬২৩৬ আয়াত<br>১১৪ সূরা · ৩০ পারা';
+    
     renderSideList(Object.values(SURAHS));
     showEmpty();
   } catch(e) {
@@ -576,7 +580,7 @@ function ayahHtml(a, mode, i=0) {
       bn2 = `<div class="a-bangla" style="${bnS}">${t}</div>`;
     }
   }
-  return `<div class="ayah-card" style="animation-delay:${delay}ms" ondblclick="showTafsir('${a.verse_key}')">
+  return `<div class="ayah-card" style="animation-delay:${delay}ms" ondblclick="showTafsir('${a.verse_key}')" onmousedown="startPress('${a.verse_key}')" onmouseup="cancelPress()" onmouseleave="cancelPress()" ontouchstart="startPress('${a.verse_key}')" ontouchend="cancelPress()">
     <div class="a-num-wrap"><div class="a-num">${toBn(a.ayah_number)}</div><div class="a-dot"></div></div>
     <div class="a-body">${ar}${bn2}<div class="a-key">আয়াত ${toBn(a.verse_key)}${!compareMode ? ' · ' + TRANSLATIONS[currentTranslation].label : ''}</div></div>
   </div>`;
@@ -631,7 +635,7 @@ function toggleReading() {
   readingMode=!readingMode;
   document.getElementById('layout').classList.toggle('reading-mode',readingMode);
   document.getElementById('readBtn').classList.toggle('on',readingMode);
-  document.getElementById('readBtn').textContent=readingMode?'✕ নরমাল':'📖 রিডিং মোড';
+  document.getElementById('readBtn').textContent=readingMode?'☰':'📖';
 }
 
 let searchTimer;
@@ -671,6 +675,77 @@ function doSearch(q) {
   document.getElementById('mainEl').scrollTop=0;
 }
 
+let _pressTimer = null;
+
+function startPress(verseKey) {
+  _pressTimer = setTimeout(() => showCopyPopup(verseKey), 600);
+}
+
+function cancelPress() {
+  clearTimeout(_pressTimer);
+}
+
+function showCopyPopup(verseKey) {
+  const [sid] = verseKey.split(':');
+  const surahName = SURAH_BN[parseInt(sid)] || '';
+  const a = Object.values(AYAHS).find(x => x.verse_key === verseKey);
+  const ar = a ? a.text : '';
+  const bn = BN[verseKey] ? BN[verseKey].t : '';
+
+  document.getElementById('copyOverlay').style.display = 'block';
+  document.getElementById('copyPanel').style.display = 'flex';
+  document.getElementById('copyTitle').textContent = surahName + ' · আয়াত ' + toBn(verseKey);
+  document.getElementById('copyPanel').dataset.verseKey = verseKey;
+  document.getElementById('copyPanel').dataset.ar = ar;
+  document.getElementById('copyPanel').dataset.bn = bn;
+  document.getElementById('copyPanel').dataset.surahName = surahName;
+}
+
+function closeCopyPopup() {
+  document.getElementById('copyOverlay').style.display = 'none';
+  document.getElementById('copyPanel').style.display = 'none';
+}
+
+function doCopy(type) {
+  const p = document.getElementById('copyPanel');
+  const ar = '\u200F' + p.dataset.ar.replace(/[\u06DD\u0660-\u0669\u06F0-\u06F9]+/g, '').trim() + '\u200F';
+  const bn = p.dataset.bn;
+  const surahName = p.dataset.surahName;
+  const verseKey = p.dataset.verseKey;
+  const translationLabel = TRANSLATIONS[currentTranslation].label;
+  let text = '';
+
+  if(type === 'ar') {
+    text = ar;
+  } else if(type === 'bn') {
+    if(compareMode && activeTranslations.size > 1) {
+      text = [...activeTranslations].map(key => {
+        const t = window._bnCache[key] ? window._bnCache[key][verseKey]?.t : '';
+        return TRANSLATIONS[key].label + ':\n' + (t || '');
+      }).join('\n\n');
+    } else {
+      text = bn;
+    }
+  } else if(type === 'arbn') {
+    text = ar + '\n' + bn;
+  } else if(type === 'full') {
+    if(compareMode && activeTranslations.size > 1) {
+      const translations = [...activeTranslations].map(key => {
+        const t = window._bnCache[key] ? window._bnCache[key][verseKey]?.t : '';
+        return TRANSLATIONS[key].label + ':\n' + (t || '');
+      }).join('\n\n');
+      text = surahName + ' · আয়াত ' + toBn(verseKey) + '\n\n' + ar + '\n\n' + translations;
+    } else {
+      text = surahName + ' · আয়াত ' + toBn(verseKey) + '\n\n' + ar + '\n\n' + '【' + translationLabel + '】\n' + bn;
+    }
+  }
+
+  navigator.clipboard.writeText(text).then(() => {
+    closeCopyPopup();
+    showToast('কপি হয়েছে ✓');
+  });
+}
+
 loadAll();
 
 // ── Settings ──
@@ -682,17 +757,35 @@ function toggleSettings(){
   const o=document.getElementById('settingsOverlay');
   const b=document.getElementById('settingsBtn');
   const show = p.style.display==='none' || p.style.display==='';
-  p.style.display = show?'flex':'none';
+  if(show){
+    p.style.display='flex';
+    p.style.transform='translateX(100%)';
+    setTimeout(()=>p.style.transition='transform 0.25s cubic-bezier(.4,0,.2,1)', 10);
+    setTimeout(()=>p.style.transform='translateX(0)', 20);
+  } else {
+    p.style.transform='translateX(100%)';
+    setTimeout(()=>{p.style.display='none';p.style.transition='';}, 250);
+  }
   o.style.display = show?'block':'none';
   b.classList.toggle('on', show);
 }
 
 function toggleSection(id){
-  const el=document.getElementById(id);
-  const arrow=document.getElementById(id+'Arrow');
-  const open=el.style.display==='none';
-  el.style.display=open?'block':'none';
-  if(arrow) arrow.style.transform=open?'rotate(180deg)':'rotate(0deg)';
+  const sections = ['transSection', 'tafsirSection', 'fontSection'];
+  const arrows = ['transSectionArrow', 'tafsirSectionArrow', 'fontSectionArrow'];
+  
+  sections.forEach((s, i) => {
+    const el = document.getElementById(s);
+    const arrow = document.getElementById(arrows[i]);
+    if(s === id) {
+      const open = el.style.display === 'none';
+      el.style.display = open ? 'block' : 'none';
+      if(arrow) arrow.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
+    } else {
+      el.style.display = 'none';
+      if(arrow) arrow.style.transform = 'rotate(0deg)';
+    }
+  });
 }
 
 function toggleCompare() {
@@ -872,13 +965,14 @@ function resetFonts(){
 <div id="settingsOverlay" onclick="toggleSettings()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.28);z-index:998;"></div>
 
 <!-- Settings Panel -->
-<div id="settingsPanel" style="display:none;position:fixed;top:68px;right:20px;width:340px;max-height:calc(100vh - 88px);background:var(--warm1);border:1px solid var(--border);border-radius:14px;z-index:999;overflow:hidden;flex-direction:column;">
+<div id="settingsPanel" style="display:none;position:fixed;top:0;right:0;width:340px;height:100vh;background:var(--warm1);border-left:1px solid var(--border);border-radius:0;z-index:999;overflow:hidden;flex-direction:column;">
   <div style="padding:13px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
-    <span style="font-size:13px;font-weight:600;color:var(--ink);">⚙ সেটিংস</span>
+    <span style="font-size:13px;font-weight:600;color:var(--ink);">🔧 সেটিংস</span>
     <button onclick="toggleSettings()" style="border:none;background:none;cursor:pointer;font-size:18px;color:var(--ink3);line-height:1;">✕</button>
   </div>
-  <div style="overflow-y:auto;flex:1;">
-    <div onclick="toggleSection('transSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;">
+  <div style="overflow-y:auto;flex:1;padding:12px;display:flex;flex-direction:column;gap:10px;">
+  <div style="border:1px solid var(--border);border-radius:10px;overflow:visible;">
+    <div onclick="toggleSection('transSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;background:var(--cream2);">
       <span>📖 বাংলা অনুবাদ</span>
       <span id="transSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
     </div>
@@ -912,7 +1006,9 @@ function resetFonts(){
         </div>
       </div>
     </div>
-    <div onclick="toggleSection('tafsirSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;">
+	</div>
+	<div style="border:1px solid var(--border);border-radius:10px;overflow:visible;">
+    <div onclick="toggleSection('tafsirSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;background:var(--cream2);">
       <span>📚 তাফসীর</span>
       <span id="tafsirSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
     </div>
@@ -940,7 +1036,9 @@ function resetFonts(){
         </div>
       </div>
     </div>
-    <div onclick="toggleSection('fontSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;">
+	</div>
+	<div style="border:1px solid var(--border);border-radius:10px;overflow:visible;">
+    <div onclick="toggleSection('fontSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;background:var(--cream2);">
       <span>🔤 ফন্ট সেটিংস</span>
       <span id="fontSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
     </div>
@@ -1006,6 +1104,7 @@ function resetFonts(){
         <div id="uiPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'KoHo',sans-serif;font-size:14px;">সূরা আল-বাকারা · আয়াত ২:১৫৩ · মক্কী</div>
       </div>
     </div>
+	</div>
   </div>
   <div style="padding:12px 18px;display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--border);flex-shrink:0;">
     <button onclick="resetFonts()" style="padding:5px 14px;font-size:12px;border:1px solid var(--border2);border-radius:16px;background:var(--warm1);color:var(--ink3);cursor:pointer;font-family:'KoHo',sans-serif;">ডিফল্ট</button>
@@ -1026,6 +1125,23 @@ function resetFonts(){
     <button onclick="closeTafsir()" style="border:none;background:none;cursor:pointer;font-size:20px;color:var(--ink3);line-height:1;">✕</button>
   </div>
   <div id="tafsirBody" style="overflow-y:auto;padding:20px 24px;font-size:14px;line-height:2;color:var(--ink2);"></div>
+</div>
+
+<!-- Copy Overlay -->
+<div id="copyOverlay" onclick="closeCopyPopup()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1002;"></div>
+
+<!-- Copy Panel -->
+<div id="copyPanel" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--warm1);border-radius:16px 16px 0 0;z-index:1003;flex-direction:column;overflow:hidden;padding-bottom:20px;">
+  <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+    <span id="copyTitle" style="font-size:13px;font-weight:600;color:var(--ink);"></span>
+    <button onclick="closeCopyPopup()" style="border:none;background:none;cursor:pointer;font-size:20px;color:var(--ink3);line-height:1;">✕</button>
+  </div>
+  <div style="padding:8px 0;">
+    <div onclick="doCopy('ar')" style="padding:14px 20px;cursor:pointer;font-size:13.5px;color:var(--ink);display:flex;align-items:center;gap:12px;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">📋 শুধু আরবি</div>
+    <div id="copyBnBtn" onclick="doCopy('bn')" style="padding:14px 20px;cursor:pointer;font-size:13.5px;color:var(--ink);display:flex;align-items:center;gap:12px;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">📋 শুধু বাংলা</div>
+    <div onclick="doCopy('arbn')" style="padding:14px 20px;cursor:pointer;font-size:13.5px;color:var(--ink);display:flex;align-items:center;gap:12px;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">📋 আরবি + বাংলা</div>
+    <div onclick="doCopy('full')" style="padding:14px 20px;cursor:pointer;font-size:13.5px;color:var(--ink);display:flex;align-items:center;gap:12px;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">📋 সম্পূর্ণ</div>
+  </div>
 </div>
 
 <style>
