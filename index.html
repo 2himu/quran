@@ -980,7 +980,7 @@ function resetFonts(){
 <div id="settingsOverlay" onclick="toggleSettings()" style="display:none;position:fixed;inset:0;background:transparent;z-index:998;"></div>
 
 <!-- Settings Panel -->
-<div id="settingsPanel" style="display:none;position:fixed;top:0;right:0;width:340px;height:100vh;background:var(--warm1);border-left:1px solid var(--border);border-radius:0;z-index:999;overflow:hidden;flex-direction:column;">
+<div id="settingsPanel" style="display:none;position:fixed;top:0;right:0;width:340px;height:100%;min-height:100vh;background:var(--warm1);border-left:1px solid var(--border);border-radius:0;z-index:999;overflow:hidden;flex-direction:column;">
   <div style="padding:13px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
     <span style="font-size:13px;font-weight:600;color:var(--ink);">🔧 সেটিংস</span>
     <button onclick="toggleSettings()" style="border:none;background:none;cursor:pointer;font-size:24px;color:var(--ink3);line-height:1;">✕</button>
