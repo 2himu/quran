@@ -715,11 +715,15 @@ function showCopyPopup(verseKey) {
   document.getElementById('copyPanel').dataset.ar = ar;
   document.getElementById('copyPanel').dataset.bn = bn;
   document.getElementById('copyPanel').dataset.surahName = surahName;
+	setTimeout(()=>{
+  document.addEventListener('touchend', outsideCopyTouch);
+}, 300);
 }
 
 function closeCopyPopup() {
   document.getElementById('copyOverlay').style.display = 'none';
   document.getElementById('copyPanel').style.display = 'none';
+  document.removeEventListener('touchend', outsideCopyTouch);
 }
 
 function doCopy(type) {
@@ -796,7 +800,12 @@ function outsideTouch(e) {
     toggleSettings();
   }
 }
-
+function outsideCopyTouch(e) {
+  const p = document.getElementById('copyPanel');
+  if(!p.contains(e.target)) {
+    closeCopyPopup();
+  }
+}
 function toggleSection(id){
   const sections = ['transSection', 'tafsirSection', 'fontSection'];
   const arrows = ['transSectionArrow', 'tafsirSectionArrow', 'fontSectionArrow'];
