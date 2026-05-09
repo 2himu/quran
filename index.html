@@ -579,7 +579,7 @@ function ayahHtml(a, mode, i=0) {
       bn2 = `<div class="a-bangla" style="${bnS}">${t}</div>`;
     }
   }
-  return `<div class="ayah-card" style="animation-delay:${delay}ms" ondblclick="showTafsir('${a.verse_key}')" >
+  return `<div class="ayah-card" style="animation-delay:${delay}ms" ondblclick="showTafsir('${a.verse_key}')" ontouchend="handleTouch('${a.verse_key}',event)">
     <div class="a-num-wrap">
   <div class="a-num">${toBn(a.ayah_number)}</div>
   <div class="a-dot"></div>
@@ -691,6 +691,15 @@ function doSearch(q) {
   document.getElementById('mainEl').scrollTop=0;
 }
 
+let _lastTouch = {key:'', time:0};
+function handleTouch(verseKey, e) {
+  const now = Date.now();
+  if(_lastTouch.key === verseKey && now - _lastTouch.time < 400) {
+    showTafsir(verseKey);
+  }
+  _lastTouch = {key: verseKey, time: now};
+}
+	
 function showCopyPopup(verseKey) {
   const [sid] = verseKey.split(':');
   const surahName = SURAH_BN[parseInt(sid)] || '';
@@ -977,7 +986,7 @@ function resetFonts(){
 </script>
 
 <!-- Settings Overlay -->
-<div id="settingsOverlay" onclick="toggleSettings()" style="display:none;position:fixed;inset:0;background:transparent;z-index:998;pointer-events:all;"></div>
+<div id="settingsOverlay" onclick="toggleSettings()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.01);z-index:998;"></div>
 
 <!-- Settings Panel -->
 <div id="settingsPanel" style="display:none;position:fixed;top:0;right:0;width:340px;height:100%;min-height:100vh;background:var(--warm1);border-left:1px solid var(--border);border-radius:0;z-index:999;overflow:hidden;flex-direction:column;">
