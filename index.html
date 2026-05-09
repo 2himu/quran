@@ -778,12 +778,23 @@ function toggleSettings(){
     p.style.transform='translateX(100%)';
     setTimeout(()=>p.style.transition='transform 0.25s cubic-bezier(.4,0,.2,1)', 10);
     setTimeout(()=>p.style.transform='translateX(0)', 20);
+    setTimeout(()=>{
+      document.addEventListener('touchend', outsideTouch);
+    }, 300);
   } else {
     p.style.transform='translateX(100%)';
     setTimeout(()=>{p.style.display='none';p.style.transition='';}, 250);
+    document.removeEventListener('touchend', outsideTouch);
   }
   o.style.display = show?'block':'none';
   b.classList.toggle('on', show);
+}
+
+function outsideTouch(e) {
+  const p = document.getElementById('settingsPanel');
+  if(!p.contains(e.target)) {
+    toggleSettings();
+  }
 }
 
 function toggleSection(id){
