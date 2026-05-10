@@ -149,7 +149,6 @@ body {
 .s-info { flex: 1; min-width: 0; }
 .s-name { font-size: 13px; font-weight: 600; color: var(--ink); }
 .s-meta { font-size: 11px; color: var(--ink3); margin-top: 1px; }
-/* বাংলা অর্থ — সাইডবারে */
 .s-meaning { font-size: 10.5px; color: var(--gold); margin-top: 2px; font-style: italic; }
 .s-item.active .s-name { color: var(--gold); }
 .s-ar { font-family: 'Uthmanic'; font-size: 17px; color: var(--ink4); direction: rtl; }
@@ -177,7 +176,6 @@ body {
   font-family: var(--disp); font-size: 26px; font-weight: 600;
   color: var(--ink); letter-spacing: -0.3px; margin-bottom: 4px;
 }
-/* বাংলা অর্থ — হেডারে */
 .surah-hdr-meaning {
   font-family: var(--disp); font-size: 15px;
   color: var(--gold); font-style: italic;
@@ -202,7 +200,7 @@ body {
 .ctabs {
   display: flex; gap: 4px; padding: 10px 52px;
   border-bottom: 1px solid var(--border); background: var(--warm1);
-  position: sticky; top: 0; z-index: 10;
+  position: sticky; top: 0; z-index: 10; flex-wrap: wrap;
 }
 .ctab {
   padding: 5px 14px; font-size: 12.5px; font-weight: 500;
@@ -211,7 +209,8 @@ body {
   border: 1px solid transparent; background: transparent; letter-spacing: 0.2px;
 }
 .ctab.active { background: var(--gold); color: #fff; border-color: var(--gold); }
-.ctab:hover:not(.active) { background: var(--cream); color: var(--ink2); border-color: var(--border); }
+.ctab.on     { background: var(--gold); color: #fff; border-color: var(--gold); }
+.ctab:hover:not(.active):not(.on) { background: var(--cream); color: var(--ink2); border-color: var(--border); }
 
 /* AYAH LIST */
 .ayah-list { padding: 0 52px 80px; max-width: 100%; margin: 0 auto; width: 100%; }
@@ -248,6 +247,31 @@ body {
 }
 .a-key::before { content: ''; display: inline-block; width: 12px; height: 1px; background: var(--border2); }
 
+/* INTERLINEAR */
+.interlinear-wrap {
+  direction: rtl; text-align: right;
+  margin-bottom: 14px; padding: 8px 0; line-height: 1;
+}
+.iw-token {
+  display: inline-flex; flex-direction: column; align-items: center;
+  gap: 4px; cursor: default; margin: 6px 0 6px 12px; vertical-align: bottom;
+}
+/* FIX ৩: --iw-ar-size CSS variable সঠিকভাবে apply */
+.iw-ar {
+  font-family: 'Uthmanic', serif;
+  font-size: var(--iw-ar-size, 26px); /* ✅ variable কাজ করবে */
+  color: var(--ink); line-height: 1.7; direction: rtl;
+}
+.iw-bn {
+  font-size: 10.5px; color: var(--gold); font-weight: 500;
+  line-height: 1.3; text-align: center; direction: ltr;
+  font-family: 'HindSiliguri', sans-serif;
+  border-top: 1px dashed var(--border); padding-top: 3px;
+  white-space: nowrap; max-width: 90px;
+}
+.iw-token:hover .iw-ar { color: var(--gold); }
+.iw-token:hover .iw-bn { color: var(--ink2); }
+
 /* SEARCH */
 .search-section { padding: 24px 52px 80px; max-width: 880px; margin: 0 auto; width: 100%; }
 .search-hdr {
@@ -256,10 +280,7 @@ body {
   display: flex; align-items: center; gap: 8px;
 }
 .search-hdr-q { font-family: var(--disp); font-size: 17px; color: var(--ink); font-style: italic; }
-.search-hit {
-  padding: 22px 0; border-bottom: 1px solid var(--border);
-  cursor: pointer; transition: all 0.15s;
-}
+.search-hit { padding: 22px 0; border-bottom: 1px solid var(--border); cursor: pointer; transition: all 0.15s; }
 .search-hit:hover { background: var(--gold-ll); padding: 22px 14px; margin: 0 -14px; border-radius: 10px; border-color: transparent; }
 .hit-surah { font-size: 11px; color: var(--gold); margin-bottom: 10px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; }
 mark { background: var(--gold-l); color: var(--gold); border-radius: 3px; padding: 1px 3px; font-style: normal; }
@@ -289,56 +310,60 @@ mark { background: var(--gold-l); color: var(--gold); border-radius: 3px; paddin
 .reading-mode .a-arabic { font-size: 36px; }
 .reading-mode .a-bangla { font-size: 16px; }
 
-/* ── TAJWEED COLORS ── */
+/* TAJWEED */
 body.tajweed-on rule { display: inline; border-radius: 2px; }
-
-/* গুন্নাহ গ্রুপ — সবুজের শেড */
-body.tajweed-on rule.ghunnah           { color: #0d6e3a; } /* গাঢ় সবুজ */
-body.tajweed-on rule.idgham_ghunnah    { color: #1a9a55; } /* মাঝারি সবুজ */
-body.tajweed-on rule.ikhafa            { color: #2db870; } /* হালকা সবুজ */
-body.tajweed-on rule.ikhafa_shafawi    { color: #0a8f5c; } /* নীলাভ সবুজ */
-
-/* ইকলাব — গোলাপি/ম্যাজেন্টা */
-body.tajweed-on rule.iqlab             { color: #c0197a; }
-
-/* ইদগাম গ্রুপ — বেগুনির শেড */
-body.tajweed-on rule.idgham_wo_ghunnah    { color: #5b21b6; } /* গাঢ় বেগুনি */
-body.tajweed-on rule.idgham_mutajanisayn  { color: #7c3aed; } /* মাঝারি বেগুনি */
-body.tajweed-on rule.idgham_mutaqaribayn  { color: #9d5cf0; } /* হালকা বেগুনি */
-body.tajweed-on rule.idgham_shafawi       { color: #b97ef5; } /* সবচেয়ে হালকা বেগুনি */
-
-/* মাদ্দ — নীল */
+body.tajweed-on rule.ghunnah              { color: #0d6e3a; }
+body.tajweed-on rule.idgham_ghunnah       { color: #1a9a55; }
+body.tajweed-on rule.ikhafa               { color: #2db870; }
+body.tajweed-on rule.ikhafa_shafawi       { color: #0a8f5c; }
+body.tajweed-on rule.iqlab                { color: #c0197a; }
+body.tajweed-on rule.idgham_wo_ghunnah    { color: #5b21b6; }
+body.tajweed-on rule.idgham_mutajanisayn  { color: #7c3aed; }
+body.tajweed-on rule.idgham_mutaqaribayn  { color: #9d5cf0; }
+body.tajweed-on rule.idgham_shafawi       { color: #b97ef5; }
 body.tajweed-on rule.madda_normal            { color: #1d6fa4; }
 body.tajweed-on rule.madda_permissible       { color: #1d6fa4; }
 body.tajweed-on rule.madda_necessary         { color: #0d47a1; font-weight: 700; }
-body.tajweed-on rule.madda_obligatory_mottasel  { color: #0277bd; }
-body.tajweed-on rule.madda_obligatory_monfasel  { color: #0288d1; }
-
-/* কালকালাহ — লাল */
-body.tajweed-on rule.qalaqah           { color: #c62828; }
-
-/* লাম শামসিয়া — কমলা-বাদামি */
-body.tajweed-on rule.laam_shamsiyah    { color: #b36200; }
-
-/* হামযায়ে ওয়াসল — ধূসর (subtly marked) */
-body.tajweed-on rule.ham_wasl          { color: #888; }
-
-/* নীরব/সাইলেন্ট — হালকা ধূসর */
-body.tajweed-on rule.slnt              { color: #aaa; }
+body.tajweed-on rule.madda_obligatory_mottasel { color: #0277bd; }
+body.tajweed-on rule.madda_obligatory_monfasel { color: #0288d1; }
+body.tajweed-on rule.qalaqah              { color: #c62828; }
+body.tajweed-on rule.laam_shamsiyah       { color: #b36200; }
+body.tajweed-on rule.ham_wasl             { color: #888; }
+body.tajweed-on rule.slnt                 { color: #aaa; }
 
 /* TAJWEED LEGEND */
 .tajweed-legend {
-  display: none;
-  flex-wrap: wrap;
-  gap: 6px 10px;
-  padding: 10px 14px;
-  background: var(--cream2);
+  display: none; flex-wrap: wrap; gap: 6px 10px;
+  padding: 10px 14px; background: var(--cream2);
   border-bottom: 1px solid var(--border);
   position: sticky; top: 42px; z-index: 9;
 }
 body.tajweed-on .tajweed-legend { display: flex; }
-.tj-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--ink2); white-space: nowrap; }
-.tj-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.tj-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+.sz-btn {
+  width:26px; height:26px; border:1px solid var(--border); border-radius:6px;
+  background:var(--warm1); color:var(--ink2); font-size:15px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  transition:all 0.14s; line-height:1;
+}
+.sz-btn:hover { border-color:var(--gold); color:var(--gold); }
+
+.tj-btn {
+  display:flex; align-items:center; gap:6px;
+  padding:5px 12px; border-radius:20px;
+  border:1px solid var(--border); background:var(--warm1);
+  font-size:12px; color:var(--ink2); cursor:pointer;
+  transition:all 0.15s; white-space:nowrap;
+}
+.tj-btn:hover { border-color:var(--gold); color:var(--gold); }
+
+.ar-word {
+  display: inline; cursor: pointer;
+  border-radius: 4px; padding: 0 1px;
+  transition: color 0.15s, background 0.15s;
+}
+.ar-word:hover { color: var(--gold); background: var(--gold-ll); }
 
 @media (max-width: 900px) {
   .sidebar { width: 240px; }
@@ -350,14 +375,21 @@ body.tajweed-on .tajweed-legend { display: flex; }
 <body>
 
 <div class="header">
-  
+  <!-- FIX ৬: Logo ফিরিয়ে আনা -->
+  <div class="logo">
+    <div class="logo-emblem">ق</div>
+    <div class="logo-text-wrap">
+      <div class="logo-ar">Al-Qur'an</div>
+      <div class="logo-bn">আল-কোরআন</div>
+    </div>
+  </div>
+
   <div class="search-wrap">
     <span class="s-icon">🔍</span>
     <input class="search-input" id="gSearch" type="text" placeholder="বাংলায় খুঁজুন… রহমত, নামাজ, জান্নাত, সবর">
   </div>
   <div class="header-right">
-
-	<button class="btn-sm" id="settingsBtn" onclick="toggleSettings()" style="font-size:18px;padding:6px 12px;">🔧</button>
+    <button class="btn-sm" id="settingsBtn" onclick="toggleSettings()" style="font-size:18px;padding:6px 12px;">🔧</button>
   </div>
 </div>
 
@@ -408,7 +440,6 @@ const SURAH_BN = {
   111:'আল-মাসাদ',112:'আল-ইখলাস',113:'আল-ফালাক',114:'আন-নাস'
 };
 
-// ✅ নতুন: সূরার বাংলা অর্থ
 const SURAH_MEANING = {
   1:'সূচনা / উদ্বোধন',2:'গাভী',3:'ইমরানের পরিবার',4:'নারী',5:'খাবার দস্তরখান',
   6:'গবাদিপশু',7:'উচ্চভূমি',8:'যুদ্ধলব্ধ সম্পদ',9:'তওবা / অনুশোচনা',10:'ইউনুস (আ.)',
@@ -457,12 +488,101 @@ const TAFSIRS = {
 let currentTafsir = 'ibn-kaseer';
 window._tafsirCache = {};
 
-let ayahBySurah={};
-let currentSurah=null, currentTab='surah', viewMode='read', readingMode=false;
-let currentJuz=null;
+let ayahBySurah = {};
+let currentSurah = null, currentTab = 'surah', viewMode = 'read', readingMode = false;
+let currentJuz = null;
+let lockMode = false;
+
+// ── OVERLAY STATE (WBW ও Tajweed — mutually exclusive) ──
+let overlayMode = null;   // null | 'wbw' | 'tajweed'
+let wbwMode     = false;
+let tajweedMode = false;
+
+// ── WORD-BY-WORD ──
+let WBW = {};
+let WBW_LOADING = null;
+
+function loadWBW() {
+  if (Object.keys(WBW).length > 0) return Promise.resolve();
+  if (WBW_LOADING) return WBW_LOADING;
+  WBW_LOADING = fetch('./bangali-word-by-word-translation.json')
+    .then(r => r.json())
+    .then(data => { WBW = data; WBW_LOADING = null; })
+    .catch(() => { showToast('শব্দার্থ ফাইল লোড হয়নি'); WBW_LOADING = null; });
+  return WBW_LOADING;
+}
+
+const WORD_CACHE = {};
+function buildWordCache() {
+  Object.values(AYAHS).forEach(a => {
+    const raw = a.text || '';
+    const cleaned = raw.replace(/[\u06DD\u0660-\u0669\u06F0-\u06F9]+/g, '').trim();
+    WORD_CACHE[a.verse_key] = cleaned.split(/\s+/).filter(Boolean);
+  });
+}
+
+function ayahWords(ayah) {
+  const words = WORD_CACHE[ayah.verse_key] || [];
+  return words.map((word, idx) => {
+    const key = `${ayah.surah_number}:${ayah.ayah_number}:${idx + 1}`;
+    return { word, key, bn: WBW[key] || '' };
+  });
+}
+
+function buildInterlinear(ayah) {
+  const tokens = ayahWords(ayah).map(({word, key, bn}) =>
+    `<span class="iw-token" onclick="showWordPopup(event,\`${key}\`,\`${word}\`)">` +
+    `<span class="iw-ar">${word}</span>` +
+    (bn ? `<span class="iw-bn">${bn}</span>` : '') +
+    `</span>`
+  );
+  return `<div class="interlinear-wrap">${tokens.join('')}</div>`;
+}
+
+function buildClickableArabic(ayah, arS) {
+  if (tajweedMode && TAJWEED[ayah.verse_key]) {
+    return `<div class="a-arabic" style="${arS}">${TAJWEED[ayah.verse_key].text}</div>`;
+  }
+  if (!WORD_CACHE[ayah.verse_key]) {
+    return `<div class="a-arabic" style="${arS}">${ayah.text}</div>`;
+  }
+  const words = WORD_CACHE[ayah.verse_key];
+  const tokens = words.map((word, idx) => {
+    const key = `${ayah.surah_number}:${ayah.ayah_number}:${idx + 1}`;
+    return `<span class="ar-word" onclick="showWordPopup(event,\`${key}\`,\`${word}\`)">${word}</span>`;
+  });
+  return `<div class="a-arabic" style="${arS};cursor:pointer;">${tokens.join(' ')}</div>`;
+}
+
+// ── FIX ১+২: Unified setOverlay — WBW ও Tajweed mutual exclusive ──
+function setOverlay(mode) {
+  overlayMode = (overlayMode === mode) ? null : mode;
+  wbwMode     = (overlayMode === 'wbw');
+  tajweedMode = (overlayMode === 'tajweed');
+
+  document.body.classList.toggle('tajweed-on', tajweedMode);
+
+  // overlay button state আলাদাভাবে sync করা
+  _syncOverlayButtons();
+
+  if (tajweedMode) {
+    loadTajweed().then(() => refreshAyahList());
+  } else if (wbwMode) {
+    loadWBW().then(() => refreshAyahList());
+  } else {
+    refreshAyahList();
+  }
+}
+
+// FIX ১: overlay button sync আলাদা helper — setView() থেকেও call হবে
+function _syncOverlayButtons() {
+  const wbwBtn     = document.getElementById('wbwBtn');
+  const tajweedBtn = document.getElementById('tajweedBtn');
+  if (wbwBtn)     wbwBtn.classList.toggle('on', wbwMode);
+  if (tajweedBtn) tajweedBtn.classList.toggle('on', tajweedMode);
+}
 
 // ── TAJWEED ──
-let tajweedMode = false;
 let TAJWEED = {};
 
 async function loadTajweed() {
@@ -475,67 +595,25 @@ async function loadTajweed() {
   }
 }
 
-function toggleTajweed() {
-  tajweedMode = !tajweedMode;
-  document.body.classList.toggle('tajweed-on', tajweedMode);
-  const btn = document.getElementById('tajweedBtn');
-  btn.classList.toggle('on', tajweedMode);
-  if (tajweedMode) {
-    loadTajweed().then(() => refreshAyahList());
-  } else {
-    refreshAyahList();
-  }
-}
-
 const TJ_GROUPS = {
-  ghunnah: {
-    title: '🟢 গুন্নাহ — নাকের শব্দ',
-    items: [
-      { color:'#0d6e3a', label:'গুন্নাহ' },
-      { color:'#1a9a55', label:'ইদগাম মাআ গুন্নাহ' },
-      { color:'#2db870', label:'ইখফা' },
-      { color:'#0a8f5c', label:'ইখফা শাফাওয়ি' },
-    ]
-  },
-  iqlab: {
-    title: '🩷 ইকলাব — নুন→মিম',
-    items: [{ color:'#c0197a', label:'ইকলাব' }]
-  },
-  idgham: {
-    title: '🟣 ইদগাম — মিলিয়ে পড়া',
-    items: [
-      { color:'#5b21b6', label:'ইদগাম বিলাগুন্নাহ' },
-      { color:'#7c3aed', label:'ইদগাম মুতাজানিসাইন' },
-      { color:'#9d5cf0', label:'ইদগাম মুতাকারিবাইন' },
-      { color:'#b97ef5', label:'ইদগাম শাফাওয়ি' },
-    ]
-  },
-  madd: {
-    title: '🔵 মাদ্দ — টান দেওয়া',
-    items: [
-      { color:'#1d6fa4', label:'মাদ্দ স্বাভাবিক' },
-      { color:'#1d6fa4', label:'মাদ্দ জায়েয' },
-      { color:'#0277bd', label:'মাদ্দ ওয়াজিব মুত্তাসিল' },
-      { color:'#0288d1', label:'মাদ্দ ওয়াজিব মুনফাসিল' },
-      { color:'#0d47a1', label:'মাদ্দ লাযিম' },
-    ]
-  },
-  qalaqah: {
-    title: '🔴 কালকালাহ — ঝাঁকুনি',
-    items: [{ color:'#c62828', label:'কালকালাহ' }]
-  },
-  laam: {
-    title: '🟠 লাম শামসিয়া — লাম লুপ্ত',
-    items: [{ color:'#b36200', label:'লাম শামসিয়া' }]
-  },
-  hamza: {
-    title: '⚫ হামযায়ে ওয়াসল — সংযোগ',
-    items: [{ color:'#888', label:'হামযায়ে ওয়াসল' }]
-  },
-  silent: {
-    title: '🩶 নীরব হরফ — উচ্চারণ নেই',
-    items: [{ color:'#aaa', label:'নীরব হরফ' }]
-  },
+  ghunnah: { title: '🟢 গুন্নাহ — নাকের শব্দ', items: [
+    { color:'#0d6e3a', label:'গুন্নাহ' }, { color:'#1a9a55', label:'ইদগাম মাআ গুন্নাহ' },
+    { color:'#2db870', label:'ইখফা' },    { color:'#0a8f5c', label:'ইখফা শাফাওয়ি' },
+  ]},
+  iqlab:  { title: '🩷 ইকলাব — নুন→মিম', items: [{ color:'#c0197a', label:'ইকলাব' }] },
+  idgham: { title: '🟣 ইদগাম — মিলিয়ে পড়া', items: [
+    { color:'#5b21b6', label:'ইদগাম বিলাগুন্নাহ' }, { color:'#7c3aed', label:'ইদগাম মুতাজানিসাইন' },
+    { color:'#9d5cf0', label:'ইদগাম মুতাকারিবাইন' }, { color:'#b97ef5', label:'ইদগাম শাফাওয়ি' },
+  ]},
+  madd: { title: '🔵 মাদ্দ — টান দেওয়া', items: [
+    { color:'#1d6fa4', label:'মাদ্দ স্বাভাবিক' }, { color:'#1d6fa4', label:'মাদ্দ জায়েয' },
+    { color:'#0277bd', label:'মাদ্দ ওয়াজিব মুত্তাসিল' }, { color:'#0288d1', label:'মাদ্দ ওয়াজিব মুনফাসিল' },
+    { color:'#0d47a1', label:'মাদ্দ লাযিম' },
+  ]},
+  qalaqah: { title: '🔴 কালকালাহ — ঝাঁকুনি', items: [{ color:'#c62828', label:'কালকালাহ' }] },
+  laam:    { title: '🟠 লাম শামসিয়া — লাম লুপ্ত', items: [{ color:'#b36200', label:'লাম শামসিয়া' }] },
+  hamza:   { title: '⚫ হামযায়ে ওয়াসল — সংযোগ', items: [{ color:'#888', label:'হামযায়ে ওয়াসল' }] },
+  silent:  { title: '🩶 নীরব হরফ — উচ্চারণ নেই', items: [{ color:'#aaa', label:'নীরব হরফ' }] },
 };
 
 function tjPopup(key) {
@@ -556,6 +634,52 @@ function closeTjPopup() {
   document.getElementById('tjPopupBox').style.display = 'none';
 }
 
+// ── ctabsHtml: সব state থেকে সঠিক class নিয়ে render ──
+function ctabsHtml() {
+  return `
+    <button class="ctab ${viewMode==='read'?'active':''}"   onclick="setView('read',this)">আরবি + বাংলা</button>
+    <button class="ctab ${viewMode==='arabic'?'active':''}" onclick="setView('arabic',this)">শুধু আরবি</button>
+    <button class="ctab ${viewMode==='bangla'?'active':''}" onclick="setView('bangla',this)">শুধু বাংলা</button>
+    <button class="ctab ${overlayMode==='wbw'?'on':''}" id="wbwBtn"
+      onclick="setOverlay('wbw')" style="font-size:12px;font-weight:600;letter-spacing:0.2px;">শব্দার্থ</button>
+    <button class="ctab ${overlayMode==='tajweed'?'on':''}" id="tajweedBtn"
+      onclick="setOverlay('tajweed')" style="font-family:'Uthmanic',serif;font-size:16px;letter-spacing:1px;font-weight:600;">✨</button>
+    <button style="margin-left:auto;" class="ctab ${readingMode?'on':''}" id="readBtn"
+      onclick="toggleReading()" title="রিডিং মোড">${readingMode?'✕':'📖'}</button>
+    <button class="ctab ${lockMode?'on':''}" id="lockBtn" onclick="toggleLock()"
+      title="টাচ লক" style="display:${readingMode?'inline-flex':'none'};">${lockMode?'🔒':'🔓'}</button>`;
+}
+
+function tajweedLegendHtml() {
+  return `
+  <div class="tajweed-legend" id="tajweedLegend">
+    <div class="tj-btn" onclick="tjPopup('ghunnah')"><span class="tj-dot" style="background:#1a9a55"></span>গুন্নাহ</div>
+    <div class="tj-btn" onclick="tjPopup('iqlab')"><span class="tj-dot" style="background:#c0197a"></span>ইকলাব</div>
+    <div class="tj-btn" onclick="tjPopup('idgham')"><span class="tj-dot" style="background:#7c3aed"></span>ইদগাম</div>
+    <div class="tj-btn" onclick="tjPopup('madd')"><span class="tj-dot" style="background:#1d6fa4"></span>মাদ্দ</div>
+    <div class="tj-btn" onclick="tjPopup('qalaqah')"><span class="tj-dot" style="background:#c62828"></span>কালকালাহ</div>
+    <div class="tj-btn" onclick="tjPopup('laam')"><span class="tj-dot" style="background:#b36200"></span>লাম শামসিয়া</div>
+    <div class="tj-btn" onclick="tjPopup('hamza')"><span class="tj-dot" style="background:#888"></span>হামযায়ে ওয়াসল</div>
+    <div class="tj-btn" onclick="tjPopup('silent')"><span class="tj-dot" style="background:#aaa"></span>নীরব হরফ</div>
+  </div>`;
+}
+
+// tajweed popup — static DOM এ রাখা (ctabs এর বাইরে)
+function _ensureTjPopupDom() {
+  if (document.getElementById('tjOverlay')) return;
+  const div = document.createElement('div');
+  div.innerHTML = `
+    <div id="tjOverlay" onclick="closeTjPopup()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:2000;"></div>
+    <div id="tjPopupBox" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--warm1);border-radius:16px 16px 0 0;z-index:2001;padding:16px 20px 28px;max-height:60vh;overflow-y:auto;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <div id="tjPopupTitle" style="font-size:14px;font-weight:600;color:var(--ink);"></div>
+        <button onclick="closeTjPopup()" style="border:none;background:none;font-size:22px;color:var(--ink3);cursor:pointer;">✕</button>
+      </div>
+      <div id="tjPopupBody"></div>
+    </div>`;
+  document.body.appendChild(div);
+}
+
 function refreshAyahList() {
   const listEl = document.getElementById('ayahList');
   if (!listEl) return;
@@ -571,8 +695,22 @@ function refreshAyahList() {
   }
 }
 
-function bn(n) {
-  return String(n).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+// FIX ৪: loading শেষে readingMode/lockMode reapply
+function _reapplySessionState() {
+  if (readingMode) {
+    document.getElementById('layout').classList.add('reading-mode');
+    document.querySelector('.header').style.display = 'none';
+    const lockBtn = document.getElementById('lockBtn');
+    if (lockBtn) lockBtn.style.display = 'inline-flex';
+  }
+  if (lockMode) {
+    const listEl = document.getElementById('ayahList');
+    if (listEl) listEl.style.pointerEvents = 'none';
+    document.getElementById('mainEl').style.overflow = 'hidden';
+  }
+  // FIX ৫: overlay state reapply
+  document.body.classList.toggle('tajweed-on', tajweedMode);
+  _syncOverlayButtons();
 }
 
 function showToast(msg) {
@@ -593,19 +731,20 @@ async function loadAll() {
       fetch(TRANSLATIONS[currentTranslation].file).then(r=>r.json()),
     ]);
     SURAHS=s; AYAHS=a; JUZ=j; BN=b;
+    buildWordCache();
+    loadWBW();
     window._bnCache = {'taisirul-quran': b};
     Object.values(AYAHS).forEach(a=>{
       if(!ayahBySurah[a.surah_number]) ayahBySurah[a.surah_number]=[];
       ayahBySurah[a.surah_number].push(a);
     });
-    
+    _ensureTjPopupDom();
     renderSideList(Object.values(SURAHS));
     showEmpty();
   } catch(e) {
     document.getElementById('mainEl').innerHTML=`<div class="empty"><div class="empty-ar">القرآن</div><div class="empty-title">ফাইল লোড হয়নি</div><div class="empty-sub">সব JSON ফাইল একই ফোল্ডারে আছে কিনা দেখুন<br>Python server চালু আছে কিনা নিশ্চিত করুন</div></div>`;
   }
 }
-
 
 function showEmpty() {
   document.getElementById('mainEl').innerHTML=`
@@ -622,19 +761,19 @@ function renderSideList(list) {
     <div class="s-item ${currentSurah==s.id?'active':''}" onclick="loadSurah(${s.id})">
       <div class="s-num">${toBn(s.id)}</div>
       <div class="s-info">
-  <div class="s-name">${SURAH_BN[s.id]||s.name_simple}</div>
-  <div class="s-meaning">${SURAH_MEANING[s.id]||''}</div>
-</div>
-<div style="display:flex;flex-direction:column;align-items:flex-end;">
-  <div class="s-ar">${s.name_arabic}</div>
-  <div style="font-size:9px;color:var(--ink3);direction:ltr;text-align:right;margin-top:2px;opacity:0.8;font-style:italic;">${s.revelation_place==='makkah'?'মক্কী':'মাদানী'} · ${toBn(s.verses_count)} আয়াত</div>
-</div>
-	</div>`).join('');
+        <div class="s-name">${SURAH_BN[s.id]||s.name_simple}</div>
+        <div class="s-meaning">${SURAH_MEANING[s.id]||''}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;">
+        <div class="s-ar">${s.name_arabic}</div>
+        <div style="font-size:9px;color:var(--ink3);direction:ltr;text-align:right;margin-top:2px;opacity:0.8;font-style:italic;">${s.revelation_place==='makkah'?'মক্কী':'মাদানী'} · ${toBn(s.verses_count)} আয়াত</div>
+      </div>
+    </div>`).join('');
 }
 
 function filterSide(q) {
-  if(currentTab==='juz'){renderJuzSide(q);return;}
-  if (currentTab === 'nazil') { renderNazilSide(q); return; }
+  if(currentTab==='juz'){ renderJuzSide(q); return; }
+  if(currentTab==='nazil'){ renderNazilSide(q); return; }
   renderSideList(Object.values(SURAHS).filter(s=>
     s.name_simple.toLowerCase().includes(q.toLowerCase())||
     s.name_arabic.includes(q)||String(s.id).includes(q)||
@@ -646,14 +785,14 @@ function switchTab(tab,el) {
   document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
   el.classList.add('active'); currentTab=tab;
   document.getElementById('sideFilter').value='';
-  if(tab ==='surah'){
+  if(tab==='surah'){
     document.getElementById('sideFilter').placeholder='সূরা বা অর্থ দিয়ে খুঁজুন…';
     renderSideList(Object.values(SURAHS));
-  } else if (tab === 'juz') {
+  } else if(tab==='juz'){
     document.getElementById('sideFilter').placeholder='পারা খুঁজুন…';
     renderJuzSide('');
-  } else if (tab === 'nazil') {
-    document.getElementById('sideFilter').placeholder = 'নাযিল ক্রম খুঁজুন…';
+  } else if(tab==='nazil'){
+    document.getElementById('sideFilter').placeholder='নাযিল ক্রম খুঁজুন…';
     renderNazilSide('');
   }
 }
@@ -675,74 +814,45 @@ function renderNazilSide(q) {
     .filter(s => !q || SURAH_BN[s.id]?.includes(q) || String(s.revelation_order).includes(q) || (SURAH_MEANING[s.id]||'').includes(q))
     .sort((a, b) => a.revelation_order - b.revelation_order);
   document.getElementById('sideList').innerHTML = sorted.map(s => `
-    <div class="s-item ${currentSurah == s.id ? 'active' : ''}" onclick="loadSurah(${s.id})">
+    <div class="s-item ${currentSurah==s.id?'active':''}" onclick="loadSurah(${s.id})">
       <div class="s-num">${toBn(s.revelation_order)}</div>
       <div class="s-info">
-  <div class="s-name">${SURAH_BN[s.id]||s.name_simple}</div>
-  <div class="s-meaning">${SURAH_MEANING[s.id]||''}</div>
-</div>
-<div style="display:flex;flex-direction:column;align-items:flex-end;">
-  <div class="s-ar">${s.name_arabic}</div>
-  <div style="font-size:9px;color:var(--ink3);direction:ltr;text-align:right;margin-top:2px;opacity:0.8;font-style:italic;">${s.revelation_place==='makkah'?'মক্কী':'মাদানী'} · ${toBn(s.verses_count)} আয়াত</div>
-</div>
-	</div>`).join('');
+        <div class="s-name">${SURAH_BN[s.id]||s.name_simple}</div>
+        <div class="s-meaning">${SURAH_MEANING[s.id]||''}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;">
+        <div class="s-ar">${s.name_arabic}</div>
+        <div style="font-size:9px;color:var(--ink3);direction:ltr;text-align:right;margin-top:2px;opacity:0.8;font-style:italic;">${s.revelation_place==='makkah'?'মক্কী':'মাদানী'} · ${toBn(s.verses_count)} আয়াত</div>
+      </div>
+    </div>`).join('');
 }
 
 function loadSurah(id) {
-  currentSurah=id;
-  const s=SURAHS[id], ayahs=ayahBySurah[id]||[];
-  if(currentTab === 'nazil') renderNazilSide('');
-else renderSideList(Object.values(SURAHS));
-  const bismillah=(id!==1&&id!==9&&s.bismillah_pre)
-    ?`<div class="bismillah">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ</div>`:'';
+  currentSurah = id;
+  currentJuz = null; // ✅ juz reset
+  const s = SURAHS[id], ayahs = ayahBySurah[id] || [];
+  if(currentTab==='nazil') renderNazilSide('');
+  else renderSideList(Object.values(SURAHS));
+  const bismillah = (id!==1 && id!==9 && s.bismillah_pre)
+    ? `<div class="bismillah">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ</div>` : '';
   const meaning = SURAH_MEANING[id] ? `<div class="surah-hdr-meaning">অর্থ: ${SURAH_MEANING[id]}</div>` : '';
   document.getElementById('mainEl').innerHTML=`
     <div class="surah-hdr">
-      
       <div class="surah-hdr-name">${SURAH_BN[id]||s.name_simple}</div>
       ${meaning}
       <div class="surah-hdr-meta">
         <span class="badge">সূরা ক্রম: ${toBn(id)}</span>
-		<span class="badge">আয়াত: ${toBn(s.verses_count)}</span>
-		<span class="badge">নাযিল ক্রম: ${toBn(s.revelation_order)}</span>
-		<span class="badge gold">${s.revelation_place==='makkah'?'🕋 মক্কায় অবতীর্ণ':'🕌মদীনায় অবতীর্ণ'}</span>
+        <span class="badge">আয়াত: ${toBn(s.verses_count)}</span>
+        <span class="badge">নাযিল ক্রম: ${toBn(s.revelation_order)}</span>
+        <span class="badge gold">${s.revelation_place==='makkah'?'🕋 মক্কায় অবতীর্ণ':'🕌 মদীনায় অবতীর্ণ'}</span>
       </div>
-    </div>${bismillah}
-    <div class="ctabs">
-      <button class="ctab ${viewMode==='read'?'active':''}" onclick="setView('read',this)">আরবি + বাংলা</button>
-      <button class="ctab ${viewMode==='arabic'?'active':''}" onclick="setView('arabic',this)">শুধু আরবি</button>
-      <button class="ctab ${viewMode==='bangla'?'active':''}" onclick="setView('bangla',this)">শুধু বাংলা</button>
-	  <button class="ctab" id="tajweedBtn" onclick="toggleTajweed()" title="তাজওয়ীদ রঙ" style="font-family:'Uthmanic',serif;font-size:16px;letter-spacing:1px;font-weight:600;">✨</button>
-	  
-	  <button style="margin-left:auto;" class="ctab" id="readBtn" onclick="toggleReading()" title="রিডিং মোড">📖</button>
-	  <button class="ctab" id="lockBtn" onclick="toggleLock()" title="টাচ লক" style="display:none;">🔓</button>
-
-
     </div>
-	
-    <div class="tajweed-legend" id="tajweedLegend">
-  <div class="tj-btn" onclick="tjPopup('ghunnah')"><span class="tj-dot" style="background:#1a9a55"></span>গুন্নাহ</div>
-  <div class="tj-btn" onclick="tjPopup('iqlab')"><span class="tj-dot" style="background:#c0197a"></span>ইকলাব</div>
-  <div class="tj-btn" onclick="tjPopup('idgham')"><span class="tj-dot" style="background:#7c3aed"></span>ইদগাম</div>
-  <div class="tj-btn" onclick="tjPopup('madd')"><span class="tj-dot" style="background:#1d6fa4"></span>মাদ্দ</div>
-  <div class="tj-btn" onclick="tjPopup('qalaqah')"><span class="tj-dot" style="background:#c62828"></span>কালকালাহ</div>
-  <div class="tj-btn" onclick="tjPopup('laam')"><span class="tj-dot" style="background:#b36200"></span>লাম শামসিয়া</div>
-  <div class="tj-btn" onclick="tjPopup('hamza')"><span class="tj-dot" style="background:#888"></span>হামযায়ে ওয়াসল</div>
-  <div class="tj-btn" onclick="tjPopup('silent')"><span class="tj-dot" style="background:#aaa"></span>নীরব হরফ</div>
-</div>
-
-<!-- Tajweed Popup -->
-<div id="tjOverlay" onclick="closeTjPopup()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:2000;"></div>
-<div id="tjPopupBox" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--warm1);border-radius:16px 16px 0 0;z-index:2001;padding:16px 20px 28px;max-height:60vh;overflow-y:auto;">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-    <div id="tjPopupTitle" style="font-size:14px;font-weight:600;color:var(--ink);"></div>
-    <button onclick="closeTjPopup()" style="border:none;background:none;font-size:22px;color:var(--ink3);cursor:pointer;">✕</button>
-  </div>
-  <div id="tjPopupBody"></div>
-</div>
-
+    ${bismillah}
+    <div class="ctabs">${ctabsHtml()}</div>
+    ${tajweedLegendHtml()}
     <div class="ayah-list" id="ayahList">${ayahs.map((a,i)=>ayahHtml(a,viewMode,i)).join('')}</div>`;
-  document.getElementById('mainEl').scrollTop=0;
+  document.getElementById('mainEl').scrollTop = 0;
+  _reapplySessionState(); // FIX ৪+৫
 }
 
 function ayahHtml(a, mode, i=0) {
@@ -750,8 +860,18 @@ function ayahHtml(a, mode, i=0) {
   const f = window._appliedFonts || {};
   const arS = f.arF ? `font-family:'${f.arF}',serif;font-size:${f.arSz}px` : '';
   const bnS = f.bnF ? `font-family:'${f.bnF}',sans-serif;font-size:${f.bnSz}px` : '';
-  const arText = (tajweedMode && TAJWEED[a.verse_key]) ? TAJWEED[a.verse_key].text : a.text;
-  const ar = mode!=='bangla' ? `<div class="a-arabic" style="${arS}">${arText}</div>` : '';
+
+  let ar = '';
+  if (mode !== 'bangla') {
+    if (wbwMode) {
+      // FIX ৩: --iw-ar-size CSS variable এখন .iw-ar এ apply হবে
+      const fontSize = f.arSz ? f.arSz : 26;
+      ar = `<div style="--iw-ar-size:${fontSize}px;">${buildInterlinear(a)}</div>`;
+    } else {
+      ar = buildClickableArabic(a, arS);
+    }
+  }
+
   let bn2 = '';
   if(mode !== 'arabic') {
     if(compareMode && activeTranslations.size > 1) {
@@ -767,31 +887,39 @@ function ayahHtml(a, mode, i=0) {
       bn2 = `<div class="a-bangla" style="${bnS}">${t}</div>`;
     }
   }
-  return `<div class="ayah-card" style="animation-delay:${delay}ms" ondblclick="showTafsir('${a.verse_key}')" >
+
+  return `<div class="ayah-card" style="animation-delay:${delay}ms" ondblclick="showTafsir('${a.verse_key}')">
     <div class="a-num-wrap">
-  <div class="a-num">${toBn(a.ayah_number)}</div>
-  <div class="a-dot"></div>
-  <div onclick="showCopyPopup('${a.verse_key}')" style="cursor:pointer;color:var(--ink4);font-size:14px;margin-top:4px;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink4)'">📋</div>
-  <div onclick="showTafsir('${a.verse_key}')" style="cursor:pointer;color:var(--ink4);font-size:14px;margin-top:4px;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink4)'">📖</div>
-</div>
-    <div class="a-body">${ar}${bn2}<div class="a-key">${SURAH_BN[a.surah_number]} ${toBn(a.verse_key)}${mode !== 'arabic' && !compareMode ? ' · ' + TRANSLATIONS[currentTranslation].label : ''}</div></div>
+      <div class="a-num">${toBn(a.ayah_number)}</div>
+      <div class="a-dot"></div>
+      <div onclick="showCopyPopup('${a.verse_key}')" style="cursor:pointer;color:var(--ink4);font-size:14px;margin-top:4px;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink4)'">📋</div>
+      <div onclick="showTafsir('${a.verse_key}')" style="cursor:pointer;color:var(--ink4);font-size:14px;margin-top:4px;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink4)'">📖</div>
+    </div>
+    <div class="a-body">${ar}${bn2}
+      <div class="a-key">${SURAH_BN[a.surah_number]} ${toBn(a.verse_key)}${mode!=='arabic'&&!compareMode?' · '+TRANSLATIONS[currentTranslation].label:''}${wbwMode?' · শব্দে শব্দে':''}</div>
+    </div>
   </div>`;
 }
 
-function setView(mode,btn) {
-  viewMode=mode;
-  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('active'));
+// FIX ১+২: setView — view buttons এবং overlay buttons আলাদাভাবে handle
+function setView(mode, btn) {
+  viewMode = mode;
+  // শুধু view buttons থেকে active সরানো, overlay buttons .on ঠিক থাকবে
+  document.querySelectorAll('.ctab:not(#wbwBtn):not(#tajweedBtn):not(#readBtn):not(#lockBtn)')
+    .forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  if(!currentSurah)return;
-  document.getElementById('ayahList').innerHTML=(ayahBySurah[currentSurah]||[]).map((a,i)=>ayahHtml(a,mode,i)).join('');
+  _syncOverlayButtons(); // overlay button state ঠিক রাখা
+  if(!currentSurah && !currentJuz) return;
+  refreshAyahList();
 }
 
 function loadJuz(num) {
-currentJuz = num;
-renderJuzSide('');
-  const j=JUZ[num]; let ayahs=[];
+  currentJuz = num;
+  currentSurah = null; // ✅ surah reset
+  renderJuzSide('');
+  const j = JUZ[num]; let ayahs = [];
   for(const [sid,range] of Object.entries(j.verse_mapping)){
-    const [s,e]=range.split('-').map(Number);
+    const [s,e] = range.split('-').map(Number);
     (ayahBySurah[parseInt(sid)]||[]).filter(a=>a.ayah_number>=s&&a.ayah_number<=e).forEach(a=>ayahs.push(a));
   }
   document.getElementById('mainEl').innerHTML=`
@@ -802,69 +930,58 @@ renderJuzSide('');
         <span class="badge">${toBn(j.first_verse_key)} — ${toBn(j.last_verse_key)}</span>
       </div>
     </div>
-    <div class="ctabs">
-      <button class="ctab active" onclick="setJuzView('read',this,${num})">আরবি + বাংলা</button>
-      <button class="ctab" onclick="setJuzView('arabic',this,${num})">শুধু আরবি</button>
-      <button class="ctab" onclick="setJuzView('bangla',this,${num})">শুধু বাংলা</button>
-	
-	  <button class="ctab" id="tajweedBtn" onclick="toggleTajweed()" title="তাজওয়ীদ রঙ" style="font-family:'Uthmanic',serif;font-size:16px;letter-spacing:1px;font-weight:600;">✨</button>
-	  
-	  <button style="margin-left:auto;" class="ctab" id="readBtn" onclick="toggleReading()" title="রিডিং মোড">📖</button>
-	  <button  class="ctab" id="lockBtn" onclick="toggleLock()" title="টাচ লক" style="display:none;">🔓</button>
-    </div>
-    <div class="ayah-list" id="ayahList">${ayahs.map((a,i)=>ayahHtml(a,'read',i)).join('')}</div>`;
-  document.getElementById('mainEl').scrollTop=0;
+    <div class="ctabs">${ctabsHtml()}</div>
+    ${tajweedLegendHtml()}
+    <div class="ayah-list" id="ayahList">${ayahs.map((a,i)=>ayahHtml(a,viewMode,i)).join('')}</div>`;
+  document.getElementById('mainEl').scrollTop = 0;
+  _reapplySessionState(); // FIX ৪+৫
 }
 
-function setJuzView(mode,btn,num) {
-  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  const j=JUZ[num]; let ayahs=[];
-  for(const [sid,range] of Object.entries(j.verse_mapping)){
-    const [s,e]=range.split('-').map(Number);
-    (ayahBySurah[parseInt(sid)]||[]).filter(a=>a.ayah_number>=s&&a.ayah_number<=e).forEach(a=>ayahs.push(a));
-  }
-  document.getElementById('ayahList').innerHTML=ayahs.map((a,i)=>ayahHtml(a,mode,i)).join('');
-}
-
-
-let lockMode = false;
+// FIX ২: setJuzView আলাদা নেই, setView() এখন juz-ও handle করে refreshAyahList() এর মাধ্যমে ✅
 
 function toggleLock() {
   lockMode = !lockMode;
-  document.getElementById('lockBtn').textContent = lockMode ? '🔒' : '🔓';
-  document.getElementById('lockBtn').classList.toggle('on', lockMode);
-  document.getElementById('ayahList').style.pointerEvents = lockMode ? 'none' : '';
+  const lockBtn = document.getElementById('lockBtn');
+  if(lockBtn) {
+    lockBtn.textContent = lockMode ? '🔒' : '🔓';
+    lockBtn.classList.toggle('on', lockMode);
+  }
+  const listEl = document.getElementById('ayahList');
+  if(listEl) listEl.style.pointerEvents = lockMode ? 'none' : '';
   document.getElementById('mainEl').style.overflow = lockMode ? 'hidden' : 'auto';
 }
 
 function toggleReading() {
-  readingMode=!readingMode;
-  document.getElementById('layout').classList.toggle('reading-mode',readingMode);
-  document.getElementById('readBtn').classList.toggle('on',readingMode);
-  document.getElementById('readBtn').textContent=readingMode?'✕':'📖';
-  document.getElementById('lockBtn').style.display = readingMode ? 'inline-flex' : 'none';
+  readingMode = !readingMode;
+  document.getElementById('layout').classList.toggle('reading-mode', readingMode);
+  const readBtn = document.getElementById('readBtn');
+  if(readBtn) {
+    readBtn.classList.toggle('on', readingMode);
+    readBtn.textContent = readingMode ? '✕' : '📖';
+  }
+  const lockBtn = document.getElementById('lockBtn');
+  if(lockBtn) lockBtn.style.display = readingMode ? 'inline-flex' : 'none';
   if(!readingMode && lockMode) toggleLock();
   document.querySelector('.header').style.display = readingMode ? 'none' : 'flex';
 }
 
 let searchTimer;
-document.getElementById('gSearch').addEventListener('input',function(){
+document.getElementById('gSearch').addEventListener('input', function(){
   clearTimeout(searchTimer);
-  const q=this.value.trim();
-  if(!q){currentSurah?loadSurah(currentSurah):showEmpty();return;}
-  searchTimer=setTimeout(()=>doSearch(q),280);
+  const q = this.value.trim();
+  if(!q){ currentSurah ? loadSurah(currentSurah) : showEmpty(); return; }
+  searchTimer = setTimeout(() => doSearch(q), 280);
 });
 
 function doSearch(q) {
-  const ql=q.toLowerCase();
-  const results=Object.values(AYAHS).filter(a=>{
-    const bn=BN[a.verse_key]?BN[a.verse_key].t:'';
-    return bn.toLowerCase().includes(ql)||a.text.includes(q)||a.verse_key.includes(q);
-  }).slice(0,500);
-  const esc=q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-  const re=new RegExp(esc,'gi');
-  const hi=t=>t.replace(re,m=>`<mark>${m}</mark>`);
+  const ql = q.toLowerCase();
+  const results = Object.values(AYAHS).filter(a => {
+    const b = BN[a.verse_key] ? BN[a.verse_key].t : '';
+    return b.toLowerCase().includes(ql) || a.text.includes(q) || a.verse_key.includes(q);
+  }).slice(0, 500);
+  const esc = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(esc, 'gi');
+  const hi = t => t.replace(re, m => `<mark>${m}</mark>`);
   document.getElementById('mainEl').innerHTML=`
     <div class="search-section">
       <div class="search-hdr">
@@ -872,17 +989,17 @@ function doSearch(q) {
         <span>— ${toBn(results.length)} টি ফলাফল</span>
       </div>
       ${results.map(a=>{
-        const s=SURAHS[a.surah_number];
-        const bn=BN[a.verse_key]?BN[a.verse_key].t:'';
-        const meaning=SURAH_MEANING[a.surah_number]?` (${SURAH_MEANING[a.surah_number]})`:'';
+        const s = SURAHS[a.surah_number];
+        const b = BN[a.verse_key] ? BN[a.verse_key].t : '';
+        const meaning = SURAH_MEANING[a.surah_number] ? ` (${SURAH_MEANING[a.surah_number]})` : '';
         return `<div class="search-hit" onclick="loadSurah(${a.surah_number})">
           <div class="hit-surah">${SURAH_BN[a.surah_number]||s.name_simple}${meaning} — আয়াত ${toBn(a.verse_key)}</div>
           <div class="a-arabic" style="font-size:23px;margin-bottom:12px">${a.text}</div>
-          <div class="a-bangla">${hi(bn)}</div>
+          <div class="a-bangla">${hi(b)}</div>
         </div>`;
       }).join('')}
     </div>`;
-  document.getElementById('mainEl').scrollTop=0;
+  document.getElementById('mainEl').scrollTop = 0;
 }
 
 function showCopyPopup(verseKey) {
@@ -890,14 +1007,13 @@ function showCopyPopup(verseKey) {
   const surahName = SURAH_BN[parseInt(sid)] || '';
   const a = Object.values(AYAHS).find(x => x.verse_key === verseKey);
   const ar = a ? a.text : '';
-  const bn = BN[verseKey] ? BN[verseKey].t : '';
-
+  const b = BN[verseKey] ? BN[verseKey].t : '';
   document.getElementById('copyOverlay').style.display = 'block';
   document.getElementById('copyPanel').style.display = 'flex';
   document.getElementById('copyTitle').textContent = surahName + ' · আয়াত ' + toBn(verseKey);
   document.getElementById('copyPanel').dataset.verseKey = verseKey;
   document.getElementById('copyPanel').dataset.ar = ar;
-  document.getElementById('copyPanel').dataset.bn = bn;
+  document.getElementById('copyPanel').dataset.bn = b;
   document.getElementById('copyPanel').dataset.surahName = surahName;
 }
 
@@ -909,53 +1025,72 @@ function closeCopyPopup() {
 function doCopy(type) {
   const p = document.getElementById('copyPanel');
   const ar = '\u200F' + p.dataset.ar.replace(/[\u06DD\u0660-\u0669\u06F0-\u06F9]+/g, '').trim() + '\u200F';
-  const bn = p.dataset.bn;
+  const b = p.dataset.bn;
   const surahName = p.dataset.surahName;
   const verseKey = p.dataset.verseKey;
   const translationLabel = TRANSLATIONS[currentTranslation].label;
   let text = '';
-
-  if(type === 'ar') {
-    text = ar;
-  } else if(type === 'bn') {
+  if(type==='ar') { text = ar; }
+  else if(type==='bn') {
     if(compareMode && activeTranslations.size > 1) {
       text = [...activeTranslations].map(key => {
         const t = window._bnCache[key] ? window._bnCache[key][verseKey]?.t : '';
-        return TRANSLATIONS[key].label + ':\n' + (t || '');
+        return TRANSLATIONS[key].label + ':\n' + (t||'');
       }).join('\n\n');
-    } else {
-      text = bn;
-    }
-  } else if(type === 'arbn') {
-    text = ar + '\n' + bn;
-  } else if(type === 'full') {
+    } else { text = b; }
+  } else if(type==='arbn') { text = ar + '\n' + b; }
+  else if(type==='full') {
     if(compareMode && activeTranslations.size > 1) {
       const translations = [...activeTranslations].map(key => {
         const t = window._bnCache[key] ? window._bnCache[key][verseKey]?.t : '';
-        return TRANSLATIONS[key].label + ':\n' + (t || '');
+        return TRANSLATIONS[key].label + ':\n' + (t||'');
       }).join('\n\n');
       text = surahName + ' · আয়াত ' + toBn(verseKey) + '\n\n' + ar + '\n\n' + translations;
     } else {
-      text = surahName + ' · আয়াত ' + toBn(verseKey) + '\n\n' + ar + '\n\n' + '【' + translationLabel + '】\n' + bn;
+      text = surahName + ' · আয়াত ' + toBn(verseKey) + '\n\n' + ar + '\n\n' + '【' + translationLabel + '】\n' + b;
     }
   }
-
-  navigator.clipboard.writeText(text).then(() => {
-    closeCopyPopup();
-    showToast('কপি হয়েছে ✓');
-  });
+  navigator.clipboard.writeText(text).then(() => { closeCopyPopup(); showToast('কপি হয়েছে ✓'); });
 }
 
 loadAll();
 
+// ── Word Popup ──
+function showWordPopup(e, key, arWord) {
+  e.stopPropagation();
+  const b = WBW[key] || '';
+  if (!b && !arWord) return;
+  const popup = document.getElementById('wordPopup');
+  document.getElementById('wpAr').textContent = arWord;
+  document.getElementById('wpBn').textContent = b || 'অর্থ পাওয়া যায়নি';
+  const parts = key.split(':');
+  document.getElementById('wpKey').textContent = `শব্দ ${toBn(parts[2])} • সূরা ${toBn(parts[0])} : আয়াত ${toBn(parts[1])}`;
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const pw = 260, ph = 160;
+  let x = e.clientX + 12, y = e.clientY + 12;
+  if (x + pw > vw - 12) x = e.clientX - pw - 12;
+  if (y + ph > vh - 12) y = e.clientY - ph - 12;
+  if (x < 12) x = 12;
+  if (y < 12) y = 12;
+  popup.style.left = x + 'px';
+  popup.style.top  = y + 'px';
+  popup.style.display = 'block';
+  document.getElementById('wordOverlay').style.display = 'block';
+}
+
+function closeWordPopup() {
+  document.getElementById('wordPopup').style.display = 'none';
+  document.getElementById('wordOverlay').style.display = 'none';
+}
+
 // ── Settings ──
-const _sz = {ar:31, bn:14, ui:14, tafsir:14};
+const _sz  = {ar:31, bn:14, ui:14, tafsir:14};
 const _lim = {ar:[22,52], bn:[11,22], ui:[11,20], tafsir:[11,22]};
 
 function toggleSettings(){
-  const p=document.getElementById('settingsPanel');
-  const o=document.getElementById('settingsOverlay');
-  const b=document.getElementById('settingsBtn');
+  const p = document.getElementById('settingsPanel');
+  const o = document.getElementById('settingsOverlay');
+  const b = document.getElementById('settingsBtn');
   const show = p.style.display==='none' || p.style.display==='';
   if(show){
     p.style.display='flex';
@@ -966,19 +1101,18 @@ function toggleSettings(){
     p.style.transform='translateX(100%)';
     setTimeout(()=>{p.style.display='none';p.style.transition='';}, 250);
   }
-  o.style.display = show?'block':'none';
+  o.style.display = show ? 'block' : 'none';
   b.classList.toggle('on', show);
 }
 
 function toggleSection(id){
-  const sections = ['transSection', 'tafsirSection', 'fontSection'];
-  const arrows = ['transSectionArrow', 'tafsirSectionArrow', 'fontSectionArrow'];
-  
-  sections.forEach((s, i) => {
-    const el = document.getElementById(s);
+  const sections = ['transSection','tafsirSection','fontSection'];
+  const arrows   = ['transSectionArrow','tafsirSectionArrow','fontSectionArrow'];
+  sections.forEach((s,i) => {
+    const el    = document.getElementById(s);
     const arrow = document.getElementById(arrows[i]);
-    if(s === id) {
-      const open = el.style.display === 'none';
+    if(s===id){
+      const open = el.style.display==='none';
       el.style.display = open ? 'block' : 'none';
       if(arrow) arrow.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
     } else {
@@ -991,40 +1125,34 @@ function toggleSection(id){
 function toggleCompare() {
   compareMode = !compareMode;
   const toggle = document.getElementById('compareToggle');
-  const thumb = document.getElementById('compareThumb');
+  const thumb  = document.getElementById('compareThumb');
   toggle.style.background = compareMode ? 'var(--gold)' : 'var(--border2)';
   thumb.style.left = compareMode ? '18px' : '2px';
-  if(!compareMode) {
+  if(!compareMode){
     activeTranslations = new Set([currentTranslation]);
     updateRadioUI();
     if(currentSurah) loadSurah(currentSurah);
   }
 }
 
-function selectTranslation(key) {
-  switchTranslation(key).catch(e => console.error(e));
-}
+function selectTranslation(key){ switchTranslation(key).catch(e=>console.error(e)); }
 
 async function switchTranslation(key) {
-  if(compareMode) {
-    if(activeTranslations.has(key)) {
+  if(compareMode){
+    if(activeTranslations.has(key)){
       if(activeTranslations.size===1) return;
       activeTranslations.delete(key);
     } else {
-      if(!window._bnCache[key]) {
-        window._bnCache[key] = await fetch(TRANSLATIONS[key].file).then(r=>r.json());
-      }
+      if(!window._bnCache[key]) window._bnCache[key] = await fetch(TRANSLATIONS[key].file).then(r=>r.json());
       activeTranslations.add(key);
     }
     updateRadioUI();
     if(currentSurah) loadSurah(currentSurah);
   } else {
-    if(key === currentTranslation) return;
+    if(key===currentTranslation) return;
     currentTranslation = key;
     activeTranslations = new Set([key]);
-    if(!window._bnCache[key]) {
-      window._bnCache[key] = await fetch(TRANSLATIONS[key].file).then(r=>r.json());
-    }
+    if(!window._bnCache[key]) window._bnCache[key] = await fetch(TRANSLATIONS[key].file).then(r=>r.json());
     BN = window._bnCache[key];
     updateRadioUI();
     if(currentSurah) loadSurah(currentSurah);
@@ -1034,139 +1162,102 @@ async function switchTranslation(key) {
 function updateRadioUI() {
   document.querySelectorAll('.tr-radio').forEach(r=>{
     const active = activeTranslations.has(r.dataset.key);
-    r.style.background = active ? 'var(--gold)' : 'var(--warm1)';
+    r.style.background  = active ? 'var(--gold)' : 'var(--warm1)';
     r.style.borderColor = active ? 'var(--gold)' : 'var(--border2)';
   });
 }
 
-function selectTafsir(key) {
-  switchTafsir(key).catch(e => console.error(e));
-}
+function selectTafsir(key){ switchTafsir(key).catch(e=>console.error(e)); }
 
 async function switchTafsir(key) {
-  if(key === currentTafsir) return;
+  if(key===currentTafsir) return;
   currentTafsir = key;
   document.querySelectorAll('.tf-radio').forEach(r=>{
-    const active = r.dataset.key === key;
-    r.style.background = active ? 'var(--gold)' : 'var(--warm1)';
+    const active = r.dataset.key===key;
+    r.style.background  = active ? 'var(--gold)' : 'var(--warm1)';
     r.style.borderColor = active ? 'var(--gold)' : 'var(--border2)';
   });
 }
 
 async function showTafsir(verseKey) {
-  if(!window._tafsirCache[currentTafsir]) {
+  if(!window._tafsirCache[currentTafsir])
     window._tafsirCache[currentTafsir] = await fetch(TAFSIRS[currentTafsir].file).then(r=>r.json());
-  }
-  const data = window._tafsirCache[currentTafsir];
-  const text = data[verseKey]?.text || 'এই আয়াতের তাফসীর পাওয়া যায়নি।';
+  const data  = window._tafsirCache[currentTafsir];
+  const text  = data[verseKey]?.text || 'এই আয়াতের তাফসীর পাওয়া যায়নি।';
   const label = TAFSIRS[currentTafsir].label;
-
   const tafsirBodyEl = document.getElementById('tafsirBody');
   document.getElementById('tafsirOverlay').style.display = 'block';
-  document.getElementById('tafsirPanel').style.display = 'flex';
+  document.getElementById('tafsirPanel').style.display   = 'flex';
   document.getElementById('tafsirLabel').textContent = label;
-  const [sid, aid] = verseKey.split(':');
-  
-  const ayahObj = Object.values(AYAHS).find(x => x.verse_key === verseKey);
-const ayahAr = ayahObj ? ayahObj.text : '';
-const ayahBn = BN[verseKey] ? BN[verseKey].t : '';
-document.getElementById('tafsirAyah').innerHTML = `
-  <div style="font-family:'Uthmanic',serif;font-size:22px;direction:rtl;text-align:center;line-height:2;color:var(--ink);margin-bottom:10px;">${ayahAr}</div>
-  <div style="font-size:13px;line-height:1.9;color:var(--ink2);padding:8px 14px;background:var(--cream2);border-radius:8px;text-align:center;">${ayahBn}</div>
-`;
-  
-  document.getElementById('tafsirVerse').textContent = (SURAH_BN[parseInt(sid)] || '') + ' ' + toBn(verseKey);
+  const [sid] = verseKey.split(':');
+  const ayahObj = Object.values(AYAHS).find(x => x.verse_key===verseKey);
+  const ayahAr = ayahObj ? ayahObj.text : '';
+  const ayahBn = BN[verseKey] ? BN[verseKey].t : '';
+  document.getElementById('tafsirAyah').innerHTML = `
+    <div style="font-family:'Uthmanic',serif;font-size:22px;direction:rtl;text-align:center;line-height:2;color:var(--ink);margin-bottom:10px;">${ayahAr}</div>
+    <div style="font-size:13px;line-height:1.9;color:var(--ink2);padding:8px 14px;background:var(--cream2);border-radius:8px;text-align:center;">${ayahBn}</div>`;
+  document.getElementById('tafsirVerse').textContent = (SURAH_BN[parseInt(sid)]||'') + ' ' + toBn(verseKey);
   tafsirBodyEl.innerHTML = text;
-
   const f = window._appliedFonts || {};
-  if(f.tafsirF) {
-    tafsirBodyEl.style.fontFamily = `'${f.tafsirF}', sans-serif`;
-    tafsirBodyEl.style.fontSize = f.tafsirSz + 'px';
-  } else {
-    tafsirBodyEl.style.fontFamily = '';
-    tafsirBodyEl.style.fontSize = '';
-  }
+  if(f.tafsirF){ tafsirBodyEl.style.fontFamily=`'${f.tafsirF}',sans-serif`; tafsirBodyEl.style.fontSize=f.tafsirSz+'px'; }
+  else { tafsirBodyEl.style.fontFamily=''; tafsirBodyEl.style.fontSize=''; }
 }
 
 function closeTafsir() {
   document.getElementById('tafsirOverlay').style.display = 'none';
-  document.getElementById('tafsirPanel').style.display = 'none';
+  document.getElementById('tafsirPanel').style.display   = 'none';
 }
 
 function adjSize(lang, d){
-  const [mn,mx]=_lim[lang];
-  _sz[lang]=Math.min(mx,Math.max(mn,_sz[lang]+d));
-  document.getElementById('cfg_'+lang+'Sz').textContent=_sz[lang];
+  const [mn,mx] = _lim[lang];
+  _sz[lang] = Math.min(mx, Math.max(mn, _sz[lang]+d));
+  document.getElementById('cfg_'+lang+'Sz').textContent = _sz[lang];
   livePreview(lang);
 }
 
 function livePreview(lang){
-  if(lang==='ar'){
-    const f=document.getElementById('cfg_arFont').value;
-    const el=document.getElementById('arPrev');
-    el.style.fontFamily="'"+f+"',serif";
-    el.style.fontSize=_sz.ar+'px';
-  } else if(lang==='bn'){
-    const f=document.getElementById('cfg_bnFont').value;
-    const el=document.getElementById('bnPrev');
-    el.style.fontFamily="'"+f+"',sans-serif";
-    el.style.fontSize=_sz.bn+'px';
-  } else if(lang==='ui'){
-    const f=document.getElementById('cfg_uiFont').value;
-    const el=document.getElementById('uiPrev');
-    el.style.fontFamily="'"+f+"',sans-serif";
-    el.style.fontSize=_sz.ui+'px';
-  } else if(lang==='tafsir'){
-    const f=document.getElementById('cfg_tafsirFont').value;
-    const el=document.getElementById('tafsirPrev');
-    el.style.fontFamily="'"+f+"',sans-serif";
-    el.style.fontSize=_sz.tafsir+'px';
-  }
+  const fonts  = {ar:'cfg_arFont', bn:'cfg_bnFont', ui:'cfg_uiFont', tafsir:'cfg_tafsirFont'};
+  const prevs  = {ar:'arPrev', bn:'bnPrev', ui:'uiPrev', tafsir:'tafsirPrev'};
+  const stacks = {ar:'serif', bn:'sans-serif', ui:'sans-serif', tafsir:'sans-serif'};
+  const f  = document.getElementById(fonts[lang]).value;
+  const el = document.getElementById(prevs[lang]);
+  el.style.fontFamily = `'${f}',${stacks[lang]}`;
+  el.style.fontSize   = _sz[lang]+'px';
 }
 
 function applyFonts(){
-  const arF=document.getElementById('cfg_arFont').value;
-  const bnF=document.getElementById('cfg_bnFont').value;
-  const uiF=document.getElementById('cfg_uiFont').value;
-  const tafsirF=document.getElementById('cfg_tafsirFont').value;
-  window._appliedFonts={arF,bnF,uiF,tafsirF,arSz:_sz.ar,bnSz:_sz.bn,uiSz:_sz.ui,tafsirSz:_sz.tafsir};
-  document.querySelectorAll('.a-arabic').forEach(el=>{
-    el.style.fontFamily="'"+arF+"',serif";
-    el.style.fontSize=_sz.ar+'px';
-  });
-  document.querySelectorAll('.a-bangla').forEach(el=>{
-    el.style.fontFamily="'"+bnF+"',sans-serif";
-    el.style.fontSize=_sz.bn+'px';
-  });
-  document.body.style.fontFamily="'"+uiF+"',sans-serif";
-  const tafsirBodyEl=document.getElementById('tafsirBody');
+  const arF     = document.getElementById('cfg_arFont').value;
+  const bnF     = document.getElementById('cfg_bnFont').value;
+  const uiF     = document.getElementById('cfg_uiFont').value;
+  const tafsirF = document.getElementById('cfg_tafsirFont').value;
+  window._appliedFonts = {arF, bnF, uiF, tafsirF, arSz:_sz.ar, bnSz:_sz.bn, uiSz:_sz.ui, tafsirSz:_sz.tafsir};
+  document.querySelectorAll('.a-arabic').forEach(el=>{el.style.fontFamily=`'${arF}',serif`; el.style.fontSize=_sz.ar+'px';});
+  document.querySelectorAll('.a-bangla').forEach(el=>{el.style.fontFamily=`'${bnF}',sans-serif`; el.style.fontSize=_sz.bn+'px';});
+  document.body.style.fontFamily = `'${uiF}',sans-serif`;
+  const tafsirBodyEl = document.getElementById('tafsirBody');
   if(tafsirBodyEl && document.getElementById('tafsirPanel').style.display==='flex'){
-    tafsirBodyEl.style.fontFamily="'"+tafsirF+"',sans-serif";
-    tafsirBodyEl.style.fontSize=_sz.tafsir+'px';
+    tafsirBodyEl.style.fontFamily = `'${tafsirF}',sans-serif`;
+    tafsirBodyEl.style.fontSize   = _sz.tafsir+'px';
   }
   toggleSettings();
 }
 
 function resetFonts(){
   _sz.ar=31; _sz.bn=14; _sz.ui=14; _sz.tafsir=14;
-  document.getElementById('cfg_arSz').textContent=31;
-  document.getElementById('cfg_bnSz').textContent=14;
-  document.getElementById('cfg_uiSz').textContent=14;
-  document.getElementById('cfg_tafsirSz').textContent=14;
-  document.getElementById('cfg_arFont').selectedIndex=0;
-  document.getElementById('cfg_bnFont').selectedIndex=0;
-  document.getElementById('cfg_uiFont').selectedIndex=0;
-  document.getElementById('cfg_tafsirFont').selectedIndex=0;
-  document.getElementById('arPrev').style.cssText="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'Uthmanic',serif;font-size:31px;direction:rtl;text-align:right;line-height:2.2;";
-  document.getElementById('bnPrev').style.cssText="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;";
-  document.getElementById('uiPrev').style.cssText="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'KoHo',sans-serif;font-size:14px;";
-  document.getElementById('tafsirPrev').style.cssText="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;";
-  window._appliedFonts=null;
-  document.querySelectorAll('.a-arabic').forEach(el=>{el.style.fontFamily='';el.style.fontSize='';});
-  document.querySelectorAll('.a-bangla').forEach(el=>{el.style.fontFamily='';el.style.fontSize='';});
-  document.body.style.fontFamily='';
-  const tafsirBodyEl=document.getElementById('tafsirBody');
-  if(tafsirBodyEl){tafsirBodyEl.style.fontFamily='';tafsirBodyEl.style.fontSize='';}
+  ['ar','bn','ui','tafsir'].forEach(l=>{
+    document.getElementById('cfg_'+l+'Sz').textContent = _sz[l];
+    document.getElementById('cfg_'+l+'Font').selectedIndex = 0;
+  });
+  document.getElementById('arPrev').style.cssText     = "padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'Uthmanic',serif;font-size:31px;direction:rtl;text-align:right;line-height:2.2;";
+  document.getElementById('bnPrev').style.cssText     = "padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;";
+  document.getElementById('uiPrev').style.cssText     = "padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'KoHo',sans-serif;font-size:14px;";
+  document.getElementById('tafsirPrev').style.cssText = "padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;";
+  window._appliedFonts = null;
+  document.querySelectorAll('.a-arabic').forEach(el=>{el.style.fontFamily=''; el.style.fontSize='';});
+  document.querySelectorAll('.a-bangla').forEach(el=>{el.style.fontFamily=''; el.style.fontSize='';});
+  document.body.style.fontFamily = '';
+  const tafsirBodyEl = document.getElementById('tafsirBody');
+  if(tafsirBodyEl){ tafsirBodyEl.style.fontFamily=''; tafsirBodyEl.style.fontSize=''; }
 }
 </script>
 
@@ -1174,211 +1265,202 @@ function resetFonts(){
 <div id="settingsOverlay" onclick="toggleSettings()" style="display:none;position:fixed;inset:0;background:transparent;z-index:998;"></div>
 
 <!-- Settings Panel -->
-<div id="settingsPanel" style="display:none;position:fixed;top:0;right:0;width:340px;height:100vh;background:var(--warm1);border-left:1px solid var(--border);border-radius:0;z-index:999;overflow:hidden;flex-direction:column;">
-
+<div id="settingsPanel" style="display:none;position:fixed;top:0;right:0;width:340px;height:100vh;background:var(--warm1);border-left:1px solid var(--border);z-index:999;overflow:hidden;flex-direction:column;">
   <div style="padding:13px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
     <span style="font-size:13px;font-weight:600;color:var(--ink);">🔧 সেটিংস</span>
     <button onclick="toggleSettings()" style="border:none;background:none;cursor:pointer;font-size:24px;color:var(--ink3);line-height:1;">✕</button>
   </div>
   <div style="overflow-y:auto;flex:1;padding:12px;display:flex;flex-direction:column;gap:10px;">
-  <div style="border:1px solid var(--border);border-radius:10px;overflow:visible;">
-    <div onclick="toggleSection('transSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;background:var(--cream2);">
-      <span>📖 বাংলা অনুবাদ</span>
-      <span id="transSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
-    </div>
-    <div id="transSection" style="display:none;border-bottom:1px solid var(--border);">
-      <div style="padding:10px 18px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);">
-        <span style="font-size:11.5px;color:var(--ink3);">তুলনামূলক মোড</span>
-        <div onclick="toggleCompare()" id="compareToggle" style="width:36px;height:20px;border-radius:10px;background:var(--border2);cursor:pointer;position:relative;transition:background 0.2s;">
-          <div id="compareThumb" style="width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left 0.2s;"></div>
-        </div>
+
+    <!-- অনুবাদ -->
+    <div style="border:1px solid var(--border);border-radius:10px;overflow:visible;">
+      <div onclick="toggleSection('transSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;background:var(--cream2);">
+        <span>📖 বাংলা অনুবাদ</span>
+        <span id="transSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
       </div>
-      <div style="padding:8px 18px 12px;display:flex;flex-direction:column;gap:2px;">
-        <div onclick="selectTranslation('taisirul-quran')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
-          <div class="tr-radio" data-key="taisirul-quran" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--gold);background:var(--gold);flex-shrink:0;"></div>
-          <div><div style="font-size:12.5px;font-weight:600;color:var(--ink);">তাইসীরুল কুরআন</div><div style="font-size:11px;color:var(--ink3);">ডিফল্ট</div></div>
+      <div id="transSection" style="display:none;">
+        <div style="padding:10px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);">
+          <span style="font-size:11.5px;color:var(--ink3);">তুলনামূলক মোড</span>
+          <div onclick="toggleCompare()" id="compareToggle" style="width:36px;height:20px;border-radius:10px;background:var(--border2);cursor:pointer;position:relative;transition:background 0.2s;">
+            <div id="compareThumb" style="width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left 0.2s;"></div>
+          </div>
         </div>
-        <div onclick="selectTranslation('rawai-al-bayan')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
-          <div class="tr-radio" data-key="rawai-al-bayan" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
-          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">রাওয়াইউল বায়ান</div>
-        </div>
-        <div onclick="selectTranslation('sheikh-mujibur')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
-          <div class="tr-radio" data-key="sheikh-mujibur" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
-          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">শেখ মুজিবুর রহমান</div>
-        </div>
-        <div onclick="selectTranslation('abu-bakr-zakaria')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
-          <div class="tr-radio" data-key="abu-bakr-zakaria" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
-          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">ড. আবু বকর মুহাম্মদ যাকারিয়া</div>
-        </div>
-        <div onclick="selectTranslation('fathul-majid')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
-          <div class="tr-radio" data-key="fathul-majid" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
-          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">ফাতহুল মাজীদ</div>
-        </div>
-      </div>
-    </div>
-	</div>
-	<div style="border:1px solid var(--border);border-radius:10px;overflow:visible;">
-    <div onclick="toggleSection('tafsirSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;background:var(--cream2);">
-      <span>📚 তাফসীর</span>
-      <span id="tafsirSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
-    </div>
-    <div id="tafsirSection" style="display:none;border-bottom:1px solid var(--border);">
-      <div style="padding:8px 18px 12px;display:flex;flex-direction:column;gap:2px;">
-        <div onclick="selectTafsir('mokhtasar')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
-          <div class="tf-radio" data-key="mokhtasar" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
-          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">মুখতাসার তাফসীর</div>
-        </div>
-        <div onclick="selectTafsir('ibn-kaseer')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
-          <div class="tf-radio" data-key="ibn-kaseer" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--gold);background:var(--gold);flex-shrink:0;"></div>
-          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">তাফসীর ইবনে কাসীর</div>
-        </div>
-        <div onclick="selectTafsir('abu-bakr')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
-          <div class="tf-radio" data-key="abu-bakr" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
-          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">তাফসীর আবু বকর যাকারিয়া</div>
-        </div>
-        <div onclick="selectTafsir('ahsanul')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
-          <div class="tf-radio" data-key="ahsanul" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
-          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">আহসানুল বায়ান</div>
-        </div>
-        <div onclick="selectTafsir('fathul-majid')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
-          <div class="tf-radio" data-key="fathul-majid" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
-          <div style="font-size:12.5px;font-weight:600;color:var(--ink);">ফাতহুল মাজীদ</div>
+        <div style="padding:8px 18px 12px;display:flex;flex-direction:column;gap:2px;">
+          <div onclick="selectTranslation('taisirul-quran')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+            <div class="tr-radio" data-key="taisirul-quran" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--gold);background:var(--gold);flex-shrink:0;"></div>
+            <div><div style="font-size:12.5px;font-weight:600;color:var(--ink);">তাইসীরুল কুরআন</div><div style="font-size:11px;color:var(--ink3);">ডিফল্ট</div></div>
+          </div>
+          <div onclick="selectTranslation('rawai-al-bayan')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+            <div class="tr-radio" data-key="rawai-al-bayan" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
+            <div style="font-size:12.5px;font-weight:600;color:var(--ink);">রাওয়াইউল বায়ান</div>
+          </div>
+          <div onclick="selectTranslation('sheikh-mujibur')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+            <div class="tr-radio" data-key="sheikh-mujibur" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
+            <div style="font-size:12.5px;font-weight:600;color:var(--ink);">শেখ মুজিবুর রহমান</div>
+          </div>
+          <div onclick="selectTranslation('abu-bakr-zakaria')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+            <div class="tr-radio" data-key="abu-bakr-zakaria" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
+            <div style="font-size:12.5px;font-weight:600;color:var(--ink);">ড. আবু বকর মুহাম্মদ যাকারিয়া</div>
+          </div>
+          <div onclick="selectTranslation('fathul-majid')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+            <div class="tr-radio" data-key="fathul-majid" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
+            <div style="font-size:12.5px;font-weight:600;color:var(--ink);">ফাতহুল মাজীদ</div>
+          </div>
         </div>
       </div>
     </div>
-	</div>
-	<div style="border:1px solid var(--border);border-radius:10px;overflow:visible;">
-    <div onclick="toggleSection('fontSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;background:var(--cream2);">
-      <span>🔤 ফন্ট সেটিংস</span>
-      <span id="fontSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
-    </div>
-    <div id="fontSection" style="display:none;border-bottom:1px solid var(--border);">
-      <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
-        <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">আরবি</div>
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-          <select id="cfg_arFont" onchange="livePreview('ar')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
-            <option value="Uthmanic">Uthmanic Hafs (ডিফল্ট)</option>
-            <option value="KFGQ">KFGQ Hafs</option>
-            <option value="IndoPak">IndoPak Nastaleeq</option>
-            <option value="NoorHira">Noor e Hira</option>
-            <option value="NoorHuda">Noor e Huda</option>
-            <option value="QuranCommon">Quran Common</option>
-			<option value="ScheherazadeNew">Scheherazade New</option>
-            <option value="AmiriQuran">Amiri Quran</option>
-          </select>
-          <button onclick="adjSize('ar',-1)" class="sz-btn">−</button>
-          <span id="cfg_arSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">31</span>
-          <button onclick="adjSize('ar',1)" class="sz-btn">+</button>
-        </div>
-        <div id="arPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'Uthmanic',serif;font-size:31px;direction:rtl;text-align:right;line-height:2.2;">إِنَّ ٱللَّهَ مَعَ ٱلصَّـٰبِرِينَ</div>
+
+    <!-- তাফসীর -->
+    <div style="border:1px solid var(--border);border-radius:10px;overflow:visible;">
+      <div onclick="toggleSection('tafsirSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;background:var(--cream2);">
+        <span>📚 তাফসীর</span>
+        <span id="tafsirSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
       </div>
-      <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
-        <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">বাংলা অনুবাদ</div>
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-          <select id="cfg_bnFont" onchange="livePreview('bn')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
-            <option value="HindSiliguri">Hind Siliguri (ডিফল্ট)</option>
-            <option value="Kalpurush">Kalpurush</option>
-            <option value="AlQalam">Al Qalam Kolkata</option>
-			<option value="NotoSansBengali">Noto Sans Bengali</option>
-          </select>
-          <button onclick="adjSize('bn',-1)" class="sz-btn">−</button>
-          <span id="cfg_bnSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">14</span>
-          <button onclick="adjSize('bn',1)" class="sz-btn">+</button>
+      <div id="tafsirSection" style="display:none;">
+        <div style="padding:8px 18px 12px;display:flex;flex-direction:column;gap:2px;">
+          <div onclick="selectTafsir('mokhtasar')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+            <div class="tf-radio" data-key="mokhtasar" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
+            <div style="font-size:12.5px;font-weight:600;color:var(--ink);">মুখতাসার তাফসীর</div>
+          </div>
+          <div onclick="selectTafsir('ibn-kaseer')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+            <div class="tf-radio" data-key="ibn-kaseer" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--gold);background:var(--gold);flex-shrink:0;"></div>
+            <div style="font-size:12.5px;font-weight:600;color:var(--ink);">তাফসীর ইবনে কাসীর</div>
+          </div>
+          <div onclick="selectTafsir('abu-bakr')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+            <div class="tf-radio" data-key="abu-bakr" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
+            <div style="font-size:12.5px;font-weight:600;color:var(--ink);">তাফসীর আবু বকর যাকারিয়া</div>
+          </div>
+          <div onclick="selectTafsir('ahsanul')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+            <div class="tf-radio" data-key="ahsanul" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
+            <div style="font-size:12.5px;font-weight:600;color:var(--ink);">আহসানুল বায়ান</div>
+          </div>
+          <div onclick="selectTafsir('fathul-majid')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+            <div class="tf-radio" data-key="fathul-majid" style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border2);background:var(--warm1);flex-shrink:0;"></div>
+            <div style="font-size:12.5px;font-weight:600;color:var(--ink);">ফাতহুল মাজীদ</div>
+          </div>
         </div>
-        <div id="bnPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;">নিশ্চয়ই আল্লাহ ধৈর্যশীলদের সাথে আছেন।</div>
-      </div>
-      <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
-        <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">তাফসীর</div>
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-          <select id="cfg_tafsirFont" onchange="livePreview('tafsir')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
-            <option value="HindSiliguri">Hind Siliguri (ডিফল্ট)</option>
-            <option value="Kalpurush">Kalpurush</option>
-            <option value="KoHo">KoHo</option>
-            <option value="AlQalam">Al Qalam Kolkata</option>
-			<option value="NotoSansBengali">Noto Sans Bengali</option>
-          </select>
-          <button onclick="adjSize('tafsir',-1)" class="sz-btn">−</button>
-          <span id="cfg_tafsirSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">14</span>
-          <button onclick="adjSize('tafsir',1)" class="sz-btn">+</button>
-        </div>
-        <div id="tafsirPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;">আল্লাহ তাআলা বলেন, নিশ্চয়ই ধৈর্য ও নামাজের মাধ্যমে সাহায্য প্রার্থনা করো।</div>
-      </div>
-      <div style="padding:12px 18px;">
-        <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">UI / ইন্টারফেস</div>
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-          <select id="cfg_uiFont" onchange="livePreview('ui')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
-            <option value="KoHo">KoHo (ডিফল্ট)</option>
-            <option value="HindSiliguri">Hind Siliguri</option>
-            <option value="Kalpurush">Kalpurush</option>
-			<option value="NotoSansBengali">Noto Sans Bengali</option>
-          </select>
-          <button onclick="adjSize('ui',-1)" class="sz-btn">−</button>
-          <span id="cfg_uiSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">14</span>
-          <button onclick="adjSize('ui',1)" class="sz-btn">+</button>
-        </div>
-        <div id="uiPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'KoHo',sans-serif;font-size:14px;">সূরা আল-বাকারা · আয়াত ২:১৫৩ · মক্কী</div>
       </div>
     </div>
-	</div>
-  
-  <div style="padding:12px 18px;display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--border);flex-shrink:0;">
-    <button onclick="resetFonts()" style="padding:5px 14px;font-size:12px;border:1px solid var(--border2);border-radius:16px;background:var(--warm1);color:var(--ink3);cursor:pointer;font-family:'KoHo',sans-serif;">ডিফল্ট</button>
-    <button onclick="applyFonts()" style="padding:5px 16px;font-size:12px;border:none;border-radius:16px;background:var(--gold);color:#fff;cursor:pointer;font-weight:500;font-family:'KoHo',sans-serif;">প্রয়োগ করুন ✓</button>
+
+    <!-- ফন্ট -->
+    <div style="border:1px solid var(--border);border-radius:10px;overflow:visible;">
+      <div onclick="toggleSection('fontSection')" style="padding:12px 18px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);user-select:none;background:var(--cream2);">
+        <span>🔤 ফন্ট সেটিংস</span>
+        <span id="fontSectionArrow" style="color:var(--ink4);transition:transform 0.2s;">▾</span>
+      </div>
+      <div id="fontSection" style="display:none;">
+        <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
+          <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">আরবি</div>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+            <select id="cfg_arFont" onchange="livePreview('ar')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
+              <option value="Uthmanic">Uthmanic Hafs (ডিফল্ট)</option>
+              <option value="KFGQ">KFGQ Hafs</option>
+              <option value="IndoPak">IndoPak Nastaleeq</option>
+              <option value="NoorHira">Noor e Hira</option>
+              <option value="NoorHuda">Noor e Huda</option>
+              <option value="QuranCommon">Quran Common</option>
+              <option value="ScheherazadeNew">Scheherazade New</option>
+              <option value="AmiriQuran">Amiri Quran</option>
+            </select>
+            <button onclick="adjSize('ar',-1)" class="sz-btn">−</button>
+            <span id="cfg_arSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">31</span>
+            <button onclick="adjSize('ar',1)" class="sz-btn">+</button>
+          </div>
+          <div id="arPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'Uthmanic',serif;font-size:31px;direction:rtl;text-align:right;line-height:2.2;">إِنَّ ٱللَّهَ مَعَ ٱلصَّـٰبِرِينَ</div>
+        </div>
+        <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
+          <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">বাংলা অনুবাদ</div>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+            <select id="cfg_bnFont" onchange="livePreview('bn')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
+              <option value="HindSiliguri">Hind Siliguri (ডিফল্ট)</option>
+              <option value="Kalpurush">Kalpurush</option>
+              <option value="AlQalam">Al Qalam Kolkata</option>
+              <option value="NotoSansBengali">Noto Sans Bengali</option>
+            </select>
+            <button onclick="adjSize('bn',-1)" class="sz-btn">−</button>
+            <span id="cfg_bnSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">14</span>
+            <button onclick="adjSize('bn',1)" class="sz-btn">+</button>
+          </div>
+          <div id="bnPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;">নিশ্চয়ই আল্লাহ ধৈর্যশীলদের সাথে আছেন।</div>
+        </div>
+        <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
+          <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">তাফসীর</div>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+            <select id="cfg_tafsirFont" onchange="livePreview('tafsir')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
+              <option value="HindSiliguri">Hind Siliguri (ডিফল্ট)</option>
+              <option value="Kalpurush">Kalpurush</option>
+              <option value="KoHo">KoHo</option>
+              <option value="AlQalam">Al Qalam Kolkata</option>
+              <option value="NotoSansBengali">Noto Sans Bengali</option>
+            </select>
+            <button onclick="adjSize('tafsir',-1)" class="sz-btn">−</button>
+            <span id="cfg_tafsirSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">14</span>
+            <button onclick="adjSize('tafsir',1)" class="sz-btn">+</button>
+          </div>
+          <div id="tafsirPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;">আল্লাহ তাআলা বলেন, নিশ্চয়ই ধৈর্য ও নামাজের মাধ্যমে সাহায্য প্রার্থনা করো।</div>
+        </div>
+        <div style="padding:12px 18px;">
+          <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">UI / ইন্টারফেস</div>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+            <select id="cfg_uiFont" onchange="livePreview('ui')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
+              <option value="KoHo">KoHo (ডিফল্ট)</option>
+              <option value="HindSiliguri">Hind Siliguri</option>
+              <option value="Kalpurush">Kalpurush</option>
+              <option value="NotoSansBengali">Noto Sans Bengali</option>
+            </select>
+            <button onclick="adjSize('ui',-1)" class="sz-btn">−</button>
+            <span id="cfg_uiSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">14</span>
+            <button onclick="adjSize('ui',1)" class="sz-btn">+</button>
+          </div>
+          <div id="uiPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'KoHo',sans-serif;font-size:14px;">সূরা আল-বাকারা · আয়াত ২:১৫৩ · মক্কী</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:12px 0 4px;display:flex;justify-content:flex-end;gap:8px;">
+      <button onclick="resetFonts()" style="padding:5px 14px;font-size:12px;border:1px solid var(--border2);border-radius:16px;background:var(--warm1);color:var(--ink3);cursor:pointer;font-family:'KoHo',sans-serif;">ডিফল্ট</button>
+      <button onclick="applyFonts()" style="padding:5px 16px;font-size:12px;border:none;border-radius:16px;background:var(--gold);color:#fff;cursor:pointer;font-weight:500;font-family:'KoHo',sans-serif;">প্রয়োগ করুন ✓</button>
+    </div>
   </div>
 </div>
-</div>
-<!-- Tafsir Overlay -->
+
+<!-- Tafsir -->
 <div id="tafsirOverlay" onclick="closeTafsir()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1000;"></div>
-
-<!-- Tafsir Panel -->
-<div id="tafsirPanel" style="display:none;position:fixed;top:0;left:0;transform:none;width:100vw;height:100vh;max-height:100vh;background:var(--warm1);border:none;border-radius:0;z-index:1001;flex-direction:column;overflow-y:auto;">
+<div id="tafsirPanel" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:var(--warm1);z-index:1001;flex-direction:column;overflow-y:auto;">
   <div style="border-bottom:1px solid var(--border);background:var(--cream);">
-  <div style="padding:14px 20px;display:flex;justify-content:space-between;align-items:center;">
-    <div style="font-size:13px;font-weight:600;color:var(--gold);" id="tafsirLabel"></div>
-    <button onclick="closeTafsir()" style="border:none;background:none;cursor:pointer;font-size:24px;color:var(--ink3);line-height:1;">✕</button>
+    <div style="padding:14px 20px;display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:13px;font-weight:600;color:var(--gold);" id="tafsirLabel"></div>
+      <button onclick="closeTafsir()" style="border:none;background:none;cursor:pointer;font-size:24px;color:var(--ink3);line-height:1;">✕</button>
+    </div>
+    <div style="font-size:11px;color:var(--ink3);text-align:center;margin-bottom:12px;" id="tafsirVerse"></div>
+    <div id="tafsirAyah" style="padding:0 20px 16px;text-align:center;"></div>
   </div>
-  <div style="font-size:11px;color:var(--ink3);text-align:center;margin-bottom:12px;" id="tafsirVerse"></div>
-  <div id="tafsirAyah" style="padding:0 20px 16px;text-align:center;"></div>
-</div>
-<div id="tafsirBody" style="padding:20px 24px;font-size:14px;line-height:2;color:var(--ink2);flex:1;"></div>
+  <div id="tafsirBody" style="padding:20px 24px;font-size:14px;line-height:2;color:var(--ink2);flex:1;"></div>
 </div>
 
-<!-- Copy Overlay -->
+<!-- Word Popup -->
+<div id="wordOverlay" onclick="closeWordPopup()" style="display:none;position:fixed;inset:0;z-index:1004;"></div>
+<div id="wordPopup" style="display:none;position:fixed;z-index:1005;background:var(--warm1);border:1px solid var(--border);border-radius:16px;padding:18px 22px;min-width:180px;max-width:260px;box-shadow:0 8px 32px rgba(0,0,0,0.13);text-align:center;">
+  <div id="wpAr" style="font-family:'Uthmanic',serif;font-size:36px;color:var(--ink);direction:rtl;line-height:1.8;margin-bottom:10px;"></div>
+  <div style="height:1px;background:var(--border);margin-bottom:10px;"></div>
+  <div id="wpBn" style="font-family:'HindSiliguri',sans-serif;font-size:14px;color:var(--gold);font-weight:600;line-height:1.6;"></div>
+  <div id="wpKey" style="font-size:10.5px;color:var(--ink4);margin-top:8px;letter-spacing:0.3px;"></div>
+</div>
+
+<!-- Copy -->
 <div id="copyOverlay" onclick="closeCopyPopup()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1002;"></div>
-
-<!-- Copy Panel -->
 <div id="copyPanel" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--warm1);border-radius:16px 16px 0 0;z-index:1003;flex-direction:column;overflow:hidden;padding-bottom:20px;">
   <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
     <span id="copyTitle" style="font-size:13px;font-weight:600;color:var(--ink);"></span>
     <button onclick="closeCopyPopup()" style="border:none;background:none;cursor:pointer;font-size:20px;color:var(--ink3);line-height:1;">✕</button>
   </div>
   <div style="padding:8px 0;">
-    <div onclick="doCopy('ar')" style="padding:14px 20px;cursor:pointer;font-size:13.5px;color:var(--ink);display:flex;align-items:center;gap:12px;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">📋 শুধু আরবি</div>
-    <div id="copyBnBtn" onclick="doCopy('bn')" style="padding:14px 20px;cursor:pointer;font-size:13.5px;color:var(--ink);display:flex;align-items:center;gap:12px;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">📋 শুধু বাংলা</div>
+    <div onclick="doCopy('ar')"   style="padding:14px 20px;cursor:pointer;font-size:13.5px;color:var(--ink);display:flex;align-items:center;gap:12px;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">📋 শুধু আরবি</div>
+    <div onclick="doCopy('bn')"   style="padding:14px 20px;cursor:pointer;font-size:13.5px;color:var(--ink);display:flex;align-items:center;gap:12px;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">📋 শুধু বাংলা</div>
     <div onclick="doCopy('arbn')" style="padding:14px 20px;cursor:pointer;font-size:13.5px;color:var(--ink);display:flex;align-items:center;gap:12px;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">📋 আরবি + বাংলা</div>
     <div onclick="doCopy('full')" style="padding:14px 20px;cursor:pointer;font-size:13.5px;color:var(--ink);display:flex;align-items:center;gap:12px;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">📋 সম্পূর্ণ</div>
   </div>
 </div>
-
-<style>
-.sz-btn {
-  width:26px;height:26px;border:1px solid var(--border);border-radius:6px;
-  background:var(--warm1);color:var(--ink2);font-size:15px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  transition:all 0.14s;line-height:1;
-}
-.sz-btn:hover { border-color:var(--gold);color:var(--gold); }
-
-.tj-btn {
-  display:flex;align-items:center;gap:6px;
-  padding:5px 12px;border-radius:20px;
-  border:1px solid var(--border);background:var(--warm1);
-  font-size:12px;color:var(--ink2);cursor:pointer;
-  transition:all 0.15s;white-space:nowrap;
-}
-.tj-btn:hover { border-color:var(--gold);color:var(--gold); }
-
-</style>
 
 </body>
 </html>
