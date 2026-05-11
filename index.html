@@ -249,25 +249,46 @@ body {
 
 /* INTERLINEAR */
 .interlinear-wrap {
-  direction: rtl; text-align: right;
-  margin-bottom: 14px; padding: 8px 0; line-height: 1;
+  direction: rtl;
+  text-align: right;
+  margin-bottom: 14px;
+  padding: 8px 0;
+  line-height: 3.5;
 }
+
 .iw-token {
-  display: inline-flex; flex-direction: column; align-items: center;
-  gap: 4px; cursor: default; margin: 6px 0 6px 12px; vertical-align: bottom;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: default;
+  margin: 0 4px;
+  vertical-align: top;
+  line-height: 1;
+  width: max-content;
 }
-/* FIX ৩: --iw-ar-size CSS variable সঠিকভাবে apply */
+
 .iw-ar {
   font-family: 'Uthmanic', serif;
-  font-size: var(--iw-ar-size, 26px); /* ✅ variable কাজ করবে */
-  color: var(--ink); line-height: 1.7; direction: rtl;
+  font-size: var(--iw-ar-size, 26px);
+  color: var(--ink);
+  line-height: 1.6;
+  direction: rtl;
 }
+
 .iw-bn {
-  font-size: 10.5px; color: var(--gold); font-weight: 500;
-  line-height: 1.3; text-align: center; direction: ltr;
+  font-size: 10.5px;
+  color: var(--gold);
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: center;
+  direction: ltr;
   font-family: 'HindSiliguri', sans-serif;
-  border-top: 1px dashed var(--border); padding-top: 3px;
-  white-space: nowrap; max-width: 90px;
+  border-top: 1px dashed var(--border);
+  padding-top: 3px;
+  white-space: nowrap;
+  word-break: break-word;
+  max-width: none;
 }
 .iw-token:hover .iw-ar { color: var(--gold); }
 .iw-token:hover .iw-bn { color: var(--ink2); }
@@ -530,10 +551,13 @@ function ayahWords(ayah) {
 }
 
 function buildInterlinear(ayah) {
+  const f = window._appliedFonts || {};
+  const arStyle = f.arF ? `style="font-family:'${f.arF}',serif;font-size:${f.arSz}px"` : '';
+  const wbwStyle = f.wbwF ? `style="font-family:'${f.wbwF}',sans-serif;font-size:${f.wbwSz}px"` : '';
   const tokens = ayahWords(ayah).map(({word, key, bn}) =>
     `<span class="iw-token" onclick="showWordPopup(event,\`${key}\`,\`${word}\`)">` +
-    `<span class="iw-ar">${word}</span>` +
-    (bn ? `<span class="iw-bn">${bn}</span>` : '') +
+    `<span class="iw-ar" ${arStyle}>${word}</span>` +
+    (bn ? `<span class="iw-bn" ${wbwStyle}>${bn}</span>` : '') +
     `</span>`
   );
   return `<div class="interlinear-wrap">${tokens.join('')}</div>`;
@@ -875,15 +899,14 @@ function ayahHtml(a, mode, i=0) {
   const bnS = f.bnF ? `font-family:'${f.bnF}',sans-serif;font-size:${f.bnSz}px` : '';
 
   let ar = '';
-  if (mode !== 'bangla') {
-    if (wbwMode) {
-      // FIX ৩: --iw-ar-size CSS variable এখন .iw-ar এ apply হবে
-      const fontSize = f.arSz ? f.arSz : 26;
-      ar = `<div style="--iw-ar-size:${fontSize}px;">${buildInterlinear(a)}</div>`;
-    } else {
-      ar = buildClickableArabic(a, arS);
-    }
+if (mode !== 'bangla') {
+  if (wbwMode) {
+    const fontSize = f.arSz ? f.arSz : 26;
+    ar = `<div style="--iw-ar-size:${fontSize}px;">${buildInterlinear(a)}</div>`;
+  } else {
+    ar = buildClickableArabic(a, arS);  // ✅ শুধু একটাই
   }
+}
 
   let bn2 = '';
   if(mode !== 'arabic') {
@@ -1105,8 +1128,9 @@ function closeWordPopup() {
 }
 
 // ── Settings ──
-const _sz  = {ar:31, bn:14, ui:14, tafsir:14};
-const _lim = {ar:[22,52], bn:[11,22], ui:[11,20], tafsir:[11,22]};
+
+const _sz = {ar:31, bn:14, ui:14, tafsir:14, wbw:10};
+const _lim = {ar:[22,52], bn:[11,22], ui:[11,20], tafsir:[11,22], wbw:[8,18]};
 
 function toggleSettings(){
   const p = document.getElementById('settingsPanel');
@@ -1237,9 +1261,9 @@ function adjSize(lang, d){
 }
 
 function livePreview(lang){
-  const fonts  = {ar:'cfg_arFont', bn:'cfg_bnFont', ui:'cfg_uiFont', tafsir:'cfg_tafsirFont'};
-  const prevs  = {ar:'arPrev', bn:'bnPrev', ui:'uiPrev', tafsir:'tafsirPrev'};
-  const stacks = {ar:'serif', bn:'sans-serif', ui:'sans-serif', tafsir:'sans-serif'};
+  const fonts  = {ar:'cfg_arFont', bn:'cfg_bnFont', ui:'cfg_uiFont', tafsir:'cfg_tafsirFont', wbw:'cfg_wbwFont'};
+  const prevs  = {ar:'arPrev', bn:'bnPrev', ui:'uiPrev', tafsir:'tafsirPrev', wbw:'wbwPrev'};
+  const stacks = {ar:'serif', bn:'sans-serif', ui:'sans-serif', tafsir:'sans-serif', wbw:'sans-serif'};
   const f  = document.getElementById(fonts[lang]).value;
   const el = document.getElementById(prevs[lang]);
   el.style.fontFamily = `'${f}',${stacks[lang]}`;
@@ -1251,14 +1275,32 @@ function applyFonts(){
   const bnF     = document.getElementById('cfg_bnFont').value;
   const uiF     = document.getElementById('cfg_uiFont').value;
   const tafsirF = document.getElementById('cfg_tafsirFont').value;
-  window._appliedFonts = {arF, bnF, uiF, tafsirF, arSz:_sz.ar, bnSz:_sz.bn, uiSz:_sz.ui, tafsirSz:_sz.tafsir};
-  document.querySelectorAll('.a-arabic').forEach(el=>{el.style.fontFamily=`'${arF}',serif`; el.style.fontSize=_sz.ar+'px';});
-  document.querySelectorAll('.a-bangla').forEach(el=>{el.style.fontFamily=`'${bnF}',sans-serif`; el.style.fontSize=_sz.bn+'px';});
+  const wbwF    = document.getElementById('cfg_wbwFont').value;
+
+  // ✅ সব একসাথে — wbw আলাদা assign নেই
+  window._appliedFonts = {
+    arF, bnF, uiF, tafsirF, wbwF,
+    arSz: _sz.ar, bnSz: _sz.bn, uiSz: _sz.ui, tafsirSz: _sz.tafsir, wbwSz: _sz.wbw
+  };
+
+  document.querySelectorAll('.a-arabic, .iw-ar').forEach(el => {
+    el.style.fontFamily = `'${arF}',serif`;
+    el.style.fontSize   = _sz.ar + 'px';
+  });
+  document.querySelectorAll('.a-bangla').forEach(el => {
+    el.style.fontFamily = `'${bnF}',sans-serif`;
+    el.style.fontSize   = _sz.bn + 'px';
+  });
+  document.querySelectorAll('.iw-bn').forEach(el => {
+    el.style.fontFamily = `'${wbwF}',sans-serif`;
+    el.style.fontSize   = _sz.wbw + 'px';
+  });
   document.body.style.fontFamily = `'${uiF}',sans-serif`;
+
   const tafsirBodyEl = document.getElementById('tafsirBody');
-  if(tafsirBodyEl && document.getElementById('tafsirPanel').style.display==='flex'){
+  if(tafsirBodyEl && document.getElementById('tafsirPanel').style.display === 'flex'){
     tafsirBodyEl.style.fontFamily = `'${tafsirF}',sans-serif`;
-    tafsirBodyEl.style.fontSize   = _sz.tafsir+'px';
+    tafsirBodyEl.style.fontSize   = _sz.tafsir + 'px';
   }
   toggleSettings();
 }
@@ -1279,6 +1321,12 @@ function resetFonts(){
   document.body.style.fontFamily = '';
   const tafsirBodyEl = document.getElementById('tafsirBody');
   if(tafsirBodyEl){ tafsirBodyEl.style.fontFamily=''; tafsirBodyEl.style.fontSize=''; }
+  
+  _sz.wbw=10;
+document.getElementById('cfg_wbwSz').textContent = 10;
+document.getElementById('cfg_wbwFont').selectedIndex = 0;
+document.getElementById('wbwPrev').style.cssText = "padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:10.5px;direction:rtl;text-align:right;";
+document.querySelectorAll('.iw-bn').forEach(el=>{el.style.fontFamily=''; el.style.fontSize='';});
 }
 </script>
 
@@ -1420,6 +1468,23 @@ function resetFonts(){
           </div>
           <div id="tafsirPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;">আল্লাহ তাআলা বলেন, নিশ্চয়ই ধৈর্য ও নামাজের মাধ্যমে সাহায্য প্রার্থনা করো।</div>
         </div>
+		
+		<div style="padding:12px 18px;border-bottom:1px solid var(--border);">
+  <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">শব্দার্থ</div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+    <select id="cfg_wbwFont" onchange="livePreview('wbw')" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--cream);color:var(--ink);font-size:12.5px;outline:none;">
+      <option value="HindSiliguri">Hind Siliguri (ডিফল্ট)</option>
+      <option value="Kalpurush">Kalpurush</option>
+      <option value="AlQalam">Al Qalam Kolkata</option>
+      <option value="NotoSansBengali">Noto Sans Bengali</option>
+    </select>
+    <button onclick="adjSize('wbw',-1)" class="sz-btn">−</button>
+    <span id="cfg_wbwSz" style="font-size:12px;font-weight:600;min-width:24px;text-align:center;color:var(--ink);">10</span>
+    <button onclick="adjSize('wbw',1)" class="sz-btn">+</button>
+  </div>
+  <div id="wbwPrev" style="padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:10.5px;direction:rtl;text-align:right;">রহমান · রহীম · আল্লাহর নামে</div>
+</div>
+		
         <div style="padding:12px 18px;">
           <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:10px;">UI / ইন্টারফেস</div>
           <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
