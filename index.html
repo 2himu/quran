@@ -227,9 +227,21 @@ body {
 .a-num {
   width: 32px; height: 32px; border: 1px solid var(--border2);
   border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  font-size: 11px; color: var(--ink3); font-weight: 600; background: var(--warm1);
+  font-size: 13px; color: var(--ink4); font-weight: 600; background: var(--warm1);
+  position: relative; transition: all 0.15s;
 }
+.a-num .a-num-label { display: none; }
+.a-num .a-num-play  { font-size: 13px; line-height: 1; }
+.a-num:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-ll); }
 .a-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border2); }
+.a-num.playing {
+  background: var(--gold); border-color: var(--gold); color: #fff;
+  animation: playPulse 1s ease-in-out infinite alternate;
+}
+@keyframes playPulse {
+  from { box-shadow: 0 0 0 0 rgba(184,146,42,0.5); }
+  to   { box-shadow: 0 0 0 6px rgba(184,146,42,0); }
+}
 .a-body { flex: 1; }
 .a-arabic {
   font-family: 'Uthmanic'; font-size: 31px; line-height: 2.25;
@@ -391,14 +403,381 @@ body.tajweed-on .tajweed-legend { display: flex; }
   .ayah-list, .search-section { padding-left: 20px; padding-right: 20px; }
   .surah-hdr, .bismillah, .ctabs { padding-left: 20px; padding-right: 20px; }
 }
+
+/* ===================================================
+   MOBILE RESPONSIVE  (≤ 640px)
+   =================================================== */
+@media (max-width: 640px) {
+
+  /* ── BODY ── */
+  body { overflow: hidden; font-size: 14px; }
+
+  /* ── HEADER ── */
+  .header {
+    padding: 8px 12px;
+    height: auto;
+    min-height: 52px;
+    flex-wrap: nowrap;
+    gap: 8px;
+    position: relative;
+  }
+  .logo { flex-shrink: 0; }
+  .logo-emblem { width: 30px; height: 30px; font-size: 13px; }
+  .logo-bn { font-size: 14px; }
+  .logo-ar { font-size: 10px; }
+
+  /* search মাঝে, header-right শেষে */
+  .search-wrap { flex: 1; max-width: none; min-width: 0; }
+  .search-input { font-size: 13px; padding: 7px 12px 7px 32px; }
+  .s-icon { font-size: 12px; left: 10px; }
+
+  .header-right { margin-left: 0; gap: 6px; flex-shrink: 0; }
+  .stats { display: none; }
+  .btn-sm { padding: 5px 9px; font-size: 11px; }
+
+  /* ── সাইডবার বাটন (হ্যামবার্গার) ── */
+  #mobileSidebarBtn {
+    display: flex !important;
+    align-items: center; justify-content: center;
+    width: 34px; height: 34px;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    background: var(--warm1);
+    font-size: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+    color: var(--ink2);
+  }
+
+  /* ── LAYOUT ── */
+  .layout { position: relative; overflow: hidden; }
+
+  /* ── SIDEBAR — overlay হিসেবে ── */
+  .sidebar {
+    position: fixed !important;
+    top: 0; left: 0;
+    width: 82vw !important;
+    max-width: 300px !important;
+    height: 100dvh;
+    z-index: 600;
+    transform: translateX(-110%);
+    transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+    box-shadow: 4px 0 28px rgba(0,0,0,0.15);
+    overflow: hidden;
+    display: flex !important;
+    flex-direction: column;
+  }
+  .sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+  .sidebar.hidden {
+    width: 82vw !important;
+    overflow: hidden;
+    transform: translateX(-110%) !important;
+  }
+  .sidebar.hidden.mobile-open {
+    transform: translateX(0) !important;
+  }
+
+  /* ── Mobile Backdrop ── */
+  #mobileBackdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.42);
+    z-index: 599;
+    backdrop-filter: blur(1px);
+  }
+  #mobileBackdrop.show { display: block; }
+
+  /* ── MAIN CONTENT ── */
+  .main { width: 100%; }
+
+  /* ── SURAH HEADER ── */
+  .surah-hdr {
+    padding: 20px 14px 16px;
+  }
+  .surah-hdr-name { font-size: 19px; }
+  .surah-hdr-meaning { font-size: 13px; margin-bottom: 10px; }
+  .surah-hdr-meta { gap: 5px; }
+  .badge { font-size: 10px; padding: 3px 9px; }
+
+  /* ── BISMILLAH ── */
+  .bismillah {
+    font-size: 22px;
+    padding: 14px 14px;
+    line-height: 1.9;
+  }
+
+  /* ── CONTENT TABS ── */
+  .ctabs {
+    padding: 4px 8px;
+    gap: 3px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .ctabs::-webkit-scrollbar { display: none; }
+  .ctab {
+    padding: 4px 9px;
+    font-size: 11.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── TAJWEED LEGEND ── */
+  .tajweed-legend {
+    padding: 4px 10px;
+    gap: 5px 8px;
+    top: 40px; /* ctabs height আনুমানিক */
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+  .tajweed-legend::-webkit-scrollbar { display: none; }
+  .tj-btn { font-size: 11px; padding: 2px 7px; white-space: nowrap; }
+
+  /* ── AYAH LIST ── */
+  .ayah-list { padding: 0 10px 80px; }
+
+  /* ── AYAH CARD ── */
+  .ayah-card { gap: 8px; padding: 10px 0; }
+
+  /* action column একটু ছোট */
+  .a-num-wrap { gap: 6px; padding-top: 4px; }
+  .a-num { width: 28px; height: 28px; font-size: 11px; }
+  .a-dot { width: 2px; height: 2px; }
+
+  /* Arabic text */
+  .a-arabic {
+    font-size: 24px !important;
+    line-height: 2;
+    margin-bottom: 10px;
+  }
+
+  /* Bangla translation */
+  .a-bangla {
+    font-size: 13.5px;
+    line-height: 1.9;
+    padding: 8px 11px;
+  }
+
+  /* Key/reference label */
+  .a-key { font-size: 9.5px; margin-top: 8px; }
+
+  /* ── INTERLINEAR ── */
+  .interlinear-wrap { line-height: 3.2; }
+  .iw-ar { font-size: 20px !important; }
+  .iw-bn { font-size: 9px; }
+  .iw-token { margin: 0 2px; }
+
+  /* ── SEARCH SECTION ── */
+  .search-section { padding: 14px 12px 60px; }
+  .search-hdr { font-size: 12px; }
+  .search-hdr-q { font-size: 15px; }
+  .search-hit { padding: 16px 0; }
+  .search-hit:hover { padding: 16px 10px; margin: 0 -10px; }
+
+  /* ── EMPTY STATE ── */
+  .empty { padding: 40px 16px; }
+  .empty-ar { font-size: 44px; }
+  .empty-title { font-size: 18px; }
+  .empty-sub { font-size: 13px; }
+
+  /* ── READING MODE ── */
+  .reading-mode .a-arabic { font-size: 26px !important; }
+  .reading-mode .a-bangla { font-size: 14px; }
+
+  /* ── WORD POPUP ── */
+  #wordPopup {
+    width: 96vw !important;
+    max-width: 96vw !important;
+    max-height: 85dvh !important;
+    border-radius: 16px !important;
+  }
+  .wp-arabic-big { font-size: clamp(36px,12vw,60px) !important; }
+  .wp-top-band {
+    grid-template-columns: 36px 1fr 36px 32px;
+    gap: 4px;
+    padding: 8px 10px;
+  }
+  .wp-hero { padding: 16px 14px 18px; }
+  .wp-translation { padding: 10px 16px; }
+  .wp-translation-text { font-size: 13.5px; }
+  .wp-section { padding: 12px 14px; }
+  .wp-g-card { font-size: 10.5px; padding: 7px 8px; min-width: 100px; }
+  .wp-pm { font-size: 12.5px; padding: 0 6px; }
+  .wp-par { font-size: 22px; }
+  .wp-proot { font-size: 19px; }
+  .wp-pill { padding: 7px 9px 9px 7px; gap: 7px; }
+  .wp-ptag { font-size: 9.5px; }
+
+  /* ── TAFSIR PANEL ── */
+  #tafsirPanel { padding-bottom: env(safe-area-inset-bottom); }
+  #tafsirBody { padding: 14px 16px 24px; font-size: 13.5px; }
+
+  /* ── JUMP POPUP ── */
+  #jumpPopup {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+    border-radius: 20px 20px 0 0 !important;
+    max-height: 85dvh;
+    overflow: hidden;
+  }
+  #jumpPopup > div:nth-child(2) { height: 55dvh; min-height: 240px; }
+
+  /* ── COPY PANEL ── */
+  #copyPanel { padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
+
+  /* ── SETTINGS PANEL ── */
+  #settingsPanel {
+    width: 92vw !important;
+    max-width: 340px !important;
+  }
+
+  /* ── TAJWEED POPUP ── */
+  #tjPopupBox { border-radius: 18px 18px 0 0 !important; }
+  #tjPopupBody { padding: 14px 16px 24px !important; }
+  #tjPopupHeader { padding: 14px 16px 12px !important; }
+}
+
+/* ── WORD POPUP ── */
+#wordOverlay {
+  position:fixed;inset:0;z-index:1004;
+  background:rgba(0,0,0,0.45);
+  display:none;align-items:center;justify-content:center;
+}
+#wordOverlay.open{display:flex!important;}
+#wordPopup {
+  display:none;
+  width:90%;max-width:640px;max-height:88vh;
+  background:#FFFDF7;border-radius:20px;
+  border:1px solid #DDD8CC;
+  box-shadow:0 8px 40px rgba(0,0,0,0.18);
+  overflow-y:auto;
+  font-family:'HindSiliguri','Noto Sans Bengali',sans-serif;
+  animation:slideUp .25s cubic-bezier(.4,0,.2,1);
+  scrollbar-width:none;
+}
+#wordPopup::-webkit-scrollbar{display:none;}
+#wordPopup.open{display:block;}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* top band */
+.wp-top-band{
+  background:#F7F3E8;border-bottom:1px solid #E8E2D0;
+  padding:10px 12px;display:grid;grid-template-columns:40px 1fr 40px 34px;
+  align-items:center;gap:6px;position:sticky;top:0;z-index:2;
+}
+.wp-close-btn{
+  width:34px;height:34px;border-radius:50%;
+  background:transparent;border:none;
+  color:#9A8A68;font-size:18px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .12s, color .12s;
+}
+.wp-close-btn:hover{background:#E2D8C8;color:#4A3A1A;}
+.wp-nav-btn{
+  width:34px;height:34px;border-radius:50%;
+  background:#EDE8DA;border:1px solid #D8D0BC;
+  color:#7A6A48;font-size:17px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .12s;
+}
+.wp-nav-btn:hover{background:#E2D8C8;}
+.wp-nav-btn:disabled{opacity:.35;cursor:not-allowed;}
+.wp-ref-center{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.wp-ref-surah{font-size:11px;font-weight:700;letter-spacing:.05em;color:#6B5C3A;}
+.wp-ref-ayah{font-size:10px;color:#A08858;letter-spacing:.04em;}
+
+/* audio word click */
+.wp-audio-word{transition:opacity .15s;}
+.wp-audio-word:hover{opacity:.75;}
+.wp-audio-playing{animation:wpPulse .6s ease-in-out infinite alternate;}
+@keyframes wpPulse{from{opacity:1;}to{opacity:.5;}}
+
+/* hero */
+.wp-hero{padding:26px 28px 28px;border-bottom:1px solid #F0EBE0;text-align:center;background:#FFFDF7;overflow:visible;}
+.wp-arabic-big{font-family:'ScheherazadeNew','Uthmanic',serif;font-size:clamp(48px,10vw,84px);line-height:1.6;direction:rtl;word-break:keep-all;display:block;}
+
+/* translation */
+.wp-translation{padding:13px 28px;text-align:center;border-bottom:1px solid #F0EBE0;background:#FBF6E9;}
+.wp-translation-text{font-size:15px;font-weight:600;color:#7A5A1A;letter-spacing:.01em;}
+
+/* section */
+.wp-section{padding:16px 18px;border-bottom:1px solid #F0EBE0;}
+.wp-section:last-child{border-bottom:none;}
+.wp-sec-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#A89060;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.wp-sec-label::before,.wp-sec-label::after{content:'';flex:1;height:1px;background:#EDE8DE;}
+
+/* grammar grid — zone-based */
+.wp-grammar-grid{display:flex;flex-direction:column;gap:4px;}
+.wp-g-zone{display:flex;flex-direction:row;gap:6px;flex-wrap:wrap;}
+.wp-g-zone.zone-prefix{padding-bottom:6px;border-bottom:1px dashed #E0DAC8;}
+.wp-g-zone.zone-suffix{padding-top:6px;border-top:1px dashed #E0DAC8;}
+.wp-g-zone.zone-stem{padding:2px 0;}
+.wp-g-card{border-radius:10px;border:1px solid;padding:9px 10px;font-size:11px;line-height:1.6;font-family:'HindSiliguri',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;flex:1;min-width:120px;}
+.wp-g-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+/* pills */
+.wp-pill{display:grid;grid-template-columns:auto 1fr auto;align-items:center;border-radius:40px;border:1px solid;padding:8px 11px 11px 8px;margin-bottom:7px;gap:10px;}
+.wp-pill:last-child{margin-bottom:0;}
+.wp-pill.amber{background:#FAEEDA;border-color:#EF9F27;}
+.wp-pill.amber .wp-ptag{background:#FAC775;color:#633806;border:1px solid #EF9F27;}
+.wp-pill.amber .wp-pm{color:#633806;border-right-color:#EF9F27;}
+.wp-pill.amber .wp-par{color:#412402;}
+.wp-pill.purple{background:#E8F5E8;border-color:#7AB87A;}
+.wp-pill.purple .wp-ptag{background:#B8DEB8;color:#1A4A1A;border:1px solid #7AB87A;}
+.wp-pill.purple .wp-pm{color:#1A4A1A;border-right-color:#7AB87A;}
+.wp-pill.purple .wp-par{color:#1A4A1A;}
+.wp-ptag{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border-radius:20px;padding:8px 9px;white-space:nowrap;}
+.wp-pmeanings{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;}
+.wp-pm{font-size:14px;padding:0 9px;border-right:1px solid;line-height:1;white-space:nowrap;}
+.wp-pm:last-child{border-right:none;}
+.wp-par{font-family:'ScheherazadeNew','Uthmanic',serif;font-size:27px;line-height:1;direction:rtl;padding:0 10px 0 2px;white-space:nowrap;}
+.wp-proot{font-family:'ScheherazadeNew','Uthmanic',serif;font-size:23px;line-height:1;direction:rtl;letter-spacing:7px;padding:0 10px 0 2px;white-space:nowrap;}
+
+/* seg dots */
+.wp-seg-dots{display:flex;flex-direction:row;justify-content:center;align-items:flex-end;gap:4px;padding:4px 0 2px;direction:rtl;}
+.wp-seg-dot{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.wp-dot-circle{width:7px;height:7px;border-radius:50%;}
+
+/* note */
+.wp-empty{padding:28px;text-align:center;color:#A89060;font-size:13px;}
+.wp-note-section{padding:12px 18px 18px;}
+.wp-note-bar{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#C8A882;border:1px solid #B8936A;border-radius:10px;padding:10px 16px;cursor:pointer;font-size:12px;font-weight:600;color:#3E2A10;font-family:'HindSiliguri',sans-serif;transition:background .14s;}
+.wp-note-bar:hover{background:#B8936A;}
+.wp-note-arrow{display:inline-block;transition:transform 0.2s;font-size:10px;}
+.wp-note-body{display:none;margin-top:10px;font-size:12px;line-height:1.85;color:#4A4438;background:#F7F3E8;border:1px solid #E4DDD0;border-radius:10px;padding:14px 16px;font-family:'HindSiliguri',sans-serif;}
+.wp-note-body.open{display:block;}
 </style>
 </head>
 <body>
 
 <div class="header">
+  <!-- Mobile Hamburger Button (CSS এ মোবাইলে দেখায়) -->
+  <button id="mobileSidebarBtn" onclick="toggleMobileSidebar()" style="display:none;" title="সূরার তালিকা">☰</button>
+
   <!-- FIX ৬: Logo ফিরিয়ে আনা -->
   <div class="logo">
-    <div class="logo-emblem">ق</div>
+    <div class="logo-emblem" id="logoEmblem" title="হোম">
+      <!-- home icon: সূরা খোলা থাকলে দেখাবে, click করলে goHome() -->
+      <svg id="iconClosed" onclick="event.stopPropagation();goHome()" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none;cursor:pointer;">
+        <path d="M3 12L12 4L21 12V20C21 20.5523 20.5523 21 20 21H15V16H9V21H4C3.44772 21 3 20.5523 3 20V12Z" stroke="var(--gold)" stroke-width="1.6" fill="var(--gold-l)"/>
+        <path d="M9 21V16H15V21" stroke="var(--gold)" stroke-width="1.6" stroke-linejoin="round"/>
+      </svg>
+      <!-- open book: home-এ থাকলে দেখাবে, click করলে last সূরায় যাও -->
+      <svg id="iconOpen" onclick="event.stopPropagation();goBook()" width="20" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer;">
+        <path d="M12 6C12 6 9 4 5 4C4.44772 4 4 4.44772 4 5V18C4 18.5523 4.44772 19 5 19C9 19 12 21 12 21C12 21 15 19 19 19C19.5523 19 20 18.5523 20 18V5C20 4.44772 19.5523 4 19 4C15 4 12 6 12 6Z" stroke="var(--gold)" stroke-width="1.6" fill="var(--gold-l)"/>
+        <path d="M12 6V21" stroke="var(--gold)" stroke-width="1.6"/>
+        <path d="M7 8.5C8.5 8.5 10 8.8 11 9.5M7 11.5C8.5 11.5 10 11.8 11 12.5M17 8.5C15.5 8.5 14 8.8 13 9.5M17 11.5C15.5 11.5 14 11.8 13 12.5" stroke="var(--gold)" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+    </div>
     <div class="logo-text-wrap">
       <div class="logo-ar">Al-Qur'an</div>
       <div class="logo-bn">আল-কোরআন</div>
@@ -414,15 +793,15 @@ body.tajweed-on .tajweed-legend { display: flex; }
   </div>
 </div>
 
+<!-- Mobile Sidebar Backdrop -->
+<div id="mobileBackdrop" onclick="closeMobileSidebar()"></div>
+
 <div class="layout" id="layout">
   <div class="sidebar" id="sidebar">
     <div class="stabs">
       <button class="stab active" onclick="switchTab('surah',this)">সূরা</button>
       <button class="stab" onclick="switchTab('juz',this)">পারা</button>
       <button class="stab" onclick="switchTab('nazil',this)">নাযিল</button>
-    </div>
-    <div class="side-search">
-      <input type="text" id="sideFilter" placeholder="সূরা খুঁজুন…" oninput="filterSide(this.value)">
     </div>
     <div class="side-list" id="sideList"></div>
   </div>
@@ -434,6 +813,9 @@ body.tajweed-on .tajweed-legend { display: flex; }
 
 <script>
 const toBn = n => String(n).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+
+// ── MOBILE HELPER ──
+function _isMobile() { return window.innerWidth <= 640; }
 
 const SURAH_BN = {
   1:'আল-ফাতিহা',2:'আল-বাকারা',3:'আল-ইমরান',4:'আন-নিসা',5:'আল-মায়িদা',
@@ -537,8 +919,9 @@ const WORD_CACHE = {};
 function buildWordCache() {
   Object.values(AYAHS).forEach(a => {
     const raw = a.text || '';
-    const cleaned = raw.replace(/[\u06DD\u0660-\u0669\u06F0-\u06F9]+/g, '').trim();
-    WORD_CACHE[a.verse_key] = cleaned.split(/\s+/).filter(Boolean);
+    const cleaned = raw.replace(/[\u06DD\u0660-\u0669\u06F0-\u06F9]+/g, '').trim()
+                   .replace(/\u06DE\s+/g, '\u06DE');
+WORD_CACHE[a.verse_key] = cleaned.split(/\s+/).filter(Boolean);
   });
 }
 
@@ -631,47 +1014,181 @@ async function loadTajweed() {
 }
 
 const TJ_GROUPS = {
-  ghunnah: { title: '🟢 গুন্নাহ — নাকের শব্দ', items: [
-    { color:'#0d6e3a', label:'গুন্নাহ' }, { color:'#1a9a55', label:'ইদগাম মাআ গুন্নাহ' },
-    { color:'#2db870', label:'ইখফা' },    { color:'#0a8f5c', label:'ইখফা শাফাওয়ি' },
-  ]},
-  iqlab:  { title: '🩷 ইকলাব — নুন→মিম', items: [{ color:'#c0197a', label:'ইকলাব' }] },
-  idgham: { title: '🟣 ইদগাম — মিলিয়ে পড়া', items: [
-    { color:'#5b21b6', label:'ইদগাম বিলাগুন্নাহ' }, { color:'#7c3aed', label:'ইদগাম মুতাজানিসাইন' },
-    { color:'#9d5cf0', label:'ইদগাম মুতাকারিবাইন' }, { color:'#b97ef5', label:'ইদগাম শাফাওয়ি' },
-  ]},
-  madd: { title: '🔵 মাদ্দ — টান দেওয়া', items: [
-    { color:'#1d6fa4', label:'মাদ্দ স্বাভাবিক' }, { color:'#1d6fa4', label:'মাদ্দ জায়েয' },
-    { color:'#0277bd', label:'মাদ্দ ওয়াজিব মুত্তাসিল' }, { color:'#0288d1', label:'মাদ্দ ওয়াজিব মুনফাসিল' },
-    { color:'#0d47a1', label:'মাদ্দ লাযিম' },
-  ]},
-  qalaqah: { title: '🔴 কালকালাহ — ঝাঁকুনি', items: [{ color:'#c62828', label:'কালকালাহ' }] },
-  laam:    { title: '🟠 লাম শামসিয়া — লাম লুপ্ত', items: [{ color:'#b36200', label:'লাম শামসিয়া' }] },
-  hamza:   { title: '⚫ হামযায়ে ওয়াসল — সংযোগ', items: [{ color:'#888', label:'হামযায়ে ওয়াসল' }] },
-  silent:  { title: '🩶 নীরব হরফ — উচ্চারণ নেই', items: [{ color:'#aaa', label:'নীরব হরফ' }] },
+  ghunnah: {
+    color: '#1a9a55',
+    title: 'গুন্নাহ',
+    subtitle: 'নাকের ভেতর দিয়ে গুনগুন শব্দ',
+    summary: 'কোনো কোনো হরফ পড়ার সময় নাক দিয়ে একটু গুনগুন শব্দ করতে হয় — এটাই গুন্নাহ। সহজ ভাষায়: নাকে আঙুল দিয়ে পড়লে যদি কম্পন অনুভব হয়, তাহলে গুন্নাহ হচ্ছে।',
+    detail: 'গুন্নাহ মূলত নুন (ن) এবং মিম (م) হরফের সাথে ঘটে। এই হরফ দুটো পড়ার সময় ২ হরকত পরিমাণ — অর্থাৎ দুইটা আঙুল মোড়ানোর সময় পরিমাণ — নাকে কম্পন রাখতে হয়।',
+    tip: 'মনে রাখুন: গুন্নাহ মানেই নাকের শব্দ। যেখানেই নুন বা মিম নাকের কাজে আসে, সেখানেই গুন্নাহ।',
+    items: [
+      { color:'#0d6e3a', label:'গুন্নাহ', desc:'নুন সাকিন বা তানভিন যখন একা থাকে — শুধু নাকের গুনগুন, কোনো মেলানো বা লুকানো নেই।' },
+      { color:'#1a9a55', label:'ইদগাম মাআ গুন্নাহ', desc:'নুন সাকিন বা তানভিনের পরে ي ن م و এলে — পরের হরফের মধ্যে মিশিয়ে দেওয়া হয়, সাথে গুন্নাহ থাকে।' },
+      { color:'#2db870', label:'ইখফা', desc:'নুন সাকিন বা তানভিনের পরে ১৫টি নির্দিষ্ট হরফ এলে — পুরোপুরি উচ্চারণও করা হয় না, লুকানোও হয় না; মাঝামাঝি অবস্থায় গুন্নাহসহ পড়া হয়।' },
+      { color:'#0a8f5c', label:'ইখফা শাফাওয়ি', desc:'মিম সাকিনের পরে বা এলে — ঠোঁট হালকা মিলিয়ে গুন্নাহসহ মিম লুকিয়ে পড়া হয়।' },
+    ]
+  },
+  iqlab: {
+    color: '#c0197a',
+    title: 'ইকলাব',
+    subtitle: 'নুনকে মিমে রূপান্তর',
+    summary: 'ইকলাব মানে পরিবর্তন করা। নুন সাকিন বা তানভিনের পরে বা (ب) হরফ আসলে — নুনকে মিমে পরিবর্তন করে গুন্নাহসহ পড়তে হয়।',
+    detail: 'এই নিয়মটি মাত্র একটিই হরফের সাথে ঘটে — বা (ب)। নুন সাকিন বা তানভিনের পরে বা আসলে, নুনকে মিম বানিয়ে পড়তে হয়, কিন্তু লেখায় নুনই থাকে।',
+    tip: 'মনে রাখুন: ن বা তানভিনের পরে ب এলেই ইকলাব। নুন চলে যাবে, মিম আসবে — নাকের গুনগুনসহ।',
+    items: [
+      { color:'#c0197a', label:'ইকলাব', desc:'নুন সাকিন বা তানভিনের পরে ব (ب) আসলে — নুনটি মিমে পরিণত হয়ে গুন্নাহসহ পড়া হয়। উদাহরণ: مِنۢ بَعۡدِ — এখানে ن এর পরে ب তাই নুন মিম হয়ে যায়।' },
+    ]
+  },
+  idgham: {
+    color: '#7c3aed',
+    title: 'ইদগাম',
+    subtitle: 'দুটো হরফ মিলিয়ে এক করে পড়া',
+    summary: 'ইদগাম মানে ঢুকিয়ে দেওয়া বা মিশিয়ে দেওয়া। নুন সাকিন বা তানভিনের পরে নির্দিষ্ট কিছু হরফ আসলে — নুনটি পরের হরফের মধ্যে মিশে যায়, আলাদাভাবে উচ্চারিত হয় না।',
+    detail: 'ইদগামের হরফ মনে রাখার সহজ উপায়: "يَرْمَلُوْن" — এই শব্দের প্রতিটি হরফ (ي ر م ل و ن) ইদগামের হরফ। তবে শব্দের মাঝে নুন-ওয়াও বা নুন-ইয়া আসলে ইদগাম হবে না।',
+    tip: 'মনে রাখুন: গুন্নাহসহ ইদগাম — ي ن م و এই চারটি হরফে। গুন্নাহ ছাড়া ইদগাম — ر ل এই দুটো হরফে।',
+    items: [
+      { color:'#5b21b6', label:'ইদগাম বিলাগুন্নাহ', desc:'নুন/তানভিনের পরে ر বা ل আসলে — গুন্নাহ ছাড়াই সরাসরি মিলিয়ে পড়া হয়। দ্রুত ও শক্তভাবে মিশে যায়।' },
+      { color:'#7c3aed', label:'ইদগাম মুতাজানিসাইন', desc:'একই মাখরাজের (উচ্চারণস্থান) দুটো ভিন্ন হরফ পাশাপাশি আসলে — যেমন ت এর পরে ط, বা ذ এর পরে ظ। প্রথমটি দ্বিতীয়তে মিশে যায়।' },
+      { color:'#9d5cf0', label:'ইদগাম মুতাকারিবাইন', desc:'কাছাকাছি মাখরাজের দুটো হরফ পাশাপাশি আসলে — যেমন ق এর পরে ك। প্রথমটি দ্বিতীয়তে মিশে যায়।' },
+      { color:'#b97ef5', label:'ইদগাম শাফাওয়ি', desc:'মিম সাকিনের পরে আরেকটি মিম আসলে — দুটো মিম একসাথে মিলিয়ে পড়া হয়, সাথে গুন্নাহ।' },
+    ]
+  },
+  madd: {
+    color: '#1d6fa4',
+    title: 'মাদ্দ',
+    subtitle: 'স্বরবর্ণ টেনে দীর্ঘ করা',
+    summary: 'মাদ্দ মানে টানা বা দীর্ঘ করা। কুরআনে কিছু জায়গায় আলিফ, ওয়াও বা ইয়া হরফ পড়ার সময় কণ্ঠস্বর টেনে দীর্ঘ করতে হয়। কতটুকু টানতে হবে তা নিয়মভেদে ভিন্ন।',
+    detail: '১ হরকত = একটি আঙুল মোড়ানোর সময়। স্বাভাবিক মাদ্দ ২ হরকত। বাধ্যতামূলক মাদ্দ ৪-৫ হরকত। লাযিম মাদ্দ ৬ হরকত — সবচেয়ে বেশি টানতে হয়।',
+    tip: 'মনে রাখুন: হামযা বা সুকুন এলেই মাদ্দ লম্বা হয়। মাদ্দের হরফ — আলিফ (ا), ওয়াও (و), ইয়া (ي)।',
+    items: [
+      { color:'#1d6fa4', label:'মাদ্দ স্বাভাবিক (তাবিয়ি)', desc:'মাদ্দের মূল রূপ। ২ হরকত পরিমাণ টানা। সামনে হামযা বা সুকুন নেই।' },
+      { color:'#1d6fa4', label:'মাদ্দ জায়েয মুনফাসিল', desc:'মাদ্দের হরফের পরে আলাদা শব্দে হামযা আসলে। ২ থেকে ৫ হরকত পর্যন্ত পড়া যায়।' },
+      { color:'#0277bd', label:'মাদ্দ ওয়াজিব মুত্তাসিল', desc:'একই শব্দের মধ্যে মাদ্দের হরফের পরে হামযা আসলে। ৪-৫ হরকত টানা বাধ্যতামূলক।' },
+      { color:'#0288d1', label:'মাদ্দ ওয়াজিব মুনফাসিল', desc:'আলাদা শব্দে হামযা আসলে এবং দুটো শব্দ না থামিয়ে পড়লে ৪-৫ হরকত টানতে হয়।' },
+      { color:'#0d47a1', label:'মাদ্দ লাযিম', desc:'সবচেয়ে লম্বা মাদ্দ। মাদ্দের হরফের পরে সুকুনযুক্ত হরফ আসলে। ৬ হরকত টানা আবশ্যক।' },
+    ]
+  },
+  qalaqah: {
+    color: '#c62828',
+    title: 'কালকালাহ',
+    subtitle: 'হরফ পড়ার শেষে সামান্য ঝাঁকুনি',
+    summary: 'কালকালাহ মানে কম্পন বা ঝাঁকুনি। নির্দিষ্ট ৫টি হরফ সুকুন (জযম) নিয়ে থাকলে — সেগুলো পড়ার সময় শেষে একটু ঝাঁকুনি দিয়ে উচ্চারণ করতে হয়। মুখ থেকে হরফটা যেন ছিটকে বের হয়।',
+    detail: 'কালকালাহর ৫টি হরফ মনে রাখার সহজ উপায়: "قُطۡبُ جَدٍّ" — ق ط ب ج د। এই হরফগুলো সুকুনসহ থাকলেই কালকালাহ হবে। আয়াতের শেষে হলে ঝাঁকুনি একটু বেশি।',
+    tip: 'মনে রাখুন: ق ط ب ج د — এই পাঁচটি হরফ জযম নিয়ে থাকলেই ঝাঁকুনি দিয়ে পড়তে হবে।',
+    items: [
+      { color:'#c62828', label:'কালকালাহ', desc:'হরফ: ق ط ب ج د — সুকুনসহ থাকলে ঝাঁকুনি দিয়ে পড়তে হয়। শব্দের মাঝে হলে হালকা, শেষে হলে শক্তিশালী ঝাঁকুনি।' },
+    ]
+  },
+  laam: {
+    color: '#b36200',
+    title: 'লাম শামসিয়া',
+    subtitle: 'আলিফ-লামের লাম গোপন হয়ে যায়',
+    summary: 'আরবিতে "আল" (ال) দিয়ে শব্দ শুরু হলে — কোনো কোনো ক্ষেত্রে লামটি উচ্চারণ হয় না, পরের হরফে মিশে যায়। যেমন "আশ-শামস" — এখানে লাম গোপন, শামসিয়া হরফ শক্ত হয়।',
+    detail: 'শামসিয়া হরফ ১৪টি: ت ث د ذ ر ز س ش ص ض ط ظ ل ن — এই হরফগুলোর আগে "আল" আসলে লাম উচ্চারিত হয় না। বাকি ১৪টি হরফে লাম স্পষ্ট পড়া হয় — সেটাকে লাম কামারিয়া বলে।',
+    tip: 'সহজ নিয়ম: "আল" এর পরের হরফে শদ্দা (ّ) থাকলে বুঝবেন লাম লুপ্ত হয়ে গেছে।',
+    items: [
+      { color:'#b36200', label:'লাম শামসিয়া', desc:'"আল" (ال) এর পরে শামসিয়া হরফ আসলে লামটি উচ্চারিত হয় না — পরের হরফে মিশে যায় এবং সেই হরফটি দ্বিগুণ শক্তিতে পড়া হয়।' },
+    ]
+  },
+  hamza: {
+    color: '#888',
+    title: 'হামযায়ে ওয়াসল',
+    subtitle: 'সংযোগের হামযা — একা থাকলে পড়া যায়',
+    summary: 'হামযায়ে ওয়াসল হলো এমন একটি হামযা যেটি শব্দের শুরুতে থাকলে পড়া হয়, কিন্তু আগের শব্দের সাথে মিলিয়ে পড়লে পড়া হয় না — গলার ভেতরে মিলিয়ে যায়।',
+    detail: 'সহজ কথায়: আগের শব্দ থেকে না থামিয়ে পড়লে এই হামযার কোনো শব্দ হয় না। কিন্তু এই শব্দ থেকে নতুন করে শুরু করলে হামযাটি পড়তে হবে। কুরআনে বিশেষ চিহ্ন দিয়ে চিহ্নিত থাকে।',
+    tip: 'মনে রাখুন: ওয়াসল মানে মেলানো। আগের শব্দের সাথে মেলালে এই হামযা নিরুচ্চারিত থাকে।',
+    items: [
+      { color:'#888', label:'হামযায়ে ওয়াসল', desc:'শব্দের শুরুতে থাকা বিশেষ হামযা — আগের শব্দের সাথে মিলিয়ে পড়লে এটি উচ্চারিত হয় না। একা শুরু করলে পড়তে হয়।' },
+    ]
+  },
+  silent: {
+    color: '#aaa',
+    title: 'নীরব হরফ',
+    subtitle: 'লেখা আছে, কিন্তু পড়া হয় না',
+    summary: 'কুরআনের কিছু হরফ লেখায় থাকলেও উচ্চারণে আসে না। এগুলো ঐতিহাসিক বা ব্যাকরণগত কারণে লেখা রয়েছে, কিন্তু পড়ার সময় এড়িয়ে যেতে হয়।',
+    detail: 'নীরব হরফের উদাহরণ: "لَا أَذۡبَحُهُ" — এখানে কিছু হরফ নীরব। রসম অনুযায়ী লেখা ঠিক আছে, উচ্চারণে নেই। এগুলো মুখস্থ করার চেয়ে শুনে শুনে শেখা সহজ।',
+    tip: 'পরামর্শ: নীরব হরফ শুধু পড়ে বোঝার চেষ্টা না করে, একজন শিক্ষকের কাছ থেকে শুনে শিখুন।',
+    items: [
+      { color:'#aaa', label:'নীরব হরফ', desc:'লেখায় বিদ্যমান কিন্তু উচ্চারণে অনুপস্থিত হরফ। কুরআনের রসম অনুযায়ী এভাবেই লেখা হয়েছে।' },
+    ]
+  },
 };
 
 function tjPopup(key) {
+  _ensureTjPopupDom();
   const g = TJ_GROUPS[key];
-  document.getElementById('tjPopupTitle').textContent = g.title;
-  document.getElementById('tjPopupBody').innerHTML = g.items.map(item =>
-    `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
-      <div style="width:14px;height:14px;border-radius:50%;background:${item.color};flex-shrink:0;"></div>
-      <div style="font-size:13.5px;color:var(--ink2);">${item.label}</div>
-    </div>`
-  ).join('');
-  document.getElementById('tjOverlay').style.display = 'block';
-  document.getElementById('tjPopupBox').style.display = 'block';
+
+  // Header
+  document.getElementById('tjPopupTitle').innerHTML =
+    `<span style="display:inline-block;width:13px;height:13px;border-radius:50%;background:${g.color};margin-right:8px;vertical-align:middle;"></span>${g.title}`;
+  document.getElementById('tjPopupSubtitle').textContent = g.subtitle;
+
+  // Body
+  const itemsHtml = g.items.map(item => `
+    <div style="display:flex;gap:14px;padding:14px 16px;background:var(--warm1);border-radius:12px;border:1px solid var(--border);margin-bottom:10px;">
+      <div style="flex-shrink:0;margin-top:3px;">
+        <div style="width:12px;height:12px;border-radius:50%;background:${item.color};"></div>
+      </div>
+      <div>
+        <div style="font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:5px;">${item.label}</div>
+        <div style="font-size:13px;color:var(--ink2);line-height:1.8;">${item.desc}</div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('tjPopupBody').innerHTML = `
+    <div style="background:var(--warm1);border-radius:12px;border:1px solid var(--border);padding:16px 18px;margin-bottom:18px;">
+      <div style="font-size:13.5px;color:var(--ink);line-height:1.9;">${g.summary}</div>
+    </div>
+
+    <div style="background:#fffdf5;border-radius:12px;border:1px solid rgba(184,146,42,0.25);padding:14px 18px;margin-bottom:22px;">
+      <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;">বিস্তারিত</div>
+      <div style="font-size:13px;color:var(--ink2);line-height:1.9;">${g.detail}</div>
+    </div>
+
+    <div style="font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+      <span style="flex:1;height:1px;background:var(--border);display:block;"></span>
+      প্রকারভেদ
+      <span style="flex:1;height:1px;background:var(--border);display:block;"></span>
+    </div>
+
+    ${itemsHtml}
+
+    <div style="background:var(--gold-ll);border-radius:12px;border:1px solid rgba(184,146,42,0.3);padding:14px 18px;margin-top:8px;display:flex;gap:10px;align-items:flex-start;">
+      <span style="font-size:18px;flex-shrink:0;">💡</span>
+      <div style="font-size:13px;color:var(--ink2);line-height:1.8;">${g.tip}</div>
+    </div>`;
+
+  // Show with animation
+  const box = document.getElementById('tjPopupBox');
+  const overlay = document.getElementById('tjOverlay');
+  overlay.style.display = 'block';
+  box.style.display = 'flex';
+  box.style.transform = 'translateY(100%)';
+  box.style.transition = 'none';
+  requestAnimationFrame(() => {
+    box.style.transition = 'transform 0.3s cubic-bezier(.4,0,.2,1)';
+    box.style.transform = 'translateY(0)';
+  });
+  // scroll to top
+  document.getElementById('tjPopupBody').scrollTop = 0;
 }
 
 function closeTjPopup() {
-  document.getElementById('tjOverlay').style.display = 'none';
-  document.getElementById('tjPopupBox').style.display = 'none';
+  const box = document.getElementById('tjPopupBox');
+  if (!box) return;
+  box.style.transform = 'translateY(100%)';
+  setTimeout(() => {
+    box.style.display = 'none';
+    box.style.transition = '';
+    document.getElementById('tjOverlay').style.display = 'none';
+  }, 280);
 }
 
 // ── ctabsHtml: সব state থেকে সঠিক class নিয়ে render ──
 function ctabsHtml() {
   return `
+    <button class="ctab" onclick="openJumpPopup()" title="আয়াতে যান" style="font-size:15px;min-width:36px;display:inline-flex;align-items:center;justify-content:center;gap:5px;font-weight:500;letter-spacing:0.2px;">↘</button>
+    <div style="width:1px;height:32px;background:#ccc;margin:0 4px;"></div>
     <button class="ctab ${viewMode==='read'?'active':''}"   onclick="setView('read',this)">আরবি + বাংলা</button>
     <button class="ctab ${viewMode==='arabic'?'active':''}" onclick="setView('arabic',this)">শুধু আরবি</button>
 <div style="width:1px;height:32px;background:#ccc;margin:0 6px;"></div>	
@@ -683,7 +1200,10 @@ function ctabsHtml() {
     <button class="ctab ${overlayMode==='tajweed'?'on':''}" id="tajweedBtn"
       onclick="setOverlay('tajweed')" style="font-size:12px;font-weight:600;letter-spacing:0.2px;">✨তাজউইদ</button>
 <div style="width:1px;height:32px;background:#ccc;margin:0 6px;"></div>
-    <button style="margin-left:auto;font-size:20px;" class="ctab ${readingMode?'on':''}" id="readBtn" onclick="toggleReading()" title="রিডিং মোড">${readingMode?'✕':'📖'}</button>
+
+<button style="font-size:14px;min-width:44px;gap:5px;display:inline-flex;align-items:center;" class="ctab ${surahPlaying?'on':''}" id="playBtn" onclick="toggleSurahPlay()" title="${surahPlaying?(surahPaused?'চালু করুন':'বিরতি'):'সূরা চালু করুন'}">${surahPlaying?(surahPaused?'▶️':'⏸'):'▶️'}</button><button style="font-size:13px;display:${surahPlaying?'inline-flex':'none'};align-items:center;justify-content:center;" class="ctab" id="stopBtn" onclick="stopSurah()" title="বন্ধ করুন">⏹</button>
+
+    <button style="margin-left:auto;font-size:20px;" class="ctab ${readingMode?'on':''}" id="readBtn" onclick="toggleReading()" title="রিডিং মোড">${readingMode?'✕':'↔'}</button>
     <button class="ctab ${lockMode?'on':''}" id="lockBtn" onclick="toggleLock()"title="টাচ লক" style="display:${readingMode?'inline-flex':'none'};font-size:20px;">${lockMode?'🔒':'🔓'}</button>`;     
 }
 
@@ -706,13 +1226,16 @@ function _ensureTjPopupDom() {
   if (document.getElementById('tjOverlay')) return;
   const div = document.createElement('div');
   div.innerHTML = `
-    <div id="tjOverlay" onclick="closeTjPopup()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:2000;"></div>
-    <div id="tjPopupBox" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--warm1);border-radius:16px 16px 0 0;z-index:2001;padding:16px 20px 28px;max-height:60vh;overflow-y:auto;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-        <div id="tjPopupTitle" style="font-size:14px;font-weight:600;color:var(--ink);"></div>
-        <button onclick="closeTjPopup()" style="border:none;background:none;font-size:22px;color:var(--ink3);cursor:pointer;">✕</button>
+    <div id="tjOverlay" onclick="closeTjPopup()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:2000;backdrop-filter:blur(2px);"></div>
+    <div id="tjPopupBox" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--cream);border-radius:20px 20px 0 0;z-index:2001;height:80vh;flex-direction:column;overflow:hidden;box-shadow:0 -8px 40px rgba(0,0,0,0.18);">
+      <div id="tjPopupHeader" style="flex-shrink:0;padding:18px 22px 14px;background:var(--warm1);border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+        <div style="flex:1;">
+          <div id="tjPopupTitle" style="font-size:18px;font-weight:700;color:var(--ink);line-height:1.3;"></div>
+          <div id="tjPopupSubtitle" style="font-size:13px;color:var(--ink3);margin-top:4px;"></div>
+        </div>
+        <button onclick="closeTjPopup()" style="flex-shrink:0;width:34px;height:34px;border:none;background:var(--cream);border-radius:50%;font-size:18px;color:var(--ink3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s;" onmouseover="this.style.background='var(--cream3)'" onmouseout="this.style.background='var(--cream)'">✕</button>
       </div>
-      <div id="tjPopupBody"></div>
+      <div id="tjPopupBody" style="flex:1;overflow-y:auto;padding:18px 22px 32px;scrollbar-width:thin;scrollbar-color:var(--border) transparent;"></div>
     </div>`;
   document.body.appendChild(div);
 }
@@ -745,9 +1268,18 @@ function _reapplySessionState() {
     if (listEl) listEl.style.pointerEvents = 'none';
     document.getElementById('mainEl').style.overflow = 'hidden';
   }
-  // FIX ৫: overlay state reapply
+  // overlay state reapply
   document.body.classList.toggle('tajweed-on', tajweedMode);
   _syncOverlayButtons();
+  // audio state reapply
+  if (surahPlaying) {
+    const s = _surahQueue[_surahQueueIdx]?.s;
+    const a = _surahQueue[_surahQueueIdx]?.a;
+    _updatePlayBtn(s, a);
+    _syncHighlight();
+  } else {
+    _updatePlayBtn(null, null);
+  }
 }
 
 function showToast(msg) {
@@ -783,6 +1315,47 @@ async function loadAll() {
   }
 }
 
+function updateLogoIcon() {
+  const closed = document.getElementById('iconClosed');
+  const open   = document.getElementById('iconOpen');
+  if (!closed || !open) return;
+  if (currentSurah || currentJuz) {
+    // সূরা খোলা আছে → home icon দেখাও (click করলে goHome)
+    closed.style.display = '';
+    open.style.display   = 'none';
+  } else {
+    // home এ আছি → open book দেখাও (click করলে goBook)
+    open.style.display   = '';
+    closed.style.display = 'none';
+  }
+}
+
+let _lastSurah = null;
+let _lastJuz = null;
+let _lastScrollTop = 0;
+
+function goHome() {
+  if (!currentSurah && !currentJuz) return;
+  _lastSurah = currentSurah;
+  _lastJuz = currentJuz;
+  _lastScrollTop = document.getElementById('mainEl').scrollTop;
+  stopSurah();
+  currentSurah = null;
+  currentJuz = null;
+  document.getElementById('gSearch').value = '';
+  showEmpty();
+  document.querySelectorAll('.s-item.active').forEach(el => el.classList.remove('active'));
+  updateLogoIcon();
+}
+
+function goBook() {
+  if (_lastJuz) {
+    loadJuz(_lastJuz, _lastScrollTop);
+  } else {
+    loadSurah(_lastSurah || 1, _lastScrollTop);
+  }
+}
+
 function showEmpty() {
   document.getElementById('mainEl').innerHTML=`
     <div class="empty">
@@ -791,6 +1364,14 @@ function showEmpty() {
       <div class="empty-title">আল-কোরআনুল কারীম</div>
       <div class="empty-sub">বাম থেকে একটি সূরা বেছে নিন<br>অথবা উপরে বাংলায় সার্চ করুন</div>
     </div>`;
+  updateLogoIcon();
+}
+
+function scrollActiveIntoView() {
+  setTimeout(() => {
+    const active = document.querySelector('#sideList .s-item.active');
+    if (active) active.scrollIntoView({ block: 'center' });
+  }, 30);
 }
 
 function renderSideList(list) {
@@ -806,6 +1387,7 @@ function renderSideList(list) {
         <div style="font-size:9px;color:var(--ink3);direction:ltr;text-align:right;margin-top:2px;opacity:0.8;font-style:italic;">${s.revelation_place==='makkah'?'মক্কী':'মাদানী'} · ${toBn(s.verses_count)} আয়াত</div>
       </div>
     </div>`).join('');
+  scrollActiveIntoView();
 }
 
 function filterSide(q) {
@@ -821,29 +1403,30 @@ function filterSide(q) {
 function switchTab(tab,el) {
   document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
   el.classList.add('active'); currentTab=tab;
-  document.getElementById('sideFilter').value='';
   if(tab==='surah'){
-    document.getElementById('sideFilter').placeholder='সূরা বা অর্থ দিয়ে খুঁজুন…';
     renderSideList(Object.values(SURAHS));
   } else if(tab==='juz'){
-    document.getElementById('sideFilter').placeholder='পারা খুঁজুন…';
     renderJuzSide('');
   } else if(tab==='nazil'){
-    document.getElementById('sideFilter').placeholder='নাযিল ক্রম খুঁজুন…';
     renderNazilSide('');
   }
 }
 
 function renderJuzSide(q) {
+  // currentSurah যে পারায় আছে সেটা খুঁজে বের করো
+  const activejuz = currentSurah
+    ? Object.values(JUZ).find(j => Object.keys(j.verse_mapping).map(Number).includes(currentSurah))?.juz_number
+    : currentJuz;
   document.getElementById('sideList').innerHTML=Object.values(JUZ)
     .filter(j=>!q||String(j.juz_number).includes(q))
-    .map(j=>`<div class="s-item ${currentJuz==j.juz_number?'active':''}" onclick="loadJuz(${j.juz_number})">
+    .map(j=>`<div class="s-item ${activejuz==j.juz_number?'active':''}" onclick="loadJuz(${j.juz_number})">
       <div class="s-num">${toBn(j.juz_number)}</div>
       <div class="s-info">
         <div class="s-name">পারা ${toBn(j.juz_number)}</div>
         <div class="s-meta">${toBn(j.verses_count)} আয়াত · ${toBn(j.first_verse_key)}–${toBn(j.last_verse_key)}</div>
       </div>
     </div>`).join('');
+  scrollActiveIntoView();
 }
 
 function renderNazilSide(q) {
@@ -862,13 +1445,17 @@ function renderNazilSide(q) {
         <div style="font-size:9px;color:var(--ink3);direction:ltr;text-align:right;margin-top:2px;opacity:0.8;font-style:italic;">${s.revelation_place==='makkah'?'মক্কী':'মাদানী'} · ${toBn(s.verses_count)} আয়াত</div>
       </div>
     </div>`).join('');
+  scrollActiveIntoView();
 }
 
-function loadSurah(id) {
+function loadSurah(id, restoreScroll = 0) {
+  if (_isMobile()) closeMobileSidebar();
   currentSurah = id;
+  updateLogoIcon();
   currentJuz = null; // ✅ juz reset
   const s = SURAHS[id], ayahs = ayahBySurah[id] || [];
   if(currentTab==='nazil') renderNazilSide('');
+  else if(currentTab==='juz') renderJuzSide('');
   else renderSideList(Object.values(SURAHS));
   const bismillah = (id!==1 && id!==9 && s.bismillah_pre)
     ? `<div class="bismillah">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ</div>` : '';
@@ -879,7 +1466,7 @@ function loadSurah(id) {
       ${meaning}
       <div class="surah-hdr-meta">
         <span class="badge">সূরা ক্রম: ${toBn(id)}</span>
-        <span class="badge">আয়াত: ${toBn(s.verses_count)}</span>
+        <span class="badge">মোট আয়াত: ${toBn(s.verses_count)}</span>
         <span class="badge">নাযিল ক্রম: ${toBn(s.revelation_order)}</span>
         <span class="badge gold">${s.revelation_place==='makkah'?'🕋 মক্কায় অবতীর্ণ':'🕌 মদীনায় অবতীর্ণ'}</span>
       </div>
@@ -888,7 +1475,7 @@ function loadSurah(id) {
     <div class="ctabs">${ctabsHtml()}</div>
     ${tajweedLegendHtml()}
     <div class="ayah-list" id="ayahList">${ayahs.map((a,i)=>ayahHtml(a,viewMode,i)).join('')}</div>`;
-  document.getElementById('mainEl').scrollTop = 0;
+  document.getElementById('mainEl').scrollTop = restoreScroll;
   _reapplySessionState(); // FIX ৪+৫
 }
 
@@ -924,9 +1511,9 @@ if (mode !== 'bangla') {
     }
   }
 
-  return `<div class="ayah-card" style="animation-delay:${delay}ms" ondblclick="showTafsir('${a.verse_key}')">
+  return `<div class="ayah-card" id="ayah-card-${a.surah_number}-${a.ayah_number}" style="animation-delay:${delay}ms" ondblclick="showTafsir('${a.verse_key}')">
     <div class="a-num-wrap">
-      <div class="a-num">${toBn(a.ayah_number)}</div>
+      <div class="a-num" id="ayah-btn-${a.surah_number}-${a.ayah_number}" onclick="playAyah(${a.surah_number},${a.ayah_number})" style="cursor:pointer;" title="শুনুন"><span class="a-num-label">${toBn(a.ayah_number)}</span><span class="a-num-play">▶</span></div>
       <div class="a-dot"></div>
       <div onclick="showCopyPopup('${a.verse_key}')" style="cursor:pointer;color:var(--ink4);font-size:14px;margin-top:4px;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink4)'">📋</div>
       <div onclick="showTafsir('${a.verse_key}')" style="cursor:pointer;color:var(--ink4);font-size:14px;margin-top:4px;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink4)'">📚</div>
@@ -957,10 +1544,14 @@ function setView(mode, btn) {
   refreshAyahList();
 }
 
-function loadJuz(num) {
+function loadJuz(num, restoreScroll = 0) {
+  if (_isMobile()) closeMobileSidebar();
   currentJuz = num;
-  currentSurah = null; // ✅ surah reset
-  renderJuzSide('');
+  currentSurah = null;
+  updateLogoIcon(); // ✅ surah reset
+  if(currentTab==='juz') renderJuzSide('');
+  else if(currentTab==='nazil') renderNazilSide('');
+  else renderSideList(Object.values(SURAHS));
   const j = JUZ[num]; let ayahs = [];
   for(const [sid,range] of Object.entries(j.verse_mapping)){
     const [s,e] = range.split('-').map(Number);
@@ -977,7 +1568,7 @@ function loadJuz(num) {
     <div class="ctabs">${ctabsHtml()}</div>
     ${tajweedLegendHtml()}
     <div class="ayah-list" id="ayahList">${ayahs.map((a,i)=>ayahHtml(a,viewMode,i)).join('')}</div>`;
-  document.getElementById('mainEl').scrollTop = 0;
+  document.getElementById('mainEl').scrollTop = restoreScroll;
   _reapplySessionState(); // FIX ৪+৫
 }
 
@@ -1001,7 +1592,7 @@ function toggleReading() {
   const readBtn = document.getElementById('readBtn');
   if(readBtn) {
     readBtn.classList.toggle('on', readingMode);
-    readBtn.textContent = readingMode ? '✕' : '📖';
+    readBtn.textContent = readingMode ? '✕' : '↔';
   }
   const lockBtn = document.getElementById('lockBtn');
   if(lockBtn) lockBtn.style.display = readingMode ? 'inline-flex' : 'none';
@@ -1043,7 +1634,80 @@ function doSearch(q) {
         </div>`;
       }).join('')}
     </div>`;
-  document.getElementById('mainEl').scrollTop = 0;
+  document.getElementById('mainEl').scrollTop = restoreScroll;
+}
+
+// ── Jump to Ayah ──
+let _jumpSurah = null;
+let _jumpAyah  = 1;
+
+function openJumpPopup() {
+  _jumpSurah = currentSurah ? Object.values(SURAHS).find(s=>s.id===currentSurah) : Object.values(SURAHS)[0];
+  _jumpAyah  = 1;
+  document.getElementById('jumpOverlay').style.display = 'block';
+  document.getElementById('jumpPopup').style.display   = 'flex';
+  _renderJumpSurahs();
+  _renderJumpAyahs();
+  setTimeout(()=>{
+    const el = document.querySelector('#jumpSurahList .jp-srow.jp-on');
+    if(el) el.scrollIntoView({block:'center'});
+  }, 40);
+}
+
+function closeJumpPopup() {
+  document.getElementById('jumpOverlay').style.display = 'none';
+  document.getElementById('jumpPopup').style.display   = 'none';
+}
+
+function _renderJumpSurahs() {
+  document.getElementById('jumpSurahList').innerHTML = Object.values(SURAHS).map(s=>`
+    <div class="jp-srow ${s.id===_jumpSurah?.id?'jp-on':''}" onclick="_pickJumpSurah(${s.id})"
+      style="padding:8px 12px;border-bottom:1px solid #f0ece4;cursor:pointer;display:flex;align-items:center;gap:8px;${s.id===_jumpSurah?.id?'background:#fdf8f0;border-left:2.5px solid var(--gold);':''}">
+      <div style="width:24px;height:24px;border-radius:5px;border:1px solid ${s.id===_jumpSurah?.id?'var(--gold)':'var(--border2)'};display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:600;flex-shrink:0;background:${s.id===_jumpSurah?.id?'var(--gold)':'transparent'};color:${s.id===_jumpSurah?.id?'#fff':'var(--ink3)'};">${toBn(s.id)}</div>
+      <div style="font-size:12px;font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:${s.id===_jumpSurah?.id?'var(--gold)':'var(--ink)'};">${SURAH_BN[s.id]||s.name_simple}</div>
+      <div style="font-size:13px;color:${s.id===_jumpSurah?.id?'var(--gold)':'var(--ink4)'};direction:rtl;flex-shrink:0;">${s.name_arabic}</div>
+    </div>`).join('');
+}
+
+function _renderJumpAyahs() {
+  if(!_jumpSurah) return;
+  const total = _jumpSurah.verses_count;
+  document.getElementById('jumpAyahLabel').textContent = `আয়াত — ${SURAH_BN[_jumpSurah.id]} (${toBn(total)}টি)`;
+  document.getElementById('jumpAyahGrid').innerHTML = Array.from({length:total},(_,i)=>i+1).map(n=>`
+    <div onclick="_pickJumpAyah(${n})"
+      style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;border:1px solid ${n===_jumpAyah?'var(--gold)':'var(--border)'};border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;background:${n===_jumpAyah?'var(--gold)':'#fff'};color:${n===_jumpAyah?'#fff':'var(--ink2)'};transition:all 0.12s;font-family:var(--sans);"
+      onmouseover="if(${n}!==_jumpAyah){this.style.borderColor='var(--gold)';this.style.color='var(--gold)';}"
+      onmouseout="if(${n}!==_jumpAyah){this.style.borderColor='var(--border)';this.style.color='var(--ink2)';}">
+      ${toBn(n)}
+    </div>`).join('');
+  _updateJumpSel();
+}
+
+function _pickJumpSurah(id) {
+  _jumpSurah = Object.values(SURAHS).find(s=>s.id===id);
+  _jumpAyah  = 1;
+  _renderJumpSurahs();
+  _renderJumpAyahs();
+}
+
+function _pickJumpAyah(n) {
+  _jumpAyah = n;
+  _renderJumpAyahs();
+}
+
+function _updateJumpSel() {
+  if(!_jumpSurah) return;
+  document.getElementById('jumpSelText').textContent = `${SURAH_BN[_jumpSurah.id]} · আয়াত ${toBn(_jumpAyah)}`;
+}
+
+function doJump() {
+  if(!_jumpSurah) return;
+  closeJumpPopup();
+  loadSurah(_jumpSurah.id);
+  setTimeout(()=>{
+    const target = document.getElementById(`ayah-card-${_jumpSurah.id}-${_jumpAyah}`);
+    if(target) target.scrollIntoView({behavior:'smooth',block:'center'});
+  }, 400);
 }
 
 function showCopyPopup(verseKey) {
@@ -1097,34 +1761,548 @@ function doCopy(type) {
   navigator.clipboard.writeText(text).then(() => { closeCopyPopup(); showToast('কপি হয়েছে ✓'); });
 }
 
+// ── MOBILE SIDEBAR ──
+
+function toggleMobileSidebar() {
+  const sidebar  = document.getElementById('sidebar');
+  const backdrop = document.getElementById('mobileBackdrop');
+  const isOpen   = sidebar.classList.contains('mobile-open');
+  if (isOpen) {
+    sidebar.classList.remove('mobile-open');
+    backdrop.classList.remove('show');
+  } else {
+    sidebar.classList.add('mobile-open');
+    backdrop.classList.add('show');
+  }
+}
+
+function closeMobileSidebar() {
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('mobileBackdrop').classList.remove('show');
+}
+
+function _setupMobileUI() {
+  const btn = document.getElementById('mobileSidebarBtn');
+  if (!btn) return;
+  if (_isMobile()) {
+    btn.style.display = 'flex';
+  } else {
+    btn.style.display = 'none';
+    closeMobileSidebar();
+  }
+}
+
+// মোবাইলে সূরা ক্লিক করলে sidebar বন্ধ হবে (loadSurah/loadJuz এ যোগ করা হয়েছে)
+
+window.addEventListener('resize', _setupMobileUI);
+document.addEventListener('DOMContentLoaded', _setupMobileUI);
+setTimeout(_setupMobileUI, 100);
+
 loadAll();
 
-// ── Word Popup ──
+// ── MOKHTASAR ──
+let MOKHTASAR = {};
+let MOKHTASAR_LOADING = null;
+
+function loadMokhtasar() {
+  if (Object.keys(MOKHTASAR).length > 0) return Promise.resolve();
+  if (MOKHTASAR_LOADING) return MOKHTASAR_LOADING;
+  MOKHTASAR_LOADING = fetch('./bengali-mokhtasar.json')
+    .then(r => r.json())
+    .then(data => { MOKHTASAR = data; MOKHTASAR_LOADING = null; })
+    .catch(() => { showToast('তাফসির মুখতাসার ফাইল লোড হয়নি'); MOKHTASAR_LOADING = null; });
+  return MOKHTASAR_LOADING;
+}
+
+// ── WORD POPUP (নতুন JSON: bangla_quran_serial.json) ──
+
+const WP_COLORS = {
+  prefixA: { bg:'#E8EAF0', border:'#8A90B8', dot:'#505880', text:'#282C4A' },
+  prefixB: { bg:'#F3F4FA', border:'#C0C4DC', dot:'#9098C0', text:'#505878' },
+  stem:    { bg:'#E8E6E0', border:'#2C2C2A', dot:'#2C2C2A', text:'#2C2C2A', extra:'border-width:2px;font-weight:700;' },
+  stem2:   { bg:'#F5E8EA', border:'#8A2A30', dot:'#8A2A30', text:'#5A1A1E', extra:'border-width:2px;font-weight:700;' },
+  suffixA: { bg:'#EDE8DA', border:'#B8A87A', dot:'#8A7248', text:'#4A3C20' },
+  suffixB: { bg:'#F7F3E8', border:'#D8CEAA', dot:'#C0B080', text:'#786848' },
+};
+const WP_SEG_COLORS = {
+  prefixA:'#505880', prefixB:'#9098C0',
+  stem:'#2C2C2A',    stem2:'#8A2A30',
+  suffixA:'#8A7248', suffixB:'#C0B080',
+};
+
+let _currentAudio = null;
+let _surahQueue   = [];
+let _surahQueueIdx = 0;
+let surahPlaying  = false;
+let surahPaused   = false;  // নতুন — pause state
+let _singleAyahPlaying = false; // individual আয়াত play হচ্ছে কিনা
+let _introPlaying = false;      // আউযু/বিসমিল্লাহ play হচ্ছে কিনা
+let _introPlayed  = false;      // প্রথমবার intro বাজানো হয়েছে কিনা
+
+function ayahAudioUrl(s, a) {
+  const p = n => String(n).padStart(3, '0');
+  return `./audio/${p(s)}${p(a)}.mp3`;
+}
+
+function stopSurah() {
+  surahPlaying = false;
+  surahPaused  = false;
+  _introPlaying = false;
+  if (_currentAudio) { _currentAudio.pause(); _currentAudio.onended = null; _currentAudio = null; }
+  _updatePlayBtn(null, null);
+  _highlightAyahBtn(null, null);
+}
+
+function toggleSurahPlay() {
+  // individual আয়াত play চলাকালীন সূরা play block
+  if (_singleAyahPlaying) return;
+
+  // ── চলছে → pause ──
+  if (surahPlaying && !surahPaused) {
+    surahPaused = true;
+    if (_currentAudio) _currentAudio.pause();
+    _updatePlayBtn(_surahQueue[_surahQueueIdx]?.s, _surahQueue[_surahQueueIdx]?.a);
+    return;
+  }
+  // ── paused → resume ──
+  if (surahPlaying && surahPaused) {
+    surahPaused = false;
+    if (_currentAudio) {
+      _currentAudio.play().catch(() => { _surahQueueIdx++; playSurahQueue(); });
+    } else {
+      playSurahQueue();
+    }
+    _updatePlayBtn(_surahQueue[_surahQueueIdx]?.s, _surahQueue[_surahQueueIdx]?.a);
+    return;
+  }
+  // ── বন্ধ → শুরু ──
+  const ayahs = ayahBySurah[currentSurah] || [];
+  if (!ayahs.length) return;
+  _surahQueue    = ayahs.map(a => ({ s: a.surah_number, a: a.ayah_number }));
+  _surahQueueIdx = 0;
+  surahPlaying   = true;
+  surahPaused    = false;
+  _updatePlayBtn(null, null);
+  // প্রথমবার মাত্র আউযুবিল্লাহ → বিসমিল্লাহ বাজবে
+  if (!_introPlayed) {
+    _introPlayed = true;
+    const _curS = SURAHS[currentSurah];
+    const _hasBismillah = (currentSurah !== 1 && currentSurah !== 9 && _curS && _curS.bismillah_pre);
+    const _playBismi = () => {
+      if (_hasBismillah) {
+        const _bismi = new Audio('./audio/bismillah.mp3');
+        _bismi.play().catch(() => { _introPlaying = false; playSurahQueue(); });
+        _bismi.onended = () => { _introPlaying = false; playSurahQueue(); };
+      } else { _introPlaying = false; playSurahQueue(); }
+    };
+    _introPlaying = true;
+    const _audhu = new Audio('./audio/audhubillah.mp3');
+    _audhu.play().catch(() => _playBismi());
+    _audhu.onended = () => _playBismi();
+  } else {
+    playSurahQueue();
+  }
+}
+
+function playSurahQueue() {
+  if (!surahPlaying || _surahQueueIdx >= _surahQueue.length) {
+    surahPlaying = false;
+    surahPaused  = false;
+    _updatePlayBtn(null, null);
+    _highlightAyahBtn(null, null);
+    return;
+  }
+  const { s, a } = _surahQueue[_surahQueueIdx];
+  _highlightAyahBtn(s, a);
+  _updatePlayBtn(s, a);
+  // নতুন আয়াতে scroll
+  setTimeout(() => {
+    const el = document.getElementById(`ayah-btn-${s}-${a}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
+  _currentAudio = new Audio(ayahAudioUrl(s, a));
+  _currentAudio.play().catch(() => { _surahQueueIdx++; playSurahQueue(); });
+  _currentAudio.onended = () => { _surahQueueIdx++; playSurahQueue(); };
+}
+
+function _updatePlayBtn(s, a) {
+  const btn  = document.getElementById('playBtn');
+  const stop = document.getElementById('stopBtn');
+  if (!btn) return;
+  const active = surahPlaying;
+  btn.classList.toggle('on', active);
+  if (stop) stop.style.display = active ? 'inline-flex' : 'none';
+  if (!active) {
+    btn.innerHTML = '▶️';
+    btn.style.fontSize = '20px';
+    btn.style.minWidth = '44px';
+    btn.title = 'সূরা চালু করুন';
+    return;
+  }
+  btn.style.fontSize = '13px';
+  btn.style.minWidth = '';
+  const ayahLabel = (s != null && a != null) ? toBn(`${s}:${a}`) : '';
+  const icon = surahPaused ? '▶️' : '⏸';
+  btn.title = surahPaused ? 'চালু করুন' : 'বিরতি';
+  btn.innerHTML = `<span style="font-size:15px;line-height:1;">${icon}</span><span style="font-weight:700;letter-spacing:0.3px;">${ayahLabel}</span>`;
+}
+
+let _currentPlayingS = null;
+let _currentPlayingA = null;
+
+function _highlightAyahBtn(s, a) {
+  _currentPlayingS = s;
+  _currentPlayingA = a;
+  _syncHighlight();
+}
+
+function _syncHighlight() {
+  document.querySelectorAll('.a-num.playing').forEach(el => el.classList.remove('playing'));
+  if (_currentPlayingS == null) return;
+  const el = document.getElementById(`ayah-btn-${_currentPlayingS}-${_currentPlayingA}`);
+  if (el) el.classList.add('playing');
+}
+
+// প্রতি 500ms এ শুধু highlight sync করা
+setInterval(() => {
+  _syncHighlight();
+}, 500);
+
+function rerenderCtabs() {
+  document.querySelectorAll('.ctabs').forEach(el => { el.innerHTML = ctabsHtml(); });
+  _reapplySessionState();
+}
+
+function playAyah(surah, ayah) {
+  // আউযু/বিসমিল্লাহ চলাকালীন আয়াত play block
+  if (_introPlaying) return;
+  if (_currentAudio) { _currentAudio.pause(); _currentAudio.onended = null; _currentAudio = null; }
+
+  if (surahPlaying && !surahPaused) {
+    // ── actively playing ── ওই আয়াত থেকে reset করে চালু
+    const ayahs = ayahBySurah[surah] || [];
+    _surahQueue    = ayahs.map(a => ({ s: a.surah_number, a: a.ayah_number }));
+    _surahQueueIdx = Math.max(0, _surahQueue.findIndex(q => q.a === ayah));
+    playSurahQueue();
+  } else {
+    // ── বন্ধ বা paused ── শুধু এই একটা আয়াত, তারপর আগের status ফিরিয়ে দেওয়া
+    const _wasPlaying = surahPlaying;
+    const _wasPaused  = surahPaused;
+    const _savedS     = _surahQueue[_surahQueueIdx]?.s;
+    const _savedA     = _surahQueue[_surahQueueIdx]?.a;
+
+    _singleAyahPlaying = true;
+    _highlightAyahBtn(surah, ayah);
+    _updatePlayBtn(surah, ayah);
+    _currentAudio = new Audio(ayahAudioUrl(surah, ayah));
+    _currentAudio.play().catch(() => {
+      showToast('অডিও পাওয়া যায়নি');
+      _singleAyahPlaying = false;
+      _highlightAyahBtn(_wasPlaying ? _savedS : null, _wasPlaying ? _savedA : null);
+      _updatePlayBtn(_wasPlaying ? _savedS : null, _wasPlaying ? _savedA : null);
+    });
+    _currentAudio.onended = () => {
+      _currentAudio = null;
+      _singleAyahPlaying = false;
+      // আগের pause state ফিরিয়ে দেওয়া
+      surahPlaying = _wasPlaying;
+      surahPaused  = _wasPaused;
+      _highlightAyahBtn(_wasPlaying ? _savedS : null, _wasPlaying ? _savedA : null);
+      _updatePlayBtn(_wasPlaying ? _savedS : null, _wasPlaying ? _savedA : null);
+    };
+  }
+}
+
+
+let QAC_SERIAL = {};
+let QAC_SERIAL_LOADING = null;
+// (audio functions defined above)
+let _wpCurrentKey = null;
+let _wpAllKeys    = [];
+
+function loadQAC() {
+  if (Object.keys(QAC_SERIAL).length > 0) return Promise.resolve();
+  if (QAC_SERIAL_LOADING) return QAC_SERIAL_LOADING;
+  QAC_SERIAL_LOADING = fetch('./bangla_quran_serial.json')
+    .then(r => r.json())
+    .then(data => {
+      // index by "surah:ayah:word" → array of segments
+      data.forEach(seg => {
+        const m = (seg.location || '').match(/^(\d+):(\d+):(\d+)/);
+        if (!m) return;
+        const key = `${m[1]}:${m[2]}:${m[3]}`;
+        if (!QAC_SERIAL[key]) QAC_SERIAL[key] = [];
+        QAC_SERIAL[key].push(seg);
+      });
+      QAC_SERIAL_LOADING = null;
+    })
+    .catch(() => { showToast('শব্দ ডেটা লোড হয়নি'); QAC_SERIAL_LOADING = null; });
+  return QAC_SERIAL_LOADING;
+}
+
+function _wpSegType(seg) {
+  const t = (seg.type || '').toUpperCase();
+  if (t === 'PREFIX') return 'prefix';
+  if (t === 'SUFFIX') return 'suffix';
+  return 'stem';
+}
+
+function _wpAssignColors(segs) {
+  const prefixSegs = segs.filter(s => _wpSegType(s) === 'prefix');
+  const suffixSegs = segs.filter(s => _wpSegType(s) === 'suffix');
+  let pc = 0, sc = 0, stc = 0;
+  return segs.map(seg => {
+    const t = _wpSegType(seg);
+    if (t === 'prefix') {
+      const dist = (prefixSegs.length - 1) - pc;
+      const ck = dist % 2 === 0 ? 'prefixB' : 'prefixA';
+      pc++;
+      return { ...seg, _ck: ck, _color: WP_SEG_COLORS[ck] };
+    } else if (t === 'stem') {
+      const ck = stc === 0 ? 'stem' : 'stem2';
+      stc++;
+      return { ...seg, _ck: ck, _color: WP_SEG_COLORS[ck] };
+    } else {
+      const ck = sc % 2 === 0 ? 'suffixB' : 'suffixA';
+      sc++;
+      return { ...seg, _ck: ck, _color: WP_SEG_COLORS[ck] };
+    }
+  });
+}
+
+function _wpGramText(seg) {
+  const tag = (seg.tag || '').trim();
+  const feat = (seg.features || '').trim();
+  if (!tag) return feat;
+  if (feat.includes(tag)) return feat;
+  return feat ? tag + ' | ' + feat : tag;
+}
+
+function _wpBuildHtml(key, segs) {
+  const [s, a, w] = key.split(':');
+  const surahName = SURAH_BN[parseInt(s)] || ('সূরা ' + toBn(s));
+  const colored   = _wpAssignColors(segs);
+  const idx       = _wpAllKeys.indexOf(key);
+
+  // আরবি বড় হরফ
+  const arabicHtml = colored.map(seg =>
+    `<span style="color:${seg._color}">${seg.form_arabic || ''}</span>`
+  ).join('');
+
+  // seg dots — RTL container তে array যেভাবে আছে সেভাবেই রাখো
+  // + sign প্রতিটির পরে (display-এ বামে) বসবে, শেষেরটা ছাড়া
+  const dotsHtml = colored.map((seg, i, arr) => {
+    const plus = i < arr.length - 1
+      ? `<div style="color:#C0A870;font-size:13px;align-self:flex-end;padding-bottom:6px;padding-left:2px;padding-right:2px;">+</div>`
+      : '';
+    return `<div class="wp-seg-dot">
+      <div style="font-family:'ScheherazadeNew','Uthmanic',serif;font-size:20px;color:${seg._color};line-height:1;margin-bottom:4px;">${seg.form_arabic || ''}</div>
+      <div class="wp-dot-circle" style="background:${seg._color}"></div>
+    </div>${plus}`;
+  }).join('');
+
+  // ব্যাকরণ cards — zone-based
+  const prefixCards = colored.filter(s => s._ck.startsWith('prefix'));
+  const stemCards   = colored.filter(s => s._ck === 'stem' || s._ck === 'stem2');
+  const suffixCards = colored.filter(s => s._ck.startsWith('suffix'));
+
+  function makeCards(cards) {
+    return [...cards].reverse().map(seg => {
+      const c   = WP_COLORS[seg._ck] || WP_COLORS.stem;
+      const ext = c.extra || '';
+      return `<div class="wp-g-card" style="background:${c.bg};border-color:${c.border};color:${c.text};${ext}">
+        <span class="wp-g-dot" style="background:${c.dot}"></span>${_wpGramText(seg)}
+      </div>`;
+    }).join('');
+  }
+
+  let gramHtml = '';
+  if (prefixCards.length) gramHtml += `<div class="wp-g-zone zone-prefix">${makeCards(prefixCards)}</div>`;
+  if (stemCards.length)   gramHtml += `<div class="wp-g-zone zone-stem">${makeCards(stemCards)}</div>`;
+  if (suffixCards.length) gramHtml += `<div class="wp-g-zone zone-suffix">${makeCards(suffixCards)}</div>`;
+
+  // pills — lemma ও root STEM থেকে
+  const stemSeg  = colored.find(s => (_wpSegType(s) === 'stem') && s.lem_arabic);
+  const rootSeg  = colored.find(s => s.root_arabic);
+  let pillsHtml = '';
+  if (stemSeg) {
+    pillsHtml += `<div class="wp-pill amber">
+      <span class="wp-ptag">অভিধান</span>
+      <div class="wp-pmeanings">
+        ${[stemSeg.lem_m1, stemSeg.lem_m2, stemSeg.lem_m3].filter(Boolean).map(m=>`<span class="wp-pm">${m}</span>`).join('')}
+      </div>
+      <span class="wp-par">${stemSeg.lem_arabic}</span>
+    </div>`;
+  }
+  if (rootSeg && rootSeg.root_arabic) {
+    pillsHtml += `<div class="wp-pill purple">
+      <span class="wp-ptag">মূল উৎস</span>
+      <div class="wp-pmeanings">
+        ${[rootSeg.root_m1, rootSeg.root_m2, rootSeg.root_m3].filter(Boolean).map(m=>`<span class="wp-pm">${m}</span>`).join('')}
+      </div>
+      <span class="wp-proot">${rootSeg.root_arabic}</span>
+    </div>`;
+  }
+  if (!pillsHtml) pillsHtml = '<div style="text-align:center;color:#A08858;font-size:12px;padding:8px">এই শব্দে পৃথক মূল তথ্য নেই</div>';
+
+  // বাংলা অনুবাদ (WBW থেকে)
+  const bnWord = WBW[key] || '';
+
+  return `
+    <div class="wp-top-band">
+      <button class="wp-nav-btn" ${idx < _wpAllKeys.length - 1 ? '' : 'disabled'} onclick="wpNav(1)">‹</button>
+      <div class="wp-ref-center">
+        <span class="wp-ref-surah">${surahName}</span>
+        <span class="wp-ref-ayah">সূরা ${toBn(s)} · আয়াত ${toBn(a)} · শব্দ ${toBn(w)}</span>
+      </div>
+      <button class="wp-nav-btn" ${idx > 0 ? '' : 'disabled'} onclick="wpNav(-1)">›</button>
+      <button class="wp-close-btn" onclick="closeWordPopup()" title="বন্ধ করুন">✕</button>
+    </div>
+
+    <div class="wp-hero">
+      <div class="wp-arabic-big wp-audio-word"
+           onclick="wpPlayAudio('${s}','${a}','${w}',this)"
+           title="শব্দটি শুনতে ক্লিক করুন"
+           style="cursor:pointer;">${arabicHtml}</div>
+    </div>
+
+    ${bnWord ? `<div class="wp-translation"><span class="wp-translation-text">${bnWord}</span></div>` : ''}
+
+    <div class="wp-section">
+      <div class="wp-sec-label">আভিধানিক রূপ ও মূল উৎস</div>
+      ${pillsHtml}
+    </div>
+
+    <div class="wp-section">
+      <div class="wp-seg-dots">${dotsHtml}</div>
+      <div style="margin-top:12px;">
+        <div class="wp-sec-label">ব্যাকরণ বিশ্লেষণ</div>
+        <div class="wp-grammar-grid">${gramHtml}</div>
+      </div>
+    </div>
+
+    <div class="wp-note-section">
+      <div class="wp-note-bar" data-versekey="${s}:${a}" onclick="wpToggleNote(this)">
+        📝 নোট 
+        <span class="wp-note-arrow">▾</span>
+      </div>
+      <div class="wp-note-body"></div>
+    </div>`;
+}
+
 function showWordPopup(e, key, arWord) {
-  e.stopPropagation();
-  const b = WBW[key] || '';
-  if (!b && !arWord) return;
+  if (e) e.stopPropagation();
+  _wpCurrentKey = key;
+  const [s, a] = key.split(':');
+
+  // একই আয়াতের সব শব্দ key তৈরি করা
+  const words = WORD_CACHE[`${s}:${a}`] || [];
+  if (words.length) {
+    _wpAllKeys = words.map((_, i) => `${s}:${a}:${i + 1}`);
+  } else {
+    _wpAllKeys = [key];
+  }
+
+  const overlay = document.getElementById('wordOverlay');
+  const popup   = document.getElementById('wordPopup');
+  overlay.classList.add('open');
+  popup.classList.add('open');
+  popup.innerHTML = '<div class="wp-empty">লোড হচ্ছে…</div>';
+
+  Promise.all([loadQAC(), loadWBW()]).then(() => _renderWordPopup(key));
+}
+
+function _renderWordPopup(key) {
   const popup = document.getElementById('wordPopup');
-  document.getElementById('wpAr').textContent = arWord;
-  document.getElementById('wpBn').textContent = b || 'অর্থ পাওয়া যায়নি';
-  const parts = key.split(':');
-  document.getElementById('wpKey').textContent = `শব্দ ${toBn(parts[2])} • সূরা ${toBn(parts[0])} : আয়াত ${toBn(parts[1])}`;
-  const vw = window.innerWidth, vh = window.innerHeight;
-  const pw = 260, ph = 160;
-  let x = e.clientX + 12, y = e.clientY + 12;
-  if (x + pw > vw - 12) x = e.clientX - pw - 12;
-  if (y + ph > vh - 12) y = e.clientY - ph - 12;
-  if (x < 12) x = 12;
-  if (y < 12) y = 12;
-  popup.style.left = x + 'px';
-  popup.style.top  = y + 'px';
-  popup.style.display = 'block';
-  document.getElementById('wordOverlay').style.display = 'block';
+  const segs  = QAC_SERIAL[key];
+  if (!segs || !segs.length) {
+    const [s, a, w] = key.split(':');
+    const bnWord = WBW[key] || '';
+    const idx = _wpAllKeys.indexOf(key);
+    popup.innerHTML = `
+      <div class="wp-top-band">
+        <button class="wp-nav-btn" ${idx < _wpAllKeys.length - 1 ? '' : 'disabled'} onclick="wpNav(1)">‹</button>
+        <div class="wp-ref-center">
+          <span class="wp-ref-surah">${SURAH_BN[parseInt(s)] || ''}</span>
+          <span class="wp-ref-ayah">আয়াত ${toBn(a)} · শব্দ ${toBn(w)}</span>
+        </div>
+        <button class="wp-nav-btn" ${idx > 0 ? '' : 'disabled'} onclick="wpNav(-1)">›</button>
+        <button class="wp-close-btn" onclick="closeWordPopup()" title="বন্ধ করুন">✕</button>
+      </div>
+      ${bnWord ? `<div class="wp-translation"><span class="wp-translation-text">${bnWord}</span></div>` : ''}
+      <div class="wp-empty">বিস্তারিত তথ্য পাওয়া যায়নি।</div>
+      <div class="wp-note-section">
+        <div class="wp-note-bar" data-versekey="${s}:${a}" onclick="wpToggleNote(this)">
+          📝 আয়াতের তাফসীর (মুখতাসার)
+          <span class="wp-note-arrow">▾</span>
+        </div>
+        <div class="wp-note-body"></div>
+      </div>`;
+    return;
+  }
+  popup.innerHTML = _wpBuildHtml(key, segs);
+  _wpCurrentKey = key;
+}
+
+function wpNav(dir) {
+  const idx = _wpAllKeys.indexOf(_wpCurrentKey);
+  const n   = idx + dir;
+  if (n < 0 || n >= _wpAllKeys.length) return;
+  _wpCurrentKey = _wpAllKeys[n];
+  document.getElementById('wordPopup').innerHTML = '<div class="wp-empty">লোড হচ্ছে…</div>';
+  Promise.all([loadQAC(), loadWBW()]).then(() => _renderWordPopup(_wpCurrentKey));
 }
 
 function closeWordPopup() {
-  document.getElementById('wordPopup').style.display = 'none';
-  document.getElementById('wordOverlay').style.display = 'none';
+  document.getElementById('wordOverlay').classList.remove('open');
+  document.getElementById('wordPopup').classList.remove('open');
+  _wpCurrentKey = null;
+  // চলমান audio বন্ধ করো
+  if (window._wpAudio) { window._wpAudio.pause(); window._wpAudio = null; }
+}
+
+function wpPlayAudio(s, a, w, el) {
+  const pad = n => String(n).padStart(3,'0');
+  const src = `./wbw/${pad(s)}_${pad(a)}_${pad(w)}.mp3`;
+
+  // আগের word audio বন্ধ করো
+  if (window._wpAudio) { window._wpAudio.pause(); window._wpAudio = null; }
+
+  // main audio pause করো এবং অবস্থা মনে রাখো
+  const mainWasPlaying = _currentAudio && !_currentAudio.paused;
+  if (mainWasPlaying) { _currentAudio.pause(); }
+
+  const audio = new Audio(src);
+  window._wpAudio = audio;
+
+  // word শেষে / error-এ main audio resume করার helper
+  const resumeMain = () => {
+    if (el) el.classList.remove('wp-audio-playing');
+    window._wpAudio = null;
+    if (mainWasPlaying && _currentAudio) { _currentAudio.play().catch(() => {}); }
+  };
+
+  // playing class যোগ করো
+  if (el) el.classList.add('wp-audio-playing');
+  audio.play().catch(() => { showToast('অডিও পাওয়া যায়নি'); resumeMain(); });
+  audio.onended = resumeMain;
+  audio.onerror = resumeMain;
+}
+
+function wpToggleNote(btn) {
+  const body  = btn.nextElementSibling;
+  const arrow = btn.querySelector('.wp-note-arrow');
+  const verseKey = btn.dataset.versekey;
+  const isOpen = body.classList.toggle('open');
+  arrow.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0)';
+  if (isOpen && body.dataset.loaded !== '1') {
+    body.innerHTML = '<span style="color:#A89060;">লোড হচ্ছে…</span>';
+    loadMokhtasar().then(() => {
+      const text = MOKHTASAR[verseKey]?.text || 'এই আয়াতের তাফসীর পাওয়া যায়নি।';
+      body.innerHTML = text;
+      body.dataset.loaded = '1';
+    });
+  }
 }
 
 // ── Settings ──
@@ -1305,28 +2483,91 @@ function applyFonts(){
   toggleSettings();
 }
 
+// Built-in factory defaults
+const _factoryDefaults = {
+  arFont:'Uthmanic', bnFont:'HindSiliguri', uiFont:'KoHo', tafsirFont:'HindSiliguri', wbwFont:'HindSiliguri',
+  arSz:31, bnSz:14, uiSz:14, tafsirSz:14, wbwSz:10
+};
+
+function _getDefaults(){
+  try {
+    const saved = localStorage.getItem('quran_user_defaults');
+    return saved ? JSON.parse(saved) : _factoryDefaults;
+  } catch(e){ return _factoryDefaults; }
+}
+
+function saveAsDefault(){
+  const d = {
+    arFont:     document.getElementById('cfg_arFont').value,
+    bnFont:     document.getElementById('cfg_bnFont').value,
+    uiFont:     document.getElementById('cfg_uiFont').value,
+    tafsirFont: document.getElementById('cfg_tafsirFont').value,
+    wbwFont:    document.getElementById('cfg_wbwFont').value,
+    arSz: _sz.ar, bnSz: _sz.bn, uiSz: _sz.ui, tafsirSz: _sz.tafsir, wbwSz: _sz.wbw
+  };
+  try {
+    localStorage.setItem('quran_user_defaults', JSON.stringify(d));
+    showToast('\u2705 বর্তমান সেটিংস ডিফল্ট হিসেবে সেভ হয়েছে');
+  } catch(e){
+    showToast('সেভ করতে পারেনি');
+  }
+}
+
+function _setFontSelectByValue(selectId, val){
+  const sel = document.getElementById(selectId);
+  if(!sel) return;
+  for(let i=0;i<sel.options.length;i++){
+    if(sel.options[i].value===val){ sel.selectedIndex=i; return; }
+  }
+  sel.selectedIndex=0;
+}
+
 function resetFonts(){
-  _sz.ar=31; _sz.bn=14; _sz.ui=14; _sz.tafsir=14;
-  ['ar','bn','ui','tafsir'].forEach(l=>{
-    document.getElementById('cfg_'+l+'Sz').textContent = _sz[l];
-    document.getElementById('cfg_'+l+'Font').selectedIndex = 0;
-  });
-  document.getElementById('arPrev').style.cssText     = "padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'Uthmanic',serif;font-size:31px;direction:rtl;text-align:right;line-height:2.2;";
-  document.getElementById('bnPrev').style.cssText     = "padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;";
-  document.getElementById('uiPrev').style.cssText     = "padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'KoHo',sans-serif;font-size:14px;";
-  document.getElementById('tafsirPrev').style.cssText = "padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:14px;line-height:1.9;";
-  window._appliedFonts = null;
-  document.querySelectorAll('.a-arabic').forEach(el=>{el.style.fontFamily=''; el.style.fontSize='';});
-  document.querySelectorAll('.a-bangla').forEach(el=>{el.style.fontFamily=''; el.style.fontSize='';});
-  document.body.style.fontFamily = '';
+  const isFactory = !localStorage.getItem('quran_user_defaults');
+  const d = _getDefaults();
+  _sz.ar=d.arSz; _sz.bn=d.bnSz; _sz.ui=d.uiSz; _sz.tafsir=d.tafsirSz; _sz.wbw=d.wbwSz;
+
+  document.getElementById('cfg_arSz').textContent     = _sz.ar;
+  document.getElementById('cfg_bnSz').textContent     = _sz.bn;
+  document.getElementById('cfg_uiSz').textContent     = _sz.ui;
+  document.getElementById('cfg_tafsirSz').textContent = _sz.tafsir;
+  document.getElementById('cfg_wbwSz').textContent    = _sz.wbw;
+
+  _setFontSelectByValue('cfg_arFont',     d.arFont);
+  _setFontSelectByValue('cfg_bnFont',     d.bnFont);
+  _setFontSelectByValue('cfg_uiFont',     d.uiFont);
+  _setFontSelectByValue('cfg_tafsirFont', d.tafsirFont);
+  _setFontSelectByValue('cfg_wbwFont',    d.wbwFont);
+
+  ['ar','bn','ui','tafsir','wbw'].forEach(l => livePreview(l));
+
   const tafsirBodyEl = document.getElementById('tafsirBody');
-  if(tafsirBodyEl){ tafsirBodyEl.style.fontFamily=''; tafsirBodyEl.style.fontSize=''; }
-  
-  _sz.wbw=10;
-document.getElementById('cfg_wbwSz').textContent = 10;
-document.getElementById('cfg_wbwFont').selectedIndex = 0;
-document.getElementById('wbwPrev').style.cssText = "padding:10px 14px;background:var(--cream2);border-radius:8px;border-left:2px solid var(--gold);font-family:'HindSiliguri',sans-serif;font-size:10.5px;direction:rtl;text-align:right;";
-document.querySelectorAll('.iw-bn').forEach(el=>{el.style.fontFamily=''; el.style.fontSize='';});
+
+  if(isFactory){
+    document.querySelectorAll('.a-arabic,.iw-ar').forEach(el=>{el.style.fontFamily='';el.style.fontSize='';});
+    document.querySelectorAll('.a-bangla').forEach(el=>{el.style.fontFamily='';el.style.fontSize='';});
+    document.querySelectorAll('.iw-bn').forEach(el=>{el.style.fontFamily='';el.style.fontSize='';});
+    document.body.style.fontFamily='';
+    if(tafsirBodyEl){tafsirBodyEl.style.fontFamily='';tafsirBodyEl.style.fontSize='';}
+    window._appliedFonts = null;
+  } else {
+    document.querySelectorAll('.a-arabic,.iw-ar').forEach(el=>{
+      el.style.fontFamily=`'${d.arFont}',serif`; el.style.fontSize=_sz.ar+'px';
+    });
+    document.querySelectorAll('.a-bangla').forEach(el=>{
+      el.style.fontFamily=`'${d.bnFont}',sans-serif`; el.style.fontSize=_sz.bn+'px';
+    });
+    document.querySelectorAll('.iw-bn').forEach(el=>{
+      el.style.fontFamily=`'${d.wbwFont}',sans-serif`; el.style.fontSize=_sz.wbw+'px';
+    });
+    document.body.style.fontFamily=`'${d.uiFont}',sans-serif`;
+    if(tafsirBodyEl){tafsirBodyEl.style.fontFamily=`'${d.tafsirFont}',sans-serif`;tafsirBodyEl.style.fontSize=_sz.tafsir+'px';}
+    window._appliedFonts = {
+      arF:d.arFont,bnF:d.bnFont,uiF:d.uiFont,tafsirF:d.tafsirFont,wbwF:d.wbwFont,
+      arSz:_sz.ar,bnSz:_sz.bn,uiSz:_sz.ui,tafsirSz:_sz.tafsir,wbwSz:_sz.wbw
+    };
+  }
+  showToast('\u21BA ডিফল্ট সেটিংসে ফিরে গেছে');
 }
 </script>
 
@@ -1334,7 +2575,7 @@ document.querySelectorAll('.iw-bn').forEach(el=>{el.style.fontFamily=''; el.styl
 <div id="settingsOverlay" onclick="toggleSettings()" style="display:none;position:fixed;inset:0;background:transparent;z-index:998;"></div>
 
 <!-- Settings Panel -->
-<div id="settingsPanel" style="display:none;position:fixed;top:0;right:0;width:340px;height:100vh;background:var(--warm1);border-left:1px solid var(--border);z-index:999;overflow:hidden;flex-direction:column;">
+<div id="settingsPanel" style="display:none;position:fixed;top:0;right:0;width:min(340px,92vw);height:100vh;background:var(--warm1);border-left:1px solid var(--border);z-index:999;overflow:hidden;flex-direction:column;">
   <div style="padding:13px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
     <span style="font-size:13px;font-weight:600;color:var(--ink);">🔧 সেটিংস</span>
     <button onclick="toggleSettings()" style="border:none;background:none;cursor:pointer;font-size:24px;color:var(--ink3);line-height:1;">✕</button>
@@ -1503,8 +2744,9 @@ document.querySelectorAll('.iw-bn').forEach(el=>{el.style.fontFamily=''; el.styl
       </div>
     </div>
 
-    <div style="padding:12px 0 4px;display:flex;justify-content:flex-end;gap:8px;">
-      <button onclick="resetFonts()" style="padding:5px 14px;font-size:12px;border:1px solid var(--border2);border-radius:16px;background:var(--warm1);color:var(--ink3);cursor:pointer;font-family:'KoHo',sans-serif;">ডিফল্ট</button>
+    <div style="padding:12px 0 4px;display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;">
+      <button onclick="resetFonts()" style="padding:5px 14px;font-size:12px;border:1px solid var(--border2);border-radius:16px;background:var(--warm1);color:var(--ink3);cursor:pointer;font-family:'KoHo',sans-serif;">↺ রিসেট</button>
+      <button onclick="saveAsDefault()" style="padding:5px 14px;font-size:12px;border:1px solid var(--gold);border-radius:16px;background:var(--gold-ll);color:var(--gold);cursor:pointer;font-weight:500;font-family:'KoHo',sans-serif;">⭐ ডিফল্ট সেট করুন</button>
       <button onclick="applyFonts()" style="padding:5px 16px;font-size:12px;border:none;border-radius:16px;background:var(--gold);color:#fff;cursor:pointer;font-weight:500;font-family:'KoHo',sans-serif;">প্রয়োগ করুন ✓</button>
     </div>
   </div>
@@ -1524,13 +2766,35 @@ document.querySelectorAll('.iw-bn').forEach(el=>{el.style.fontFamily=''; el.styl
   <div id="tafsirBody" style="padding:20px 24px;font-size:14px;line-height:2;color:var(--ink2);flex:1;"></div>
 </div>
 
-<!-- Word Popup -->
-<div id="wordOverlay" onclick="closeWordPopup()" style="display:none;position:fixed;inset:0;z-index:1004;"></div>
-<div id="wordPopup" style="display:none;position:fixed;z-index:1005;background:var(--warm1);border:1px solid var(--border);border-radius:16px;padding:18px 22px;min-width:180px;max-width:260px;box-shadow:0 8px 32px rgba(0,0,0,0.13);text-align:center;">
-  <div id="wpAr" style="font-family:'Uthmanic',serif;font-size:36px;color:var(--ink);direction:rtl;line-height:1.8;margin-bottom:10px;"></div>
-  <div style="height:1px;background:var(--border);margin-bottom:10px;"></div>
-  <div id="wpBn" style="font-family:'HindSiliguri',sans-serif;font-size:14px;color:var(--gold);font-weight:600;line-height:1.6;"></div>
-  <div id="wpKey" style="font-size:10.5px;color:var(--ink4);margin-top:8px;letter-spacing:0.3px;"></div>
+<!-- Word Popup — Premium -->
+<div id="wordOverlay" onclick="closeWordPopup()">
+  <div id="wordPopup" onclick="event.stopPropagation()"></div>
+</div>
+
+
+<!-- Jump to Ayah Popup -->
+<div id="jumpOverlay" onclick="closeJumpPopup()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1010;"></div>
+<div id="jumpPopup" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1011;width:520px;max-width:95vw;background:#faf8f4;border-radius:18px;border:1px solid #e6e1d8;overflow:hidden;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,0.18);">
+  <div style="padding:13px 18px;background:#fff;border-bottom:1px solid #e6e1d8;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+    <div style="font-size:13.5px;font-weight:600;color:var(--ink);">প্রবেশ করুন</div>
+    <button onclick="closeJumpPopup()" style="border:none;background:none;font-size:20px;color:var(--ink3);cursor:pointer;line-height:1;">✕</button>
+  </div>
+  <div style="display:flex;height:380px;">
+    <!-- Surah col -->
+    <div style="width:215px;border-right:1px solid #e6e1d8;display:flex;flex-direction:column;flex-shrink:0;">
+      <div style="padding:7px 12px;font-size:10px;font-weight:700;color:var(--ink3);letter-spacing:0.1em;border-bottom:1px solid #e6e1d8;background:#fff;flex-shrink:0;">সূরা</div>
+      <div id="jumpSurahList" style="overflow-y:auto;flex:1;scrollbar-width:thin;"></div>
+    </div>
+    <!-- Ayah col -->
+    <div style="flex:1;display:flex;flex-direction:column;">
+      <div id="jumpAyahLabel" style="padding:7px 12px;font-size:10px;font-weight:700;color:var(--ink3);letter-spacing:0.1em;border-bottom:1px solid #e6e1d8;background:#fff;flex-shrink:0;">আয়াত</div>
+      <div id="jumpAyahGrid" style="overflow-y:auto;flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:5px;padding:10px;align-content:start;scrollbar-width:thin;"></div>
+    </div>
+  </div>
+  <div style="padding:11px 18px;background:#fff;border-top:1px solid #e6e1d8;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+    <div style="font-size:12px;color:var(--ink3);">নির্বাচিত: <span id="jumpSelText" style="color:var(--gold);font-weight:600;">—</span></div>
+    <button onclick="doJump()" style="padding:8px 22px;background:var(--gold);color:#fff;border:none;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);">প্রবেশ করুন →</button>
+  </div>
 </div>
 
 <!-- Copy -->
